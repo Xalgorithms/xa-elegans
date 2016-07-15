@@ -17,7 +17,7 @@ html
           div.container-fluid
             div.navbar-collapse.collapse
               ul.nav.navbar-nav.navbar-left
-                p.navbar-text= current_user.email
+                p.navbar-text= format_user_name(current_user)
       div.container
         = yield
     - else
