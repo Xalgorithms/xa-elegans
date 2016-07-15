@@ -1,0 +1,26 @@
+doctype html
+html
+  head
+    title Geghard
+    = stylesheet_link_tag "application", media: 'all', 'data-turbolinks-track' => true
+    = yield :stylesheets
+
+    = javascript_include_tag "application", 'data-turbolinks-track' => true
+    = yield :javascripts
+
+    = csrf_meta_tags
+
+  body
+    - if user_signed_in?
+      div.container
+        nav#main-menu.navbar.navbar-default
+          div.container
+            div.navbar-collapse.collapse
+              ul.nav.navbar-nav.navbar-left
+                = yield :sub_menu
+              ul.nav.navbar-nav.navbar-right
+                = render("menu")
+      div.container
+        = yield
+    - else
+      = yield
