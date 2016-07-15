@@ -1,2 +1,5 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
+
+// padding to drop below the floating navbar
+body { padding-top: 70px; }

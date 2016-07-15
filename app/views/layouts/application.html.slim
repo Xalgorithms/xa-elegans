@@ -13,13 +13,11 @@ html
   body
     - if user_signed_in?
       div.container
-        nav#main-menu.navbar.navbar-default
-          div.container
+        nav.navbar.navbar-default.navbar-fixed-top
+          div.container-fluid
             div.navbar-collapse.collapse
               ul.nav.navbar-nav.navbar-left
-                = yield :sub_menu
-              ul.nav.navbar-nav.navbar-right
-                = render("menu")
+                p.navbar-text= current_user.email
       div.container
         = yield
     - else
