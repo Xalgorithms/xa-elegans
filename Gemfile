@@ -51,6 +51,10 @@ gem 'mongo'
 gem 'dotenv-rails'
 gem 'dotenv-heroku'
 
+# ours
+gem 'xa-rules'
+
+
 group :development, :test do
   gem 'byebug'
   gem 'database_cleaner'
