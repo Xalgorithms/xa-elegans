@@ -1,2 +1,2 @@
-li class="#{controller.controller_name.eql?(name.to_s) ? 'active' : ''}"
-  = link_to(t(".#{name}"), name)
+li class="nav-item #{controller.controller_name.eql?(name.to_s) ? 'active' : ''}"
+  = link_to(t(".#{name}"), name, class: 'nav-link')

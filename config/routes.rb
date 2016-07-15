@@ -1,9 +1,12 @@
 Rails.application.routes.draw do
-  root to: redirect("/accounts")
+  root to: redirect("/transactions")
 
   devise_for :users
   
   authenticate :user do
+    resources :transactions, only: [:index, :show] do
+      
+    end
     # old routes, assess
     # resources :accounts,    only: [:index] do
     #   resources :invocations, only: [:new, :edit, :show]
