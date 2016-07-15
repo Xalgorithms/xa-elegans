@@ -1,7 +1,11 @@
 module UBL
   module Parse
-    def load_and_parse(urn, sym_root_xp, sym_make, &bl)
-      load(urn) do |doc|
+    def load_and_parse_urn(urn, sym_root_xp, sym_make, &bl)
+      load_and_parse(open(urn), sym_root_xp, sym_make, &bl)
+    end
+
+    def load_and_parse(b, sym_root_xp, sym_make, &bl)
+      load(b) do |doc|
         maybe_find_one(doc, send(sym_root_xp, doc)) do |n|
           rv = send(sym_make, n)
           bl.call(rv) if rv && rv.any? && bl
@@ -9,8 +13,8 @@ module UBL
       end
     end
 
-    def load(urn)
-      doc = Nokogiri::XML(open(urn)) do |cfg|
+    def load(b)
+      doc = Nokogiri::XML(b) do |cfg|
         cfg.noblanks.noent
       end
       yield(doc) if doc

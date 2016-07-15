@@ -7,10 +7,11 @@ namespace :mongo do
     if args.file
       include UBL::Invoice
       
-      parse(args.file) do |invoice|
+      parse_urn(args.file) do |invoice|
         puts "> adding #{args.file} into Mongo on localhost"
         cl = Mongo::Client.new(['127.0.0.1:27017'], database: 'lichen')
-        cl[:invoices].insert_one(invoice)
+        r = cl[:invoices].insert_one(invoice)
+        puts "# inserted (doc=#{r.inserted_ids.first})"
       end
     else
       puts "! filename"

@@ -6,8 +6,12 @@ module UBL
     include UBL::Parse
     include UBL::Maybes
 
-    def parse(urn, &bl)
-      load_and_parse(urn, :root_xp, :make_invoice, &bl)
+    def parse_urn(urn, &bl)
+      load_and_parse_urn(urn, :root_xp, :make_invoice, &bl)
+    end
+
+    def parse(b, &bl)
+      load_and_parse(b, :root_xp, :make_invoice, &bl)      
     end
     
     def root_xp(doc)

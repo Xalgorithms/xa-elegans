@@ -38,6 +38,28 @@ namespace :testing do
       resp = conn.delete(make_url(rel, version))
       puts "DELETE < #{resp.status}"
     end
+
+    desc 'open a transaction via the REST API'
+    task :transaction_open, [:user_id] => :environment do |t, args|
+      if args.user_id
+        puts "# posting transaction (user_id=#{args.user_id})"
+        post("/users/#{args.user_id}/transactions", 1, transaction: {})
+      else
+        puts '! user_id'
+      end
+    end
+
+    desc 'close a transaction via the REST API'
+    task :transaction_close, [:user_id, :transaction_id] => :environment do |t, args|
+      if args.user_id && args.transaction_id
+        puts "# posting transaction (user_id=#{args.user_id})"
+        delete("/users/#{args.user_id}/transactions/#{args.transaction_id}", 1)
+      else
+        puts '! user_id'
+      end
+    end
+
+    # old. might not work.
     
     desc 'post a new invoice'
     task :invoice_add, [:account_id, :effective] => :environment do |t, args|

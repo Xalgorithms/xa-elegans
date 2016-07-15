@@ -7,7 +7,7 @@ namespace :ubl do
     if args.file
       include UBL::Invoice
       
-      parse(args.file) do |invoice|
+      parse_urn(args.file) do |invoice|
         ap invoice
       end
     else
