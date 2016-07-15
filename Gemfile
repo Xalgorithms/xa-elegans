@@ -4,6 +4,7 @@ ruby "2.3.0"
 
 # basics
 gem 'active_model_serializers'
+gem 'rails-observers'
 gem 'devise'
 gem 'rails', '4.2.4'
 gem "slim-rails", "~> 3.0"
@@ -46,7 +47,7 @@ gem 'currencies'
 gem 'eu_central_bank', git: 'https://github.com/RubyMoney/eu_central_bank.git'
 gem 'money'
 
-gem 'mongo'
+# gem 'mongoid', '~> 5.1.0'
 
 # deployment
 gem 'dotenv-rails'
@@ -60,7 +61,7 @@ group :development, :test do
   gem 'database_cleaner'
   gem 'factory_girl_rails'
   gem 'faker'
-  gem "rspec-rails", "~> 3.0"
+  gem "rspec-rails"
   gem 'sqlite3'
   gem 'fuubar'
 end

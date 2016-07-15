@@ -8,19 +8,19 @@ module Api
       before_filter :maybe_lookup_transactions
       before_filter :maybe_lookup_transaction, only: [:destroy]
 
-      def create
-        @transaction = Transaction.create(status: Transaction::STATUS_OPEN, user: @user)
-        render(json: @transaction)
-      end
+      # def create
+      #   @transaction = Transaction.create(status: Transaction::STATUS_OPEN, user: @user)
+      #   render(json: @transaction)
+      # end
 
-      def destroy
-        @transaction.update_attributes(status: Transaction::STATUS_CLOSED) if @transaction
-        render(nothing: true)
-      end
+      # def destroy
+      #   @transaction.update_attributes(status: Transaction::STATUS_CLOSED) if @transaction
+      #   render(nothing: true)
+      # end
 
       def index
         if @transactions
-          render(json: @transactions)
+          render(json: TransactionSerializer.many(@transactions))
         else
           render(nothing: true, status: :not_found)
         end
@@ -36,7 +36,11 @@ module Api
       
       def maybe_lookup_user
         user_id = params.fetch('user_id', nil)
-        @user = User.find(user_id) if user_id
+        begin
+          @user = User.find(user_id) if user_id
+        rescue
+          Rails.logger.warn("! Failed lookup (user_id=#{user_id})")
+        end
       end
 
       def maybe_lookup_transaction

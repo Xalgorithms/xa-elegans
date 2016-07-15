@@ -69,7 +69,6 @@ GEM
     bootstrap-sass (3.3.6)
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
-    bson (4.1.1)
     builder (3.2.2)
     byebug (9.0.5)
     coderay (1.1.1)
@@ -146,9 +145,6 @@ GEM
     money (6.7.1)
       i18n (>= 0.6.4, <= 0.7.0)
       sixarm_ruby_unaccent (>= 1.1.1, < 2)
-    mongo (2.2.6)
-      bson (~> 4.0)
-      pry
     multi_json (1.12.1)
     multipart-post (2.0.0)
     nokogiri (1.6.8)
@@ -188,6 +184,8 @@ GEM
       rails-deprecated_sanitizer (>= 1.0.1)
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
+    rails-observers (0.1.2)
+      activemodel (~> 4.0)
     rails_12factor (0.0.3)
       rails_serve_static_assets
       rails_stdout_logging
@@ -301,14 +299,14 @@ DEPENDENCIES
   liquid
   lodash-rails
   money
-  mongo
   nokogiri
   pg
   pry-rails
   puma
   rails (= 4.2.4)
+  rails-observers
   rails_12factor
-  rspec-rails (~> 3.0)
+  rspec-rails
   sass-rails (>= 3.2)
   settingslogic
   slim-rails (~> 3.0)

@@ -96,3 +96,4 @@ end
 
 require_relative './support/factory_girl'
 require_relative './support/randomness'
+require_relative './support/response_json'

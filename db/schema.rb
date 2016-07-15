@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160405040203) do
+ActiveRecord::Schema.define(version: 20160715202600) do
 
   create_table "changes", force: :cascade do |t|
     t.string   "document_id"
@@ -23,6 +23,11 @@ ActiveRecord::Schema.define(version: 20160405040203) do
 
   add_index "changes", ["invoice_id"], name: "index_changes_on_invoice_id"
   add_index "changes", ["rule_id"], name: "index_changes_on_rule_id"
+
+  create_table "events", force: :cascade do |t|
+    t.string "public_id"
+    t.string "event_type"
+  end
 
   create_table "invoices", force: :cascade do |t|
     t.integer "transact_id"
@@ -39,11 +44,27 @@ ActiveRecord::Schema.define(version: 20160405040203) do
 
   add_index "rules", ["transaction_id"], name: "index_rules_on_transaction_id"
 
+  create_table "transaction_close_events", force: :cascade do |t|
+    t.integer "transaction_id"
+    t.integer "event_id"
+    t.string  "transaction_public_id"
+  end
+
+  add_index "transaction_close_events", ["event_id"], name: "index_transaction_close_events_on_event_id"
+
+  create_table "transaction_open_events", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "event_id"
+  end
+
+  add_index "transaction_open_events", ["event_id"], name: "index_transaction_open_events_on_event_id"
+
   create_table "transactions", force: :cascade do |t|
     t.integer  "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer  "status"
+    t.string   "public_id"
   end
 
   add_index "transactions", ["user_id"], name: "index_transactions_on_user_id"

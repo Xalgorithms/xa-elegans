@@ -55,3 +55,6 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 end
+
+# needs to be required here, not in spec_helper b/c it should come AFTER rspec/rails
+require_relative './support/devise'

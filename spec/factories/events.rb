@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :transaction do
+  factory :event do
     public_id { UUID.generate }
   end
 end

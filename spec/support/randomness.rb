@@ -16,6 +16,10 @@ module Randomness
     rand_times(n).map { yield }
   end
 
+  def rand_array_of_numbers(n = 10)
+    rand_array(n) { Faker::Number.between(1, 1000).to_i }
+  end
+  
   def rand_array_of_words(n = 10)
     rand_array(n) { Faker::Hipster.word }
   end

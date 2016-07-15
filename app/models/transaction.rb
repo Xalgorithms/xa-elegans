@@ -14,4 +14,8 @@ class Transaction < ActiveRecord::Base
   def as_json(opts={})
     
   end
+
+  def close
+    update_attributes(status: STATUS_CLOSED)
+  end
 end

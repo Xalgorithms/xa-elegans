@@ -14,8 +14,10 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       # new routes
+      resources :events, only: [:show, :create]
+      
       resources :users, only: [] do
-        resources :transactions, only: [:index, :create, :destroy] do
+        resources :transactions, only: [:index] do
           resources :invoices, only: [:create]
         end
       end
