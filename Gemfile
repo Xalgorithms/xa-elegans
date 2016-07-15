@@ -31,6 +31,7 @@ gem 'jbuilder', '~> 2.0'
 # gem 'capistrano-rails', group: :development
 
 # libraries
+gem 'awesome_print'
 gem 'faraday'
 gem 'faraday_middleware'
 gem 'liquid'
@@ -62,8 +63,6 @@ group :development, :test do
 
   # rspec tests
   gem "rspec-rails", "~> 3.0"
-
-  gem 'awesome_print'
 end
 
 group :production, :staging do
