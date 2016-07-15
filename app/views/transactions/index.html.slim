@@ -1,0 +1,23 @@
+.card-deck-wrapper
+  .card-deck
+    - @transactions.each do |t|
+      .card
+        .card-header
+          .container
+            div.pull-xs-left= format_transaction_date(t)
+            div.pull-xs-right= t(transaction_status_as_label(t))
+        .card-block
+          table.table.table-sm
+            thead.thead-default
+              tr
+                th= t('.heading.number')
+                th= t('.heading.date')
+                th= t('.heading.customer')
+                th= t('.heading.total')
+            tbody
+              - transaction_invoice_docs(t).each do |inv, doc|
+                tr
+                  td= link_to(doc.id, invoice_path(inv))
+                  td= doc.date
+                  td= doc.customer
+                  td= doc.rough_total.format

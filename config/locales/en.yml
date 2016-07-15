@@ -25,6 +25,18 @@ en:
       title: Rules
     invoices:
       title: Invoices
+  transactions:
+    index:
+      status:
+        open: open
+        closed: closed
+        unknown: unknown
+      heading:
+        number: '#'
+        date: date
+        customer: customer
+        total: total
+    
   application:
     navbar_section:
       accounts: Accounts
