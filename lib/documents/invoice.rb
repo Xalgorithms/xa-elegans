@@ -1,7 +1,7 @@
 module Documents
   class Invoice
     def initialize(doc_id)
-      cl = Mongo::Client.new(['127.0.0.1:27017'], database: 'lichen')
+      cl = Mongo::Client.new(ENV['MONGOLAB_URI'])
       @doc = cl[:invoices].find(_id: BSON::ObjectId(doc_id)).first
     end
 
