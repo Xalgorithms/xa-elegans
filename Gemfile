@@ -52,7 +52,7 @@ gem 'dotenv-rails'
 gem 'dotenv-heroku'
 
 # ours
-gem 'xa-rules'
+gem 'xa-rules', git: 'https://github.com/Xalgorithms/xa-rules.git'
 
 
 group :development, :test do
