@@ -1,7 +1,7 @@
 module Documents
   class Invoice < Document
     def self.create(json)
-      super(:invoices, json)
+      super(:invoices, json.merge(version: 1))
     end
 
     def self.all
