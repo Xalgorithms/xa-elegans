@@ -17,8 +17,7 @@ gem 'uglifier', '>= 1.3.0'
 # gem 'therubyracer', platforms: :ruby
 
 # style related gems
-gem 'sass-rails', '~> 5.0'
-gem 'bootstrap-sass'
+gem 'bootstrap', '~> 4.0.0.alpha3'
 
 # API stuff
 gem 'jbuilder', '~> 2.0'
