@@ -76,7 +76,15 @@ namespace :testing do
         puts '! account_id required'
       end
     end
-      
+
+    desc 'get an account'
+    task :account_get, [:account_id] => :environment do |t, args|
+      if args.account_id
+        get("/accounts/#{args.account_id}", 1)
+      else
+        puts '! account_id required'
+      end
+    end
     
     desc 'disassociate an account rule'
     task :rule_disassociate, [:account_id, :rule_id] => :environment do |t, args|
