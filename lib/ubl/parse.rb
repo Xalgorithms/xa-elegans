@@ -23,9 +23,9 @@ module UBL
           cac:     'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
           cbc:     'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2',
         }
-        doc_nses = n.document.namespaces.invert
+        nses = n.namespaces.invert
         @nses = @namespace_urns.keys.inject({}) do |o, k|
-          o.merge(k => doc_nses[@namespace_urns[k]].split(':').last)
+          o.merge(k => nses[@namespace_urns[k]].split(':').last)
         end
       end
       

@@ -39,6 +39,39 @@ module UBL
       end
     end
 
+    def maybe_find_delivery(el, &bl)
+      rv = {}
+      maybe_find_one(el, "#{ns(el, :cac)}:Delivery") do |delivery_el|
+        maybe_find_one_text(delivery_el, "#{ns(el, :cbc)}:ActualDeliveryDate") do |text|
+          rv[:date] = text
+        end
+
+        # skipping DL/ID
+        maybe_find_one_convert(
+          :make_address, delivery_el,
+          "#{ns(delivery_el, :cac)}:DeliveryLocation/#{ns(delivery_el, :cac)}:Address") do |address|
+          rv[:address] = address
+        end
+      end
+
+      bl.call(rv) if rv.any? && bl
+      rv
+    end
+
+    def maybe_find_id(el, xp = nil, &bl)
+      lxp = [xp, "#{ns(el, :cbc)}:ID"].compact.join('/')
+      maybe_find_one_convert(:make_id, el, lxp, &bl)
+    end
+
+    def make_id(el)
+      {
+        value: el.text,
+      }.tap do |o|
+        o[:scheme] = el['schemeID'] if el['schemeID']
+        o[:agency] = el['schemeAgencyID'] if el['schemeAgencyID']
+      end
+    end
+    
     def make_invoice(el)
       {}.tap do |o|
         maybe_find_one_text(el, "#{ns(el, :cbc)}:ID") do |text|
@@ -57,6 +90,15 @@ module UBL
         
         maybe_find_parties(el) do |parties|
           o[:parties] = parties
+        end
+
+        maybe_find_delivery(el) do |delivery|
+          o[:delivery] = delivery
+        end
+
+        # add PaymentMeans && PaymentTerms (needs looking at spec)
+        maybe_find_many_convert(:make_line, el, "#{ns(el, :cac)}:InvoiceLine") do |lines|
+          o[:lines] = lines
         end
       end
     end
@@ -135,6 +177,116 @@ module UBL
         end
         maybe_find_one_text(n, "#{ns(n, :cbc)}:JobTitle") do |text|
           o[:title] = text
+        end
+      end
+    end
+
+    def make_line(el)
+      {}.tap do |o|
+        maybe_find_one_text(el, "#{ns(el, :cbc)}:Note") do |text|
+          o[:note] = text
+        end
+        maybe_find_one_convert(:make_line_item, el, "#{ns(el, :cac)}:Item") do |item|
+          o[:item] = item
+        end
+        maybe_find_one_convert(:make_line_price, el, "#{ns(el, :cac)}:Price") do |price|
+          o[:price] = price
+        end
+      end
+    end
+
+    def maybe_find_line_item_ids(el, &bl)
+      @line_item_ids ||= {
+        seller:   "#{ns(el, :cac)}:SellersItemIdentification",
+        standard: "#{ns(el, :cac)}:StandardItemIdentification",
+      }
+
+      ids = @line_item_ids.inject({}) do |oids, kv|
+        maybe_find_id(el, kv.last) do |id|
+          oids = oids.merge(kv.first => id)
+        end
+        
+        oids
+      end
+      
+      bl.call(ids) if ids.any? && bl
+    end
+
+    def maybe_find_line_item_classifications(el, &bl)
+      xp = "#{ns(el, :cac)}:CommodityClassification/#{ns(el, :cbc)}:ItemClassificationCode"
+      maybe_find_many_convert(:make_classification, el, xp, &bl)
+    end
+
+    def make_classification(el)
+      {
+        value: el.text
+      }.tap do |o|
+        o[:agency] = el['listAgencyID'] if el['listAgencyID']
+        o[:id] = el['listID'] if el['listID']
+      end
+    end
+
+    def maybe_find_tax_category(el, &bl)
+      maybe_find_one_convert(:make_tax_category, el, "#{ns(el, :cac)}:ClassifiedTaxCategory", &bl)
+    end
+
+    def make_tax_category(el)
+      {}.tap do |o|
+        maybe_find_id(el) do |id|
+          o[:id] = id
+        end
+        maybe_find_one_int(el, "#{ns(el, :cbc)}:Percent") do |percent|
+          o[:percent] = percent
+        end
+        maybe_find_id(el, "#{ns(el, :cac)}:TaxScheme") do |id|
+          o[:scheme] = id
+        end
+      end
+    end
+
+    def make_item_property(el)
+      {}.tap do |o|
+        { k: 'Name', v: 'Value' }.each do |k, v|
+          maybe_find_one_text(el, "#{ns(el, :cbc)}:#{v}") do |text|
+            o[k] = text
+          end
+        end
+      end
+    end
+    
+    def make_line_item(el)
+      {}.tap do |o|
+        maybe_find_line_item_ids(el) do |ids|
+          o[:ids] = ids
+        end
+
+        maybe_find_line_item_classifications(el) do |classifications|
+          o[:classifications] = classifications
+        end
+
+        maybe_find_tax_category(el) do |category|
+          o[:tax_category] = category
+        end
+
+        maybe_find_many_convert(:make_item_property, el, "#{ns(el, :cac)}:AdditionalItemProperty") do |props|
+          o[:props] = props.inject({}) do |o, kv|
+            o.merge(kv[:k] => kv[:v])
+          end
+        end
+      end
+    end
+
+    def make_line_price(el)
+      {}.tap do |o|
+        maybe_find_one_text(el, "#{ns(el, :cbc)}:PriceAmount", ['currencyID']) do |text, vals|
+          currency = vals.fetch('currencyID', nil)
+          o[:currency] = currency if currency
+          o[:amount] = text.to_f
+        end
+        maybe_find_one_text(el, "#{ns(el, :cbc)}:BaseQuantity", ['unitCode']) do |text, vals|
+          code = vals.fetch('unitCode', nil)
+          o[:code] = code if code
+          o[:quantity] = text.to_i
         end
       end
     end

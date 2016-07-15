@@ -1,8 +1,15 @@
 module UBL
   module Maybes
-    def maybe_find_one(pn, xp, &bl)
+    def maybe_find_one(pn, xp, attrs = {}, &bl)
       rv = pn.xpath(xp).first
-      rv = bl.call(rv) if rv && bl
+      attrs = attrs.inject({}) { |o, k| o.merge(k => rv[k]) }
+      rv = bl.call(rv, attrs) if rv && bl
+      rv
+    end
+
+    def maybe_find_many(pn, xp, &bl)
+      rv = pn.xpath(xp)
+      rv = bl.call(rv) if rv && rv.any? && bl
       rv
     end
 
@@ -30,17 +37,33 @@ module UBL
       rv
     end
     
-    def maybe_find_one_text(pn, xp, &bl)
-      maybe_find_one(pn, xp) do |n|
+    def maybe_find_one_text(pn, xp, attrs = {}, &bl)
+      maybe_find_one(pn, xp, attrs) do |n, attrs|
         rv = n.text
-        rv = bl.call(rv) if bl
+        rv = bl.call(rv, attrs) if bl
         rv
       end
     end
     
+    def maybe_find_one_int(pn, xp, attrs = {}, &bl)
+      maybe_find_one(pn, xp, attrs) do |n, attrs|
+        rv = n.text.to_i
+        rv = bl.call(rv, attrs) if bl
+        rv
+      end
+    end
+
     def maybe_find_one_convert(sym, pn, xp, &bl)
       maybe_find_one(pn, xp) do |n|
         rv = send(sym, n)
+        rv = bl.call(rv) if rv && rv.any? && bl
+        rv
+      end
+    end
+
+    def maybe_find_many_convert(sym, pn, xp, &bl)
+      maybe_find_many(pn, xp) do |ns|
+        rv = ns.map(&method(sym))
         rv = bl.call(rv) if rv && rv.any? && bl
         rv
       end
