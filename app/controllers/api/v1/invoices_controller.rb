@@ -10,9 +10,17 @@ module Api
       # TODO: do this properly
       skip_before_filter  :verify_authenticity_token
 
-      before_filter :maybe_lookup_transaction, only: [:create]
+      before_filter :maybe_lookup_transaction, only: [:create, :index]
       before_filter :parse_ubl, only: [:create]
 
+      def index
+        if @transaction
+          render(json: @transaction.invoices)
+        else
+          render(nothing: true, status: :not_found)
+        end
+      end
+      
       def create
         doc_id = Documents::Invoice.create(@invoice_ubl)
         @invoice = Invoice.create(transact: @transaction, document_id: doc_id)

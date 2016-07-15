@@ -25,6 +25,10 @@ Rails.application.routes.draw do
           resources :invoices, only: [:create]
         end
       end
+
+      resources :transactions, only: [] do
+        resources :invoices, only: [:index]
+      end
       
       # these are old routes, assess
       # resources :users, only: [] do

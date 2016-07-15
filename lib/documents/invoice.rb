@@ -14,6 +14,10 @@ module Documents
     def id
       @doc['id']
     end
+
+    def content
+      @doc
+    end
     
     def date
       Date.parse(@doc['issued'])
