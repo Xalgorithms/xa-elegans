@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 ruby "2.2.4"
 
 # basics
+gem 'active_model_serializers'
 gem 'devise'
 gem 'rails', '4.2.4'
 gem "slim-rails", "~> 3.0"
