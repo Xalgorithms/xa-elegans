@@ -1,0 +1,17 @@
+h4= t('.title')
+div#container-account-rules
+  - account.rules.each do |rule|
+    = render('account_rule', account: account, rule: rule)
+div.hidden#container-rule-prototypes
+  - Rule.all.each do |rule|
+    = render('account_rule', account: account, rule: rule)
+div.row
+  div.col-md-12
+    button.btn.btn-primary.btn-xs#add-rule type="button" role="button" Add
+div.row
+  div.col-md-12#container-new-rule
+    = form_for([account, Rule.new], remote: true) do |fa|
+      = fa.collection_select(:id, Rule.all, :id, :name)
+      button.btn.btn-success.btn-xs#button-add    type='submit' Add
+      button.btn.btn-default.btn-xs#button-cancel type='button' Cancel
+
