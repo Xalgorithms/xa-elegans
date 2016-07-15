@@ -53,7 +53,11 @@ group :production, :staging do
   gem 'pg'
 
   # Use Unicorn as the app server in production
-  gem 'unicorn'
+  # gem 'unicorn'
+  # heroku uses puma
+  gem 'puma'
+
+  gem 'rails_12factor'
 end
 
 group :development do
