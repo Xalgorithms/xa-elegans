@@ -129,6 +129,34 @@ module UBL
     
     def make_address(n)
       {}.tap do |o|
+        maybe_find_id(n) do |id|
+          o[:id] = id
+        end
+
+        street_set = {
+          name: "#{ns(n, :cbc)}:StreetName",
+          unit: "#{ns(n, :cbc)}:AdditionalStreetName",
+        }
+        maybe_find_set_text(n, street_set) do |street|
+          o[:street] = street
+        end
+
+        additional_set = {
+          building: "#{ns(n, :cbc)}:BuildingNumber",
+          department: "#{ns(n, :cbc)}:Department",
+        }
+        maybe_find_set_text(n, additional_set) do |additional|
+          o[:additional] = additional
+        end
+        
+        maybe_find_one_text(n, "#{ns(n, :cbc)}:CountrySubentityCode") do |text|
+          o[:region] = text
+        end
+
+        maybe_find_one_text(n, "#{ns(n, :cbc)}:PostalZone") do |text|
+          o[:zone] = text
+        end
+        
         maybe_find_one_text(n, "#{ns(n, :cbc)}:CityName") do |text|
           o[:city] = text
         end
