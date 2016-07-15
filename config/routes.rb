@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   
   authenticate :user do
     resources :accounts,    only: [:index] do
-      resources :invocations, only: [:new, :edit]
+      resources :invocations, only: [:new, :edit, :show]
     end
     resources :rules,       only: [:index]
     resources :invoices,    only: [:edit]

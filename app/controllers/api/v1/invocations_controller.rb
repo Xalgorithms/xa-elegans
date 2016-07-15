@@ -3,7 +3,7 @@ module Api
     class InvocationsController < ActionController::Base
       # TODO: do this properly
       skip_before_filter  :verify_authenticity_token
-      before_filter :maybe_lookup_invocation, only: [:edit, :destroy]
+      before_filter :maybe_lookup_invocation, only: [:update, :destroy]
 
       respond_to :json
 
@@ -23,6 +23,7 @@ module Api
       
       def update
         if @invocation
+          @invocation.update_attributes(invocation_params)
           render(json: @invocation)
         else
           render(nothing: true, status: :not_found)
