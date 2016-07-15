@@ -4,28 +4,37 @@ Rails.application.routes.draw do
   devise_for :users
   
   authenticate :user do
-    resources :accounts,    only: [:index] do
-      resources :invocations, only: [:new, :edit, :show]
-    end
-    resources :rules,       only: [:index]
-    resources :invoices,    only: [:edit]
+    # old routes, assess
+    # resources :accounts,    only: [:index] do
+    #   resources :invocations, only: [:new, :edit, :show]
+    # end
+    # resources :rules,       only: [:index]
+    # resources :invoices,    only: [:edit]
   end
 
   # API
   namespace :api do
     namespace :v1 do
-      resources :users, only: [] do
-        resources :accounts, only: [:index]
-        resources :invoices, only: [:index]
+      # new routes
+      resources :transactions, only: [:create, :destroy] do
+        
       end
       
-      resources :accounts, only: [:index, :show] do
-        resources :invoices, only: [:create, :index]
-        resources :invocations, only: [:create, :destroy]
-      end
-      # resources :rules, only: [:show]
-      resources :invocations, only: [:create, :show, :update]
-      resources :invoices, only: [:show, :destroy]
+      # these are old routes, assess
+      # resources :users, only: [] do
+      #   resources :accounts, only: [:index]
+      #   resources :invoices, only: [:index]
+      # end
+      
+      # resources :accounts, only: [:index, :show] do
+      #   resources :invoices, only: [:create, :index]
+      #   resources :invocations, only: [:create, :destroy]
+      # end
+
+      # resources :invocations, only: [:create, :show, :update]
+      # resources :invoices, only: [:show, :destroy]
+
+      # new routes
     end
   end
   
