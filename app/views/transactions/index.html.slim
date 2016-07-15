@@ -26,9 +26,11 @@
             = form_for([:api, :v1, t, Rule.new], remote: true) do |f|
               div.row
                 div.col-md-4
-                  = select_tag(:rule_id, options_for_select(options_available_rules), class: 'select_rule_id')
+                  = f.select(:id, options_for_select(options_available_rules), {}, class: 'select_rule_id')
                 div.col-md-4
-                  = select_tag(:rule_version, [], class: 'select_rule_version hidden')
+                  = f.select(:version, [], {}, class: 'select_rule_version hidden')
+                div.col-md-4
+                  = f.submit
                   
           
 div.modal.fade.modal-wide#modal-invoice-show title="#{t('.modals.invoice')}" tabindex="-1" role="dialog"
