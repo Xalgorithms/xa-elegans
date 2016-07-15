@@ -1,14 +1,15 @@
 module Documents
-  class Invoice
+  class Invoice < Document
     def self.create(json)
-      cl = Mongo::Client.new(ENV['MONGOLAB_URI'])
-      r = cl[:invoices].insert_one(json)
-      r.inserted_ids.first.to_s
+      super(:invoices, json)
+    end
+
+    def self.all
+      super(:invoices)
     end
     
     def initialize(doc_id)
-      cl = Mongo::Client.new(ENV['MONGOLAB_URI'])
-      @doc = cl[:invoices].find(_id: BSON::ObjectId(doc_id)).first
+      super(:invoices, doc_id)
     end
 
     def id
@@ -24,7 +25,6 @@ module Documents
     end
 
     def deep_fetch(k)
-      p k
       @doc.deep_fetch(k)
     end
 
