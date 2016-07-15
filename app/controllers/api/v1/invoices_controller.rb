@@ -4,6 +4,7 @@ module Api
       # TODO: do this properly
       skip_before_filter  :verify_authenticity_token
       before_filter :maybe_lookup_account
+      before_filter :maybe_lookup_invoice, only: [:destroy]
       
       respond_to :json
       
@@ -12,6 +13,17 @@ module Api
         render(json: invoice.to_json)
       end
 
+      def destroy
+        if @invoice
+          Rails.logger.info("Destroying invoice (id=#{@invoice.id})")
+          @invoice.destroy
+          render(nothing: true, status: :ok)
+        else
+          Rails.logger.warn('Failed to locate invoice to destroy')
+          render(nothing: true, status: :not_found)
+        end
+      end
+      
       private
 
       def maybe_lookup_account
@@ -19,6 +31,11 @@ module Api
         @account = Account.find(account_id) if account_id
       end
 
+      def maybe_lookup_invoice
+        invoice_id = params.fetch('id', nil)
+        @invoice = Invoice.find(invoice_id) if invoice_id
+      end
+      
       def permitted_params
         params.require(:invoice).permit(:effective)
       end

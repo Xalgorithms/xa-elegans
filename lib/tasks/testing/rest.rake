@@ -32,8 +32,8 @@ namespace :testing do
       puts "DELETE < #{resp.status}"
     end
     
-    desc 'post a new invoce'
-    task :invoice, [:account_id, :effective] => :environment do |t, args|
+    desc 'post a new invoice'
+    task :invoice_add, [:account_id, :effective] => :environment do |t, args|
       args.with_defaults(effective: Time.now.to_date.to_s)
       if args.account_id
         puts "# posting invoice (account=#{args.account_id}; effective=#{args.effective})"
@@ -42,9 +42,18 @@ namespace :testing do
         puts '! account id is required'
       end
     end
-
+    
+    desc 'delete an invoice'
+    task :invoice_rm, [:invoice_id] => :environment do |t, args|
+      if args.invoice_id
+        delete("/invoices/#{args.invoice_id}", 1)        
+      else
+        puts '! invoice_id required'
+      end
+    end
+    
     desc 'disassociate an account rule'
-    task :disassociate_rule, [:account_id, :rule_id] => :environment do |t, args|
+    task :rule_disassociate, [:account_id, :rule_id] => :environment do |t, args|
       if args.account_id && args.rule_id
         delete("/accounts/#{args.account_id}/rules/#{args.rule_id}", 1)
       else
