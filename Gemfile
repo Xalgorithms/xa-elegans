@@ -38,6 +38,9 @@ group :development, :test do
 
   # use a preferred appserver
   gem 'thin'
+
+  # rspec tests
+  gem "rspec-rails", "~> 3.0"
 end
 
 group :production, :staging do
