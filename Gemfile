@@ -40,6 +40,8 @@ gem 'countries'
 gem 'currencies'
 gem 'money'
 
+gem 'mongo'
+
 # deployment
 gem 'dotenv-rails'
 gem 'dotenv-heroku'
@@ -58,6 +60,8 @@ group :development, :test do
 
   # rspec tests
   gem "rspec-rails", "~> 3.0"
+
+  gem 'awesome_print'
 end
 
 group :production, :staging do
