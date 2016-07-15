@@ -9,7 +9,7 @@ table.table.table-condensed
   tbody
     - items.each do |it|
       tr
-        td= it['ids']['seller']['value']
+        td= it['item']['ids']['seller']['value']
         td= it['item']['name']
         td= it['price']['quantity']
         td= format_item_price(it['price'])
