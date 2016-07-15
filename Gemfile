@@ -58,6 +58,7 @@ group :development, :test do
   gem 'faker'
   gem "rspec-rails", "~> 3.0"
   gem 'sqlite3'
+  gem 'fuubar'
 end
 
 group :production, :staging do
