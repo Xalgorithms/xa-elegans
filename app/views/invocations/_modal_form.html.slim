@@ -1,0 +1,12 @@
+= form_for([:api, :v1, @invocation], remote: true) do |f|
+  div.modal-header
+    button.close type='button' data-dismiss='modal' aria-label='Close'
+      span aria-hidden='true' &times;
+    h4.modal-title#modal-rule-edit-label= t('.invocation')
+  div.modal-body
+    = f.hidden_field(:account_id)
+    = f.collection_select(:rule_id, Rule.all, :id, :name)
+  div.modal-footer
+    button.btn.btn-default(type="button" data-dismiss="modal")= t('.close')
+    = f.button(:submit, class: 'btn btn-primary')
+

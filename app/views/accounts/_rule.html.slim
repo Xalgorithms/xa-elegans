@@ -1,6 +1,0 @@
-div.row(id="rule-#{rule.id}")
-  div.col-md-10
-    div= link_to(rule.name, edit_rule_path(rule), data: { toggle: 'modal', target: '#modal-rule-edit' })
-  div.col-md-2
-    = link_to([:api, :v1, account, rule], remote: true, method: :delete) do
-      span.glyphicon.glyphicon-remove

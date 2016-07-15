@@ -1,0 +1,14 @@
+h4= t('.title')
+div#container-account-rules
+  - account.invocations.each do |invocation|
+    = render('invocation', account: account, invocation: invocation, target: '#modal-invocation-edit')
+div.row
+  div.col-md-12
+    = link_to('Add', new_account_invocation_path(account), data: { toggle: "modal", target: '#modal-invocation-create' }, class: 'btn btn-primary btn-xs')
+div.modal.fade#modal-invocation-edit title="#{t('.invocation')}" tabindex="-1" role="dialog" aria-labelledby="modal-invocation-edit-label"
+  div.modal-dialog role="document"
+    div.modal-content#modal-content-invocation
+div.modal.fade#modal-invocation-create title="#{t('.invocation')}" tabindex="-1" role="dialog" aria-labelledby="modal-invocation-create-label"
+  div.modal-dialog role="document"
+    div.modal-content#modal-content-invocation
+

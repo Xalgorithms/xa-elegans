@@ -4,9 +4,11 @@ Rails.application.routes.draw do
   devise_for :users
   
   authenticate :user do
-    resources :accounts, only: [:index]
-    resources :rules,    only: [:index, :edit]
-    resources :invoices, only: [:edit]
+    resources :accounts,    only: [:index] do
+      resources :invocations, only: [:new, :edit]
+    end
+    resources :rules,       only: [:index]
+    resources :invoices,    only: [:edit]
   end
 
   # API
@@ -14,9 +16,10 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :accounts, only: [] do
         resources :invoices, only: [:create]
-        resources :rules, only: [:create, :destroy]
+        resources :invocations, only: [:create, :destroy]
       end
-      resources :rules, only: [:show]
+      # resources :rules, only: [:show]
+      resources :invocations, only: [:create, :show, :update]
       resources :invoices, only: [:show, :destroy]
     end
   end

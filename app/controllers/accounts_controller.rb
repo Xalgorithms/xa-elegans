@@ -1,12 +1,12 @@
 class AccountsController < ApplicationController
-  before_filter :update_accounts
+  before_filter :find_accounts
   
   def index
   end
 
   private
 
-  def update_accounts
+  def find_accounts
     @accounts = current_user.accounts
   end
 end
