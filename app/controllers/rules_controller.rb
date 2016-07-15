@@ -1,4 +1,4 @@
-class RulesController
+class RulesController < ApplicationController
   def index
   end
 

@@ -1,6 +1,6 @@
 module Api
   module V1
-    class InvoicesController < ApplicationController
+    class InvoicesController < ActionController::Base
       # TODO: do this properly
       skip_before_filter  :verify_authenticity_token
 

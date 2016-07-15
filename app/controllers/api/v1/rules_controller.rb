@@ -1,6 +1,6 @@
 module Api
   module V1
-    class RulesController < ApplicationController
+    class RulesController < ActionController::Base
       # TODO: do this properly
       skip_before_filter  :verify_authenticity_token
       before_filter :maybe_lookup_rule
