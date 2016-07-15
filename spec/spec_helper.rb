@@ -16,6 +16,9 @@
 # users commonly want.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+
+# NOTE: these came from xa-registry, factor into gems
+
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
@@ -91,8 +94,5 @@ RSpec.configure do |config|
 =end
 end
 
-require 'factory_girl'
-
-# NOTE: these came from xa-registry, factor into gems
 require_relative './support/factory_girl'
 require_relative './support/randomness'

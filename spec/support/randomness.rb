@@ -32,3 +32,7 @@ module Randomness
     rand_array(n) { Faker::Internet.url }
   end
 end
+
+RSpec.configure do |config|
+  config.include(Randomness)
+end

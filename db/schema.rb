@@ -11,7 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160321044242) do
+ActiveRecord::Schema.define(version: 20160405040203) do
+
+  create_table "changes", force: :cascade do |t|
+    t.string   "document_id"
+    t.integer  "invoice_id"
+    t.integer  "rule_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "changes", ["invoice_id"], name: "index_changes_on_invoice_id"
+  add_index "changes", ["rule_id"], name: "index_changes_on_rule_id"
 
   create_table "invoices", force: :cascade do |t|
     t.integer "transact_id"
