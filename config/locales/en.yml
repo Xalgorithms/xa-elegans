@@ -29,3 +29,6 @@ en:
     navbar_section:
       accounts: Accounts
       rules: Rules
+  active_record:
+    attributes:
+      rule_id: Rule

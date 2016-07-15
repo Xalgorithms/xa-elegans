@@ -38,7 +38,7 @@ module Api
       end
 
       def invocation_params
-        params.require(:invocation).permit(:account_id, :rule_id)
+        params.require(:invocation).permit(:account_id, :rule_id, assignments_attributes: [:id, :actual])
       end
     end
   end
