@@ -12,16 +12,21 @@
               thead.thead-default
                 tr
                   th.text-capitalize= t('.heading.number')
+                  th.text-capitalize= t('.heading.currency')
                   th.text-capitalize= t('.heading.date')
                   th.text-capitalize= t('.heading.customer')
                   th.text-capitalize= t('.heading.total')
+                  th
               tbody
                 - transaction_invoice_docs(t).each do |inv, doc|
                   tr
                     td= link_to(doc.id, invoice_path(inv), data: { toggle: "modal", target: "#modal-invoice-show" })
+                    td= doc.currency
                     td= doc.date
                     td= doc.customer
                     td= doc.rough_total.format
+                    - if inv.applied_changes.any?
+                      td= link_to('changes', invoice_changes_path(inv), data: { toggle: 'modal', target: '#modal-changes-show' })
             h5 Apply rule
             = form_for([:api, :v1, t, Rule.new], remote: true) do |f|
               div.row
@@ -36,6 +41,9 @@
 div.modal.fade.modal-wide#modal-invoice-show title="#{t('.modals.invoice')}" tabindex="-1" role="dialog"
   div.modal-dialog role="document"
     div.modal-content#modal-content-invoice
+div.modal.fade.modal-wide#modal-changes-show title="#{t('.modals.changes')}" tabindex="-1" role="dialog"
+  div.modal-dialog role="document"
+    div.modal-content#modal-content-changes
 
 javascript:
   var rules = #{{ available_rules.to_json }};

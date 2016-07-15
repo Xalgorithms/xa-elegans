@@ -4,7 +4,9 @@ Rails.application.routes.draw do
   devise_for :users
   
   authenticate :user do
-    resources :invoices, only: [:show]
+    resources :invoices, only: [:show] do
+      resources :changes, only: [:index]
+    end
     resources :transactions, only: [:index, :show]
   end
 

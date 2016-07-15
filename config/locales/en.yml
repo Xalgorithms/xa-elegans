@@ -36,8 +36,14 @@ en:
         date: date
         customer: customer
         total: total
+        key: key
+        original: original
+        mutated: changed
+        currency: currency
+        
       modals:
         invoice: invoice
+        changes: changes
   invoices:
     invoice:
       titles:

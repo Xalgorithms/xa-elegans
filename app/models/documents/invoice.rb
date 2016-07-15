@@ -19,6 +19,10 @@ module Documents
     def content
       @doc
     end
+
+    def currency
+      @doc['currency']
+    end
     
     def date
       Date.parse(@doc['issued'])
