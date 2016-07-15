@@ -9,6 +9,9 @@ module Api
 
       def create
         invocation = Invocation.create(invocation_params)
+        invocation.assignments = invocation.rule.parameters.map do |parameter|
+          Assignment.new(parameter: parameter)
+        end
         render(json: invocation)
       end
 
