@@ -145,8 +145,11 @@ module UBL
           o[:street] = street
         end
 
+        maybe_find_one_text(n, "#{ns(n, :cbc)}:BuildingNumber") do |text|
+          o[:number] = text
+        end
+
         additional_set = {
-          building: "#{ns(n, :cbc)}:BuildingNumber",
           department: "#{ns(n, :cbc)}:Department",
         }
         maybe_find_set_text(n, additional_set) do |additional|

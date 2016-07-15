@@ -1,0 +1,14 @@
+div.container-fluid
+  div.row
+    div.col-md-4
+      = render('invoice/party', party: doc[:parties][:supplier], title: t('.titles.supplier'))
+    div.col-md-4
+      = render('invoice/party', party: doc[:parties][:customer], title: t('.titles.customer'))
+    div.col-md-4
+      = render('invoice/party', party: doc[:parties][:payer], title: t('.titles.payer'))
+  div.row
+    div.col-md-6
+      = render('invoice/delivery', delivery: doc['delivery'])
+  div.row
+    div.col.md-12
+      = render('invoice/items', items: doc['lines'])

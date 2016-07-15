@@ -101,6 +101,7 @@ GEM
       railties (>= 3.2)
       sprockets-rails (< 3)
     json (1.8.3)
+    liquid (3.0.6)
     lodash-rails (3.10.1)
       railties (>= 3.1)
     loofah (2.0.3)
@@ -247,6 +248,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   js-routes
+  liquid
   lodash-rails
   money
   mongo

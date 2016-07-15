@@ -33,6 +33,7 @@ gem 'jbuilder', '~> 2.0'
 # libraries
 gem 'faraday'
 gem 'faraday_middleware'
+gem 'liquid'
 gem 'nokogiri'
 gem 'settingslogic'
 

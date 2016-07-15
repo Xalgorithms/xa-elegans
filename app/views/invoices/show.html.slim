@@ -1,0 +1,8 @@
+div.modal-header
+  button.close type='button' data-dismiss='modal' aria-label='Close'
+    span aria-hidden='true' &times;
+  h4.modal-title#modal-invocation-show= t('.modals.invocation')
+div.modal-body
+  = render('invoice', invoice: @invoice, doc: @invoice_doc)
+div.modal-footer
+  button.btn.btn-default(type="button" data-dismiss="modal")= t('.close')

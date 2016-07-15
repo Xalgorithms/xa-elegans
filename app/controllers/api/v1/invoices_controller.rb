@@ -1,5 +1,7 @@
 require 'ubl/invoice'
 
+require 'mongo'
+
 module Api
   module V1
     class InvoicesController < ActionController::Base

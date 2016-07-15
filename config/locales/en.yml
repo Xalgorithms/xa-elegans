@@ -38,7 +38,12 @@ en:
         total: total
       modals:
         invoice: invoice
-    
+  invoices:
+    invoice:
+      titles:
+        supplier: supplier
+        customer: customer
+        payer: payer
   application:
     navbar_section:
       accounts: Accounts
