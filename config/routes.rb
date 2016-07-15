@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   
   authenticate :user do
     resources :accounts do
-      resources :rules, only: :destroy
+      resources :rules, only: [:create, :destroy]
     end
   end
   # The priority is based upon order of creation: first created -> highest priority.

@@ -1,11 +1,21 @@
 class RulesController < ApplicationController
   respond_to :json
 
-  before_filter :lookup_rule
+  before_filter :maybe_lookup_rule
   before_filter :maybe_lookup_account
+
+  def create
+    if @account && @rule
+      Rails.logger.info("Associating (account=#{@account.id}; rule=#{@rule.id})")
+      @account.rules << @rule
+      render(json: @rule.to_json)
+    else
+      render(nothing: true, status: :not_found)
+    end
+  end
   
   def destroy
-    if @account
+    if @account && @rule
       Rails.logger.info("Disassociating (account=#{@account.id}; rule=#{@rule.id})")
       @account.rules.delete(@rule)
     end
@@ -14,8 +24,10 @@ class RulesController < ApplicationController
 
   private
 
-  def lookup_rule
-    @rule = Rule.find(params['id'])
+  def maybe_lookup_rule
+    rule_id = params.fetch('id', nil)
+    rule_id = params.fetch('rule', {}).fetch('id', nil) if rule_id.nil?
+    @rule = Rule.find_by_id(rule_id) if rule_id
   end
 
   def maybe_lookup_account
