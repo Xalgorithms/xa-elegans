@@ -27,8 +27,8 @@ module TransactionsHelper
   end
 
   def options_available_rules
-    available_rules.map do |rule|
-      [rule['name'], rule['id']]
+    available_rules.map do |name, o|
+      [name, o['id']]
     end
   end
 
