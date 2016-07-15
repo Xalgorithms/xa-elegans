@@ -35,7 +35,7 @@ group :development, :test do
   gem 'byebug'
 
   # use a better repl
-  gem 'pry'
+  gem 'pry-rails'
 
   # use a preferred appserver
   gem 'thin'
