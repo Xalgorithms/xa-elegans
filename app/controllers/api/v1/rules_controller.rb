@@ -26,7 +26,12 @@ module Api
         cl.rule(@rule.public_id, @rule.version) do |rule_opts|
           r = XA::Rules::Rule.new(rule_opts)
           tr.invoices.each do |inv|
-            p interpreter.execute(inv.document, [r])
+            interpreter.execute(inv.document, [r]).each do |rule_change|
+              rule_change.each do |k, ch|
+                doc_id = Documents::Change.create(key: k, original: ch.original, mutated: ch.mutated)
+                Change.create(rule: @rule, invoice: inv, document_id: doc_id)
+              end
+            end
           end
         end
       end
