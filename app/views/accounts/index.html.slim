@@ -1,0 +1,8 @@
+- organize(@accounts, 6).each do |accounts|
+  div.row
+    - accounts.each do |account|
+      div.col-md-2
+        div.panel.panel-primary
+          div.panel-heading
+            h2.panel-title= account.name
+          div.panel-body Empty for now
