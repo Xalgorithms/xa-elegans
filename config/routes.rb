@@ -5,15 +5,7 @@ Rails.application.routes.draw do
   
   authenticate :user do
     resources :invoices, only: [:show]
-    resources :transactions, only: [:index, :show] do
-      
-    end
-    # old routes, assess
-    # resources :accounts,    only: [:index] do
-    #   resources :invocations, only: [:new, :edit, :show]
-    # end
-    # resources :rules,       only: [:index]
-    # resources :invoices,    only: [:edit]
+    resources :transactions, only: [:index, :show]
   end
 
   # API
@@ -29,22 +21,6 @@ Rails.application.routes.draw do
       resources :transactions, only: [] do
         resources :invoices, only: [:index]
       end
-      
-      # these are old routes, assess
-      # resources :users, only: [] do
-      #   resources :accounts, only: [:index]
-      #   resources :invoices, only: [:index]
-      # end
-      
-      # resources :accounts, only: [:index, :show] do
-      #   resources :invoices, only: [:create, :index]
-      #   resources :invocations, only: [:create, :destroy]
-      # end
-
-      # resources :invocations, only: [:create, :show, :update]
-      # resources :invoices, only: [:show, :destroy]
-
-      # new routes
     end
   end
   
