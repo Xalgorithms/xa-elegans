@@ -1,8 +1,11 @@
 Rails.application.routes.draw do
+  root to: redirect("/accounts")
+
   devise_for :users
-  root to: "users#index"
   
-  resources :users
+  authenticate :user do
+    resources :accounts
+  end
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
