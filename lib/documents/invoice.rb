@@ -6,23 +6,51 @@ module Documents
     end
 
     def id
-      @doc[:id]
+      @doc['id']
     end
     
     def date
-      Date.parse(@doc[:issued])
+      Date.parse(@doc['issued'])
     end
 
     def customer
-      @doc[:parties][:customer][:name]
+      @doc['parties']['customer']['name']
     end
 
     def rough_total
       @doc[:lines].map do |ln|
-        Money.from_amount(ln[:price][:amount] * ln[:price][:quantity], ln[:price][:currency])
-      end.inject(Money.new(0, @doc[:currency])) do |total, amt|
+        pr = ln['price']
+        Money.from_amount(pr['amount'] * pr['quantity'], pr['currency'])
+      end.inject(Money.new(0, @doc['currency'])) do |total, amt|
         total + amt
       end
+    end
+
+    def supplier(&bl)
+      party('supplier', &bl)
+    end
+
+    def customer(&bl)
+      party('customer', &bl)
+    end
+
+    def payer(&bl)
+      party('payer', &bl)
+    end
+
+    def delivery
+      yield(@doc['delivery']) if @doc.key?('delivery')
+    end
+    
+    def items
+      @doc.fetch('lines', [])
+    end
+
+    private
+
+    def party(k, &bl)
+      all = @doc.fetch('parties', {})
+      bl.call(all[k]) if bl && all.key?(k)
     end
   end
 end

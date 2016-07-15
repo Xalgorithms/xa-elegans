@@ -17,8 +17,7 @@ class InvoicesController < ApplicationController
 
   def maybe_find_invoice_doc
     if @invoice && @invoice.document_id
-      cl = Mongo::Client.new(['127.0.0.1:27017'], database: 'lichen')
-      @invoice_doc = cl[:invoices].find(_id: BSON::ObjectId(@invoice.document_id)).first
+      @invoice_doc = Documents::Invoice.new(@invoice.document_id)
     end
   end
 end
