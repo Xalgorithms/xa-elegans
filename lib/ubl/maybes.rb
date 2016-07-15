@@ -2,7 +2,7 @@ module UBL
   module Maybes
     def maybe_find_one(pn, xp, attrs = {}, &bl)
       rv = pn.xpath(xp).first
-      attrs = attrs.inject({}) { |o, k| o.merge(k => rv[k]) }
+      attrs = attrs.inject({}) { |o, k| o.merge(k => rv[k]) } if rv
       rv = bl.call(rv, attrs) if rv && bl
       rv
     end
@@ -44,7 +44,17 @@ module UBL
         rv
       end
     end
-    
+
+    def maybe_find_one_tagged_text(pn, xp, &bl)
+      maybe_find_one(pn, xp, ['languageID']) do |n, attrs|
+        rv = { text: n.text }.tap do |o|
+          o[:language] = attrs['languageID'] if attrs['languageID']
+        end
+        rv = bl.call(rv) if bl
+        rv
+      end
+    end
+
     def maybe_find_one_int(pn, xp, attrs = {}, &bl)
       maybe_find_one(pn, xp, attrs) do |n, attrs|
         rv = n.text.to_i

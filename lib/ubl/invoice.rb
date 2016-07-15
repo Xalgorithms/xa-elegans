@@ -256,6 +256,14 @@ module UBL
     
     def make_line_item(el)
       {}.tap do |o|
+        maybe_find_one_tagged_text(el, "#{ns(el, :cbc)}:Description") do |desc|
+          o[:description] = desc
+        end
+
+        maybe_find_one_text(el, "#{ns(el, :cbc)}:Name") do |name|
+          o[:name] = name
+        end
+
         maybe_find_line_item_ids(el) do |ids|
           o[:ids] = ids
         end
