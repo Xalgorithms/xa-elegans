@@ -14,7 +14,12 @@ Rails.application.routes.draw do
   # API
   namespace :api do
     namespace :v1 do
-      resources :accounts, only: [:show] do
+      resources :users, only: [] do
+        resources :accounts, only: [:index]
+        resources :invoices, only: [:index]
+      end
+      
+      resources :accounts, only: [:index, :show] do
         resources :invoices, only: [:create, :index]
         resources :invocations, only: [:create, :destroy]
       end

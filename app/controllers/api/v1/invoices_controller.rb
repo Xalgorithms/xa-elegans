@@ -5,6 +5,7 @@ module Api
       skip_before_filter  :verify_authenticity_token
 
       before_filter :maybe_lookup_account, only: [:create, :index]
+      before_filter :maybe_lookup_user, only: [:index]
       before_filter :maybe_lookup_invoice, only: [:show, :destroy]
 
       respond_to :json
@@ -36,7 +37,9 @@ module Api
 
       def index
         if @account
-          render(json: Invoice.where(account: @account))
+          render(json: @account.invoices)
+        elsif
+          render(json: @user.invoices)
         else
           render(nothing: true, status: :not_found)
         end
@@ -47,6 +50,11 @@ module Api
       def maybe_lookup_account
         account_id = params.fetch('account_id', nil)
         @account = Account.find(account_id) if account_id
+      end
+
+      def maybe_lookup_user
+        user_id = params.fetch('user_id', nil)
+        @user = User.find(user_id) if user_id
       end
 
       def maybe_lookup_invoice

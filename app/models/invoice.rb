@@ -1,6 +1,7 @@
 class Invoice < ActiveRecord::Base
   belongs_to :account
   has_many :invocations, through: :account
+  has_one :user, through: :account
 
   def as_json(opts = {})
     lopts = {
