@@ -1,5 +1,3 @@
-require 'mongo'
-
 class InvoicesController < ApplicationController
   before_filter :maybe_find_invoice, only: [:show]
   before_filter :maybe_find_invoice_doc, only: [:show]

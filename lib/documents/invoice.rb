@@ -1,5 +1,11 @@
 module Documents
   class Invoice
+    def self.create(json)
+      cl = Mongo::Client.new(ENV['MONGOLAB_URI'])
+      r = cl[:invoices].insert_one(json)
+      r.inserted_ids.first.to_s
+    end
+    
     def initialize(doc_id)
       cl = Mongo::Client.new(ENV['MONGOLAB_URI'])
       @doc = cl[:invoices].find(_id: BSON::ObjectId(doc_id)).first

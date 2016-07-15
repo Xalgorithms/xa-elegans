@@ -14,9 +14,8 @@ module Api
       before_filter :parse_ubl, only: [:create]
 
       def create
-        cl = Mongo::Client.new(['127.0.0.1:27017'], database: 'lichen')
-        r = cl[:invoices].insert_one(@invoice_ubl)
-        @invoice = Invoice.create(transact: @transaction, document_id: r.inserted_ids.first.to_s)
+        doc_id = Documents::Invoice.create(@invoice_ubl)
+        @invoice = Invoice.create(transact: @transaction, document_id: doc_id)
         render(json: @invoice)
       end
 
