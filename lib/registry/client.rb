@@ -39,6 +39,12 @@ module Registry
       end
     end
 
+    def rule(id, version, &bl)
+      get("/api/v1/rules/#{id}/#{version}/content") do |rule|
+        bl.call(rule) if bl
+      end
+    end
+    
     private
     
     def get(relative_url, &bl)

@@ -23,6 +23,11 @@ module Documents
       Date.parse(@doc['issued'])
     end
 
+    def deep_fetch(k)
+      p k
+      @doc.deep_fetch(k)
+    end
+
     def customer
       @doc['parties']['customer']['name']
     end
