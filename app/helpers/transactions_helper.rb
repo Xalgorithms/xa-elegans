@@ -27,9 +27,13 @@ module TransactionsHelper
   end
 
   def options_available_rules
-    @registry_client ||= Registry::Client.new
-    @registry_client.rules.map do |rule|
+    available_rules.map do |rule|
       [rule['name'], rule['id']]
     end
+  end
+
+  def available_rules
+    @registry_client ||= Registry::Client.new
+    @registry_client.rules
   end
 end

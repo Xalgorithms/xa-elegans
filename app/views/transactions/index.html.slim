@@ -26,9 +26,14 @@
             = form_for([:api, :v1, t, Rule.new], remote: true) do |f|
               div.row
                 div.col-md-4
-                  = select_tag(:rule_id, options_for_select(options_available_rules))
+                  = select_tag(:rule_id, options_for_select(options_available_rules), class: 'select_rule_id')
+                div.col-md-4
+                  = select_tag(:rule_version, [], class: 'select_rule_version hidden')
                   
           
 div.modal.fade.modal-wide#modal-invoice-show title="#{t('.modals.invoice')}" tabindex="-1" role="dialog"
   div.modal-dialog role="document"
     div.modal-content#modal-content-invoice
+
+javascript:
+  var rules = #{{ available_rules.to_json }};
