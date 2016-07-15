@@ -30,6 +30,8 @@ gem 'jbuilder', '~> 2.0'
 # gem 'capistrano-rails', group: :development
 
 # libraries
+gem 'faraday'
+gem 'faraday_middleware'
 gem 'settingslogic'
 
 # deployment
@@ -50,10 +52,6 @@ group :development, :test do
 
   # rspec tests
   gem "rspec-rails", "~> 3.0"
-
-  # api tasks
-  gem 'faraday'
-  gem 'faraday_middleware'
 end
 
 group :production, :staging do
