@@ -1,4 +1,5 @@
 require 'documents/invoice'
+require 'registry/client'
 
 module TransactionsHelper
   def format_transaction_date(t)
@@ -23,5 +24,12 @@ module TransactionsHelper
       Transaction::STATUS_CLOSED => 'panel-info',
     }
     @styles.fetch(t.status, 'panel-primary')
+  end
+
+  def options_available_rules
+    @registry_client ||= Registry::Client.new
+    @registry_client.rules.map do |rule|
+      [rule['name'], rule['id']]
+    end
   end
 end
