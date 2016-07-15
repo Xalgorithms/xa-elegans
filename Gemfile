@@ -6,7 +6,6 @@ ruby "2.2.3"
 gem 'devise'
 gem 'rails', '4.2.4'
 gem "slim-rails", "~> 3.0"
-gem 'sqlite3'
 gem 'turbolinks'
 
 # JS related gems
@@ -34,7 +33,9 @@ gem 'dotenv-rails'
 gem 'dotenv-heroku'
 
 group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'sqlite3'
+
+# Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
 
   # use a better repl
