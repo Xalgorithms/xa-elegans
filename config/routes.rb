@@ -4,9 +4,9 @@ Rails.application.routes.draw do
   devise_for :users
   
   authenticate :user do
-    resources :accounts
-    resources :rules, only: [:index, :show]
-    resources :invoices, only: [:index, :show]
+    resources :accounts, only: [:index]
+    resources :rules,    only: [:index, :edit]
+    resources :invoices, only: [:edit]
   end
 
   # API
@@ -16,6 +16,7 @@ Rails.application.routes.draw do
         resources :invoices, only: [:create]
         resources :rules, only: [:create, :destroy]
       end
+      resources :rules, only: [:show]
       resources :invoices, only: [:show, :destroy]
     end
   end

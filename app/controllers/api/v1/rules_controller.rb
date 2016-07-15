@@ -4,19 +4,25 @@ module Api
       # TODO: do this properly
       skip_before_filter  :verify_authenticity_token
       before_filter :maybe_lookup_rule
-      before_filter :maybe_lookup_account
+      before_filter :maybe_lookup_account, only: [:create, :destroy]
 
       respond_to :json
 
-      def index
-      end
-      
       def create
         if @account && @rule
           Rails.logger.info("Associating (account=#{@account.id}; rule=#{@rule.id})")
           @account.rules << @rule
           render(json: @rule)
         else
+          render(nothing: true, status: :not_found)
+        end
+      end
+
+      def show
+        if @rule
+          render(json: @rule)
+        else
+          Rails.logger.warn('Failed to locate rule')
           render(nothing: true, status: :not_found)
         end
       end
