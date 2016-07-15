@@ -17,7 +17,12 @@ html
           div.container-fluid
             div.navbar-collapse.collapse
               ul.nav.navbar-nav.navbar-left
-                p.navbar-text= format_user_name(current_user)
+                li
+                  p.navbar-text= format_user_name(current_user)
+              ul.nav.navbar-nav.navbar-right
+                li.logout
+                  = link_to(destroy_user_session_path, method: :delete) do
+                    span.glyphicon.glyphicon-off[aria-hidden="true"]
       div.container
         = yield
     - else
