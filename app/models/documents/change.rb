@@ -7,6 +7,10 @@ module Documents
     def self.all
       super(:changes)
     end
+
+    def self.destroy_all
+      super(:changes)
+    end
     
     def initialize(doc_id)
       super(:changes, doc_id)

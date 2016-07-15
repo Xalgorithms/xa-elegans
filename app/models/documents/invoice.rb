@@ -8,6 +8,10 @@ module Documents
       super(:invoices)
     end
     
+    def self.destroy_all
+      super(:invoices)
+    end
+    
     def initialize(doc_id)
       super(:invoices, doc_id)
     end

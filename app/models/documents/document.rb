@@ -6,7 +6,13 @@ module Documents
       r.inserted_ids.first.to_s
     end
 
-    def all(collection)
+    def self.destroy_all(collection)
+      cl = Mongo::Client.new(ENV['MONGOLAB_URI'])
+      r = cl[collection].delete_many
+      r.n
+    end
+    
+    def self.all(collection)
       cl = Mongo::Client.new(ENV['MONGOLAB_URI'])
       cl[collection].find.to_a
     end
