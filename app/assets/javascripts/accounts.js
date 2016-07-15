@@ -3,8 +3,8 @@ function find_in_panel(el, sel) {
 }
 
 function swap(el, this_sel, next_sel, fn) {
-  $(el).closest(this_sel).fadeOut(200, function() {
-    find_in_panel(el, next_sel).fadeIn(200, fn);
+  $(el).closest(this_sel).fadeOut(100, function() {
+    find_in_panel(el, next_sel).fadeIn(100, fn);
   });  
 }
 
@@ -14,7 +14,7 @@ function inject_rule(el, id, fn) {
 
   rule_el.hide();
   rules_el.append(rule_el);
-  rule_el.fadeIn(200, fn);
+  rule_el.fadeIn(100, fn);
 };
 
 $(document).ready(function() {
@@ -24,7 +24,7 @@ $(document).ready(function() {
 
   $('a[data-remote]').on('ajax:success', function (e, data, status, xhr) {
     el = $(this).closest('div.row');
-    el.fadeOut(200, function () {
+    el.fadeOut(100, function () {
       el.detach();
     });
   });
