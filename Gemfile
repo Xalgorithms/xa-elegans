@@ -32,7 +32,13 @@ gem 'jbuilder', '~> 2.0'
 # libraries
 gem 'faraday'
 gem 'faraday_middleware'
+gem 'nokogiri'
 gem 'settingslogic'
+
+# libs for UBL
+gem 'countries'
+gem 'currencies'
+gem 'money'
 
 # deployment
 gem 'dotenv-rails'
