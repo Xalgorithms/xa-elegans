@@ -1,8 +1,15 @@
-- organize(@accounts, 6).each do |accounts|
+- organize(@accounts, 4).each do |accounts|
   div.row
     - accounts.each do |account|
-      div.col-md-2
+      div.col-md-3
         div.panel.panel-primary
           div.panel-heading
             h2.panel-title= account.name
-          div.panel-body Empty for now
+          div.panel-body
+            - account.rules.each do |rule|
+              div.row
+                div.col-md-10
+                  div=t(rule.name)
+                div.col-md-2
+                  = link_to([account, rule], remote: true, method: :delete) do
+                    span.glyphicon.glyphicon-remove

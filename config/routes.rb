@@ -4,7 +4,9 @@ Rails.application.routes.draw do
   devise_for :users
   
   authenticate :user do
-    resources :accounts
+    resources :accounts do
+      resources :rules, only: :destroy
+    end
   end
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
