@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :accounts, only: [] do
-        resources :invoices, only: [:create]
+        resources :invoices, only: [:create, :index]
         resources :invocations, only: [:create, :destroy]
       end
       # resources :rules, only: [:show]

@@ -67,6 +67,16 @@ namespace :testing do
         puts '! invoice_id required'
       end
     end
+
+    desc 'get all invoices for an account'
+    task :invoices, [:account_id] => :environment do |t, args|
+      if args.account_id
+        get("/accounts/#{args.account_id}/invoices", 1)
+      else
+        puts '! account_id required'
+      end
+    end
+      
     
     desc 'disassociate an account rule'
     task :rule_disassociate, [:account_id, :rule_id] => :environment do |t, args|

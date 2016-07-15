@@ -4,7 +4,7 @@ module Api
       # TODO: do this properly
       skip_before_filter  :verify_authenticity_token
 
-      before_filter :maybe_lookup_account, only: [:create]
+      before_filter :maybe_lookup_account, only: [:create, :index]
       before_filter :maybe_lookup_invoice, only: [:show, :destroy]
 
       respond_to :json
@@ -16,11 +16,7 @@ module Api
 
       def show
         if @invoice
-          content = @invoice.as_json
-          maybe_find_rules do |rules|
-            content = content.merge(rules: rules)
-          end
-          render(json: content)
+          render(json: @invoice)
         else
           Rails.logger.warn('Failed to locate invoice to show')
           render(nothing: true, status: not_found)
@@ -37,6 +33,14 @@ module Api
           render(nothing: true, status: :not_found)
         end
       end
+
+      def index
+        if @account
+          render(json: Invoice.where(account: @account))
+        else
+          render(nothing: true, status: :not_found)
+        end
+      end
       
       private
 
@@ -50,10 +54,6 @@ module Api
         @invoice = Invoice.find(invoice_id) if invoice_id
       end
 
-      def maybe_find_rules
-        yield(@invoice.account.rules) if @invoice && @invoice.account
-      end
-      
       def permitted_params
         params.require(:invoice).permit(:effective)
       end
