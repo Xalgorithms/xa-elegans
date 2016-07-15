@@ -22,7 +22,6 @@ Rails.application.routes.draw do
 
       resources :transactions, only: [] do
         resources :invoices, only: [:index]
-        resources :rules, only: [:create]
       end
     end
   end
