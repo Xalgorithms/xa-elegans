@@ -24,4 +24,14 @@ namespace :mongo do
       ap invoice
     end
   end
+
+  desc 'drop'
+  task :drop, [:collection] => :environment do |t, args|
+    cl = Mongo::Client.new(['127.0.0.1:27017'], database: 'lichen')
+    if args.collection
+      cl[args.collection.to_sym].drop
+    else
+      puts '! collection'
+    end
+  end
 end
