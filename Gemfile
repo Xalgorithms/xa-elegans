@@ -51,38 +51,28 @@ gem 'dotenv-rails'
 gem 'dotenv-heroku'
 
 group :development, :test do
-  gem 'sqlite3'
-
-# Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
-
-  # use a better repl
-  gem 'pry-rails'
-
-  # use a preferred appserver
-  gem 'thin'
-
-  # rspec tests
+  gem 'database_cleaner'
+  gem 'factory_girl_rails'
+  gem 'faker'
   gem "rspec-rails", "~> 3.0"
+  gem 'sqlite3'
 end
 
 group :production, :staging do
-  # use postgres in production
   gem 'pg'
-
-  # Use Unicorn as the app server in production
-  # gem 'unicorn'
-  # heroku uses puma
   gem 'puma'
-
   gem 'rails_12factor'
 end
 
 group :development do
-  # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'web-console', '~> 2.0'
-
+  # use a better repl
+  gem 'pry-rails'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+  # use a preferred appserver
+  gem 'thin'
+  # Access an IRB console on exception pages or by using <%= console %> in views
+  gem 'web-console', '~> 2.0'
 end
 

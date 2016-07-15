@@ -90,3 +90,9 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 =end
 end
+
+require 'factory_girl'
+
+# NOTE: these came from xa-registry, factor into gems
+require_relative './support/factory_girl'
+require_relative './support/randomness'

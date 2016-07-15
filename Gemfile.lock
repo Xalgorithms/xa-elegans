@@ -65,6 +65,7 @@ GEM
       i18n_data (~> 0.7.0)
     currencies (0.4.2)
     daemons (1.2.3)
+    database_cleaner (1.5.1)
     debug_inspector (0.0.2)
     devise (3.5.6)
       bcrypt (~> 3.0)
@@ -83,6 +84,13 @@ GEM
     erubis (2.7.0)
     eventmachine (1.2.0.1)
     execjs (2.6.0)
+    factory_girl (4.5.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (4.6.0)
+      factory_girl (~> 4.5.0)
+      railties (>= 3.0.0)
+    faker (1.6.3)
+      i18n (~> 0.5)
     faraday (0.9.2)
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.10.0)
@@ -244,9 +252,12 @@ DEPENDENCIES
   byebug
   countries
   currencies
+  database_cleaner
   devise
   dotenv-heroku
   dotenv-rails
+  factory_girl_rails
+  faker
   faraday
   faraday_middleware
   jbuilder (~> 2.0)
