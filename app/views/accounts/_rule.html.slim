@@ -1,6 +1,6 @@
 div.row(id="rule-#{rule.id}")
   div.col-md-10
-    div= rule.name
+    div= link_to(rule.name, url_for(rule))
   div.col-md-2
     = link_to([account, rule], remote: true, method: :delete) do
       span.glyphicon.glyphicon-remove

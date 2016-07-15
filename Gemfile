@@ -48,6 +48,10 @@ group :development, :test do
 
   # rspec tests
   gem "rspec-rails", "~> 3.0"
+
+  # api tasks
+  gem 'faraday'
+  gem 'faraday_middleware'
 end
 
 group :production, :staging do

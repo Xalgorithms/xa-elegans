@@ -7,8 +7,19 @@ Rails.application.routes.draw do
     resources :accounts do
       resources :rules, only: [:create, :destroy]
     end
-    resources :rules
+    resources :rules, only: [:index, :show]
+    resources :invoices, only: [:index, :show]
   end
+
+  # API
+  namespace :api do
+    scope module: :v1, constraints: ApiConstraint.new(version: 1) do
+      resources :accounts do
+        resources :invoices, only: [:create]
+      end
+    end
+  end
+  
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
