@@ -17,31 +17,35 @@ function inject_rule(el, id, fn) {
   rule_el.fadeIn(100, fn);
 };
 
-$(document).ready(function() {
-  $('div#container-new-rule').each(function (i, el) {
-    $(el).hide();
-  });
-
-  $('a[data-remote]').on('ajax:success', function (e, data, status, xhr) {
-    var self = this;
-    $(this).closest('div.row').fadeOut(100, function () {
-      $(self).detach();
+function init() {
+  on_page('accounts', function() {
+    $('div#container-new-rule').each(function (i, el) {
+      $(el).hide();
     });
-  });
 
-  $('button#add-rule').on('click', function () {
-    swap(this, 'button#add-rule', 'div#container-new-rule');
-  });
+    $('a[data-remote]').on('ajax:success', function (e, data, status, xhr) {
+      var self = this;
+      $(this).closest('div.row').fadeOut(100, function () {
+        $(self).detach();
+      });
+    });
 
-  $('button#button-cancel').on('click', function () {
-    swap(this, 'div#container-new-rule', 'button#add-rule');
-  });
-  
-  $('form#new_rule').on('ajax:success', function (e, data, status) {
-    var self = this;
+    $('button#add-rule').on('click', function () {
+      swap(this, 'button#add-rule', 'div#container-new-rule');
+    });
+
+    $('button#button-cancel').on('click', function () {
+      swap(this, 'div#container-new-rule', 'button#add-rule');
+    });
     
-    inject_rule(self, data['id'], function() {
-      swap(self, 'div#container-new-rule', 'button#add-rule');
+    $('form#new_rule').on('ajax:success', function (e, data, status) {
+      var self = this;
+      
+      inject_rule(self, data['id'], function() {
+        swap(self, 'div#container-new-rule', 'button#add-rule');
+      });
     });
   });
-});
+};
+
+$(document).on('ready page:load', init);

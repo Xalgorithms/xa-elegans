@@ -4,6 +4,9 @@ class RulesController < ApplicationController
   before_filter :maybe_lookup_rule
   before_filter :maybe_lookup_account
 
+  def index
+  end
+  
   def create
     if @account && @rule
       Rails.logger.info("Associating (account=#{@account.id}; rule=#{@rule.id})")

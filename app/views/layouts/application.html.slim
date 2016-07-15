@@ -10,19 +10,14 @@ html
 
     = csrf_meta_tags
 
-  body
+  body data-page=controller.controller_name
     - if user_signed_in?
       div.container
         nav.navbar.navbar-default.navbar-fixed-top
           div.container-fluid
             div.navbar-collapse.collapse
-              ul.nav.navbar-nav.navbar-left
-                li
-                  p.navbar-text= format_user_name(current_user)
-              ul.nav.navbar-nav.navbar-right
-                li.logout
-                  = link_to(destroy_user_session_path, method: :delete) do
-                    span.glyphicon.glyphicon-off[aria-hidden="true"]
+              = render('navbar_left')
+              = render('navbar_right')
       div.container
         = yield
     - else

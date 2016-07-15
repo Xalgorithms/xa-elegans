@@ -1,0 +1,4 @@
+ul.nav.navbar-nav.navbar-left
+  = render('navbar_user', user: current_user)
+  - global_sections.each do |name|
+    = render('navbar_section', name: name)

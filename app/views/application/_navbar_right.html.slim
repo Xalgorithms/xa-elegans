@@ -1,0 +1,4 @@
+ul.nav.navbar-nav.navbar-right
+  li.logout
+    = link_to(destroy_user_session_path, method: :delete) do
+      span.glyphicon.glyphicon-off[aria-hidden="true"]
