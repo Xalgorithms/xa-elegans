@@ -30,6 +30,7 @@ module Api
               rule_change.each do |k, ch|
                 doc_id = Documents::Change.create(key: k, original: ch.original, mutated: ch.mutated)
                 Change.create(rule: @rule, invoice: inv, document_id: doc_id)
+                inv.document.apply_change(k, ch.mutated)
               end
             end
           end

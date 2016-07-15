@@ -18,8 +18,8 @@ module Documents
     end
     
     def initialize(collection, doc_id)
-      cl = Mongo::Client.new(ENV['MONGOLAB_URI'])
-      @doc = cl[collection].find(_id: BSON::ObjectId(doc_id)).first
+      @cl = Mongo::Client.new(ENV['MONGOLAB_URI'])
+      @doc = @cl[collection].find(_id: BSON::ObjectId(doc_id)).first
     end
   end
 end

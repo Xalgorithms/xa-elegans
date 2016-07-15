@@ -1,5 +1,7 @@
 module Documents
   class Invoice < Document
+    include Documents::Keys
+      
     def self.create(json)
       super(:invoices, json.merge(version: 1))
     end
@@ -14,6 +16,11 @@ module Documents
     
     def initialize(doc_id)
       super(:invoices, doc_id)
+    end
+
+    def apply_change(k, v)
+      Rails.logger.info("apply change(id=#{@doc['_id']}; k=#{k}; v=#{v})")
+      @cl[:invoices].find_one_and_update({ _id: @doc['_id'] }, { '$set' => dotted_key_to_hash(k, v), '$inc' => { 'version' => 1 } })
     end
 
     def id
