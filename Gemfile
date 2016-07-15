@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 # basics
+gem 'devise'
 gem 'rails', '4.2.4'
 gem 'sqlite3'
 gem 'turbolinks'
