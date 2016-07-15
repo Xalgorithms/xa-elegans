@@ -1,30 +1,11 @@
 module UBL
   module Parse
-    def parse(urn)
+    def load_and_parse(urn, sym_root_xp, sym_make, &bl)
       load(urn) do |doc|
-        invoice = {}.tap do |o|
-          maybe_find_one(doc, "#{ns(doc, :invoice)}:Invoice") do |invoice_el|
-            maybe_find_one_text(invoice_el, "#{ns(doc, :cbc)}:ID") do |text|
-              o[:id] = text
-            end
-            maybe_find_one_text(invoice_el, "#{ns(doc, :cbc)}:IssueDate") do |text|
-              o[:issued] = text
-            end
-            maybe_find_one_text(invoice_el, "#{ns(doc, :cbc)}:DocumentCurrencyCode") do |text|
-              o[:currency] = text
-            end
-            
-            maybe_find_period(invoice_el) do |period|
-              o[:period] = period
-            end
-            
-            maybe_find_parties(invoice_el) do |parties|
-              o[:parties] = parties
-            end
-          end
+        maybe_find_one(doc, send(sym_root_xp, doc)) do |n|
+          rv = send(sym_make, n)
+          bl.call(rv) if rv && rv.any? && bl
         end
-        
-        yield(invoice)
       end
     end
 

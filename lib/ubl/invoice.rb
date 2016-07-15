@@ -5,29 +5,59 @@ module UBL
   module Invoice
     include UBL::Parse
     include UBL::Maybes
+
+    def parse(urn, &bl)
+      load_and_parse(urn, :root_xp, :make_invoice, &bl)
+    end
     
-    def maybe_find_period(invoice_el, &bl)
+    def root_xp(doc)
+      "#{ns(doc, :invoice)}:Invoice"
+    end
+    
+    def maybe_find_period(el, &bl)
       period_set = {
-        starts: "#{ns(invoice_el, :cac)}:InvoicePeriod/#{ns(invoice_el, :cbc)}:StartDate",
-        ends:   "#{ns(invoice_el, :cac)}:InvoicePeriod/#{ns(invoice_el, :cbc)}:EndDate",
+        starts: "#{ns(el, :cac)}:InvoicePeriod/#{ns(el, :cbc)}:StartDate",
+        ends:   "#{ns(el, :cac)}:InvoicePeriod/#{ns(el, :cbc)}:EndDate",
       }
       
-      maybe_find_set_text(invoice_el, period_set) do |s|
+      maybe_find_set_text(el, period_set) do |s|
         bl.call(s) if bl
       end
     end
     
-    def maybe_find_parties(invoice_el, &bl)
+    def maybe_find_parties(el, &bl)
       parties_set = {
-        supplier: "#{ns(invoice_el, :cac)}:AccountingSupplierParty/#{ns(invoice_el, :cac)}:Party",
-        customer: "#{ns(invoice_el, :cac)}:AccountingCustomerParty/#{ns(invoice_el, :cac)}:Party",
-        payer:    "#{ns(invoice_el, :cac)}:PayeeParty",
+        supplier: "#{ns(el, :cac)}:AccountingSupplierParty/#{ns(el, :cac)}:Party",
+        customer: "#{ns(el, :cac)}:AccountingCustomerParty/#{ns(el, :cac)}:Party",
+        payer:    "#{ns(el, :cac)}:PayeeParty",
       }
-      maybe_find_set(invoice_el, parties_set) do |parties_els|
+      maybe_find_set(el, parties_set) do |parties_els|
         parties = parties_els.inject({}) do |o, kv|
           o.merge(kv.first => make_party(kv.last))
         end
         bl.call(parties) if parties.any? && bl
+      end
+    end
+
+    def make_invoice(el)
+      {}.tap do |o|
+        maybe_find_one_text(el, "#{ns(el, :cbc)}:ID") do |text|
+          o[:id] = text
+        end
+        maybe_find_one_text(el, "#{ns(el, :cbc)}:IssueDate") do |text|
+          o[:issued] = text
+        end
+        maybe_find_one_text(el, "#{ns(el, :cbc)}:DocumentCurrencyCode") do |text|
+          o[:currency] = text
+        end
+        
+        maybe_find_period(el) do |period|
+          o[:period] = period
+        end
+        
+        maybe_find_parties(el) do |parties|
+          o[:parties] = parties
+        end
       end
     end
     
