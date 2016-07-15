@@ -1,6 +1,0 @@
-div.row(id="invocation-#{invocation.id}")
-  div.col-md-10
-    div= link_to(invocation.rule.name, edit_account_invocation_path(account, invocation), data: { toggle: "modal", target: "#{target}" })
-  div.col-md-2
-    = link_to([:api, :v1, account, invocation], remote: true, method: :delete) do
-      span.glyphicon.glyphicon-remove
