@@ -1,6 +1,7 @@
 table.table.table-condensed
   thead
     tr
+      th SKU
       th Name
       th Quantity
       th Price
@@ -8,6 +9,7 @@ table.table.table-condensed
   tbody
     - items.each do |it|
       tr
+        td= it['ids']['seller']['value']
         td= it['item']['name']
         td= it['price']['quantity']
         td= format_item_price(it['price'])
