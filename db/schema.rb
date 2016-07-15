@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151023140830) do
+ActiveRecord::Schema.define(version: 20151107175842) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name"
@@ -22,10 +22,22 @@ ActiveRecord::Schema.define(version: 20151023140830) do
 
   add_index "accounts", ["user_id"], name: "index_accounts_on_user_id"
 
-  create_table "accounts_rules", id: false, force: :cascade do |t|
-    t.integer "account_id", null: false
-    t.integer "rule_id",    null: false
+  create_table "assignments", force: :cascade do |t|
+    t.integer "invocation_id"
+    t.integer "parameter_id"
+    t.string  "actual"
   end
+
+  add_index "assignments", ["invocation_id"], name: "index_assignments_on_invocation_id"
+  add_index "assignments", ["parameter_id"], name: "index_assignments_on_parameter_id"
+
+  create_table "invocations", force: :cascade do |t|
+    t.integer "account_id"
+    t.integer "rule_id"
+  end
+
+  add_index "invocations", ["account_id"], name: "index_invocations_on_account_id"
+  add_index "invocations", ["rule_id"], name: "index_invocations_on_rule_id"
 
   create_table "invoices", force: :cascade do |t|
     t.integer "account_id"
@@ -33,6 +45,13 @@ ActiveRecord::Schema.define(version: 20151023140830) do
   end
 
   add_index "invoices", ["account_id"], name: "index_invoices_on_account_id"
+
+  create_table "parameters", force: :cascade do |t|
+    t.integer "rule_id"
+    t.string  "name"
+  end
+
+  add_index "parameters", ["rule_id"], name: "index_parameters_on_rule_id"
 
   create_table "rules", force: :cascade do |t|
     t.string "name"
