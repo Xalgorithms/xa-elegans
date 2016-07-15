@@ -26,6 +26,13 @@ namespace :testing do
       puts "# content=#{resp.body}"
     end
 
+    def get(rel, version)
+      puts "GET > #{rel}"
+      resp = conn.get(make_url(rel, version))
+      puts "GET < #{resp.status}"
+      puts "# content=#{resp.body}"
+    end
+    
     def delete(rel, version)
       puts "DELETE > #{rel}"
       resp = conn.delete(make_url(rel, version))
@@ -47,6 +54,15 @@ namespace :testing do
     task :invoice_rm, [:invoice_id] => :environment do |t, args|
       if args.invoice_id
         delete("/invoices/#{args.invoice_id}", 1)        
+      else
+        puts '! invoice_id required'
+      end
+    end
+
+    desc 'get an invoice'
+    task :invoice_get, [:invoice_id] => :environment do |t, args|
+      if args.invoice_id
+        get("/invoices/#{args.invoice_id}", 1)        
       else
         puts '! invoice_id required'
       end

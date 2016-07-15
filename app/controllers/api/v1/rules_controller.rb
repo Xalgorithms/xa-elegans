@@ -15,7 +15,7 @@ module Api
         if @account && @rule
           Rails.logger.info("Associating (account=#{@account.id}; rule=#{@rule.id})")
           @account.rules << @rule
-          render(json: @rule.to_json)
+          render(json: @rule)
         else
           render(nothing: true, status: :not_found)
         end
