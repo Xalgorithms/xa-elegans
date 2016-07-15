@@ -3,7 +3,6 @@ module Api
     class InvoicesController < ApplicationController
       # TODO: do this properly
       skip_before_filter  :verify_authenticity_token
-
       before_filter :maybe_lookup_account
       
       respond_to :json

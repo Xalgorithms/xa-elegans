@@ -4,18 +4,17 @@ Rails.application.routes.draw do
   devise_for :users
   
   authenticate :user do
-    resources :accounts do
-      resources :rules, only: [:create, :destroy]
-    end
+    resources :accounts
     resources :rules, only: [:index, :show]
     resources :invoices, only: [:index, :show]
   end
 
   # API
   namespace :api do
-    scope module: :v1, constraints: ApiConstraint.new(version: 1) do
-      resources :accounts do
+    namespace :v1 do
+      resources :accounts, only: [] do
         resources :invoices, only: [:create]
+        resources :rules, only: [:create, :destroy]
       end
     end
   end

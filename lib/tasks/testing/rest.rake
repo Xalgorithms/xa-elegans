@@ -14,16 +14,22 @@ namespace :testing do
       end
     end
 
+    def make_url(rel, version)
+      "/api/v#{version}#{rel}"
+    end
+    
     def post(rel, version, content)
       puts "POST > #{rel}"
-      resp = conn.post do |req|
-        req.url("/api#{rel}")
-        req.headers['Accept'] = "application/json; version=#{version}"
-        req.body = content
-      end
+      resp = conn.post(make_url(rel, version), content)
 
       puts "POST < #{resp.status}"
       puts "# content=#{resp.body}"
+    end
+
+    def delete(rel, version)
+      puts "DELETE > #{rel}"
+      resp = conn.delete(make_url(rel, version))
+      puts "DELETE < #{resp.status}"
     end
     
     desc 'post a new invoce'
@@ -34,6 +40,15 @@ namespace :testing do
         post("/accounts/#{args.account_id}/invoices", 1, invoice: { effective: args.effective })
       else
         puts '! account id is required'
+      end
+    end
+
+    desc 'disassociate an account rule'
+    task :disassociate_rule, [:account_id, :rule_id] => :environment do |t, args|
+      if args.account_id && args.rule_id
+        delete("/accounts/#{args.account_id}/rules/#{args.rule_id}", 1)
+      else
+        puts '! account_id and rule_id required'
       end
     end
   end
