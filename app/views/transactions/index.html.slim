@@ -1,23 +1,28 @@
-.card-deck-wrapper
-  .card-deck
-    - @transactions.each do |t|
-      .card
-        .card-header
-          .container
-            div.pull-xs-left= format_transaction_date(t)
-            div.pull-xs-right.text-uppercase= t(transaction_status_as_label(t))
-        .card-block
-          table.table.table-sm
-            thead.thead-default
-              tr
-                th.text-capitalize= t('.heading.number')
-                th.text-capitalize= t('.heading.date')
-                th.text-capitalize= t('.heading.customer')
-                th.text-capitalize= t('.heading.total')
-            tbody
-              - transaction_invoice_docs(t).each do |inv, doc|
+- organize(@transactions, 2).each do |transactions|
+  div.row
+    - transactions.each do |t|
+      div.col-md-6
+        div class="panel #{transaction_panel_style(t)}"
+          div.panel-heading
+            div.container-fluid
+              span.pull-left= format_transaction_date(t)
+              span.pull-right.text-uppercase= t(transaction_status_as_label(t))
+          div.panel-body
+            table.table.table-sm
+              thead.thead-default
                 tr
-                  td= link_to(doc.id, invoice_path(inv))
-                  td= doc.date
-                  td= doc.customer
-                  td= doc.rough_total.format
+                  th.text-capitalize= t('.heading.number')
+                  th.text-capitalize= t('.heading.date')
+                  th.text-capitalize= t('.heading.customer')
+                  th.text-capitalize= t('.heading.total')
+              tbody
+                - transaction_invoice_docs(t).each do |inv, doc|
+                  tr
+                    td= link_to(doc.id, invoice_path(inv), data: { toggle: "modal", target: "#modal-invoice-show" })
+                    td= doc.date
+                    td= doc.customer
+                    td= doc.rough_total.format
+
+div.modal.fade#modal-invoice-show title="#{t('.modals.invoice')}" tabindex="-1" role="dialog"
+  div.modal-dialog role="document"
+    div.modal-content#modal-content-invoice

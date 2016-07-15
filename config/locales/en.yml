@@ -36,6 +36,8 @@ en:
         date: date
         customer: customer
         total: total
+      modals:
+        invoice: invoice
     
   application:
     navbar_section:

@@ -16,4 +16,12 @@ module TransactionsHelper
   def transaction_invoice_docs(t)
     t.invoices.map { |inv| [inv, Documents::Invoice.new(inv.document_id)] }
   end
+
+  def transaction_panel_style(t)
+    @styles ||= {
+      Transaction::STATUS_OPEN   => 'panel-success',
+      Transaction::STATUS_CLOSED => 'panel-info',
+    }
+    @styles.fetch(t.status, 'panel-primary')
+  end
 end
