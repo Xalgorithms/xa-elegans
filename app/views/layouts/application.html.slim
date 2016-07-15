@@ -12,9 +12,11 @@ html
 
   body data-page=controller.controller_name
     - if user_signed_in?
-      nav.navbar.bg-faded.navbar-fixed-top
-        = render('navbar_left')
-        = render('navbar_right')
+      div.container
+        nav.navbar.navbar-default.navbar-fixed-top
+          div.container-fluid
+            = render('navbar_left')
+            = render('navbar_right')
       div.container
         = yield
     - else
