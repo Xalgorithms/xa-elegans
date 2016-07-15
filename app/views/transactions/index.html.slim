@@ -5,15 +5,15 @@
         .card-header
           .container
             div.pull-xs-left= format_transaction_date(t)
-            div.pull-xs-right= t(transaction_status_as_label(t))
+            div.pull-xs-right.text-uppercase= t(transaction_status_as_label(t))
         .card-block
           table.table.table-sm
             thead.thead-default
               tr
-                th= t('.heading.number')
-                th= t('.heading.date')
-                th= t('.heading.customer')
-                th= t('.heading.total')
+                th.text-capitalize= t('.heading.number')
+                th.text-capitalize= t('.heading.date')
+                th.text-capitalize= t('.heading.customer')
+                th.text-capitalize= t('.heading.total')
             tbody
               - transaction_invoice_docs(t).each do |inv, doc|
                 tr
