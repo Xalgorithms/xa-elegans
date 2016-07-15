@@ -9,7 +9,7 @@ function swap(el, this_sel, next_sel, fn) {
 }
 
 function inject_rule(el, id, fn) {
-  var rule_el = find_in_panel(el, 'div#container-rule-prototypes').children('div#rule-' + id).clone();
+  var rule_el = find_in_panel(el, 'div#container-rule-prototypes').children('div#rule-' + id).clone(true);
   var rules_el = find_in_panel(el, 'div#container-account-rules');
 
   rule_el.hide();
@@ -23,9 +23,9 @@ $(document).ready(function() {
   });
 
   $('a[data-remote]').on('ajax:success', function (e, data, status, xhr) {
-    el = $(this).closest('div.row');
-    el.fadeOut(100, function () {
-      el.detach();
+    var self = this;
+    $(this).closest('div.row').fadeOut(100, function () {
+      $(self).detach();
     });
   });
 
