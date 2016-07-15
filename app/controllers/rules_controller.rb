@@ -19,7 +19,7 @@ class RulesController < ApplicationController
   end
 
   def maybe_lookup_account
-    params.fetch('account_id', nil)
+    account_id = params.fetch('account_id', nil)
     @account = Account.find(account_id) if account_id
   end
 end
