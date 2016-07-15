@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160319212216) do
+ActiveRecord::Schema.define(version: 20160320040904) do
 
   create_table "invoices", force: :cascade do |t|
     t.integer "transact_id"
@@ -19,6 +19,13 @@ ActiveRecord::Schema.define(version: 20160319212216) do
   end
 
   add_index "invoices", ["transact_id"], name: "index_invoices_on_transact_id"
+
+  create_table "rules", force: :cascade do |t|
+    t.string  "public_id"
+    t.integer "transaction_id"
+  end
+
+  add_index "rules", ["transaction_id"], name: "index_rules_on_transaction_id"
 
   create_table "transactions", force: :cascade do |t|
     t.integer  "user_id"

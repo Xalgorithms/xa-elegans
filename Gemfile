@@ -38,6 +38,7 @@ gem 'faraday_middleware'
 gem 'liquid'
 gem 'nokogiri'
 gem 'settingslogic'
+gem 'uuid'
 
 # libs for UBL
 gem 'countries'
