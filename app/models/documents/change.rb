@@ -11,5 +11,17 @@ module Documents
     def initialize(doc_id)
       super(:changes, doc_id)
     end
+
+    def key
+      @doc['key']
+    end
+
+    def original
+      @doc['original']
+    end
+
+    def mutated
+      @doc['mutated']
+    end
   end
 end
