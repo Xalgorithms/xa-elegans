@@ -43,6 +43,7 @@ gem 'uuid'
 # libs for UBL
 gem 'countries'
 gem 'currencies'
+gem 'eu_central_bank', git: 'https://github.com/RubyMoney/eu_central_bank.git'
 gem 'money'
 
 gem 'mongo'
@@ -53,7 +54,6 @@ gem 'dotenv-heroku'
 
 # ours
 gem 'xa-rules', git: 'https://github.com/Xalgorithms/xa-rules.git'
-
 
 group :development, :test do
   gem 'byebug'

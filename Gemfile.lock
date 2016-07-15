@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/RubyMoney/eu_central_bank.git
+  revision: 00a9fcb7c8eba95e5779d67b0deac7257e6c693d
+  specs:
+    eu_central_bank (1.0.0)
+      money (~> 6.7.0)
+      nokogiri (~> 1.6.3)
+
+GIT
   remote: https://github.com/Xalgorithms/xa-rules.git
   revision: 10211278d7e0ffdf3b0346b1e0b09eac0d685988
   specs:
@@ -275,6 +283,7 @@ DEPENDENCIES
   devise
   dotenv-heroku
   dotenv-rails
+  eu_central_bank!
   factory_girl_rails
   faker
   faraday
