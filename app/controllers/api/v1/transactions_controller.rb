@@ -4,7 +4,8 @@ module Api
       # TODO: do this properly
       skip_before_filter  :verify_authenticity_token
 
-      before_filter :maybe_lookup_user, only: [:create]
+      before_filter :maybe_lookup_user, only: [:create, :index]
+      before_filter :maybe_lookup_transactions
       before_filter :maybe_lookup_transaction, only: [:destroy]
 
       def create
@@ -17,7 +18,21 @@ module Api
         render(nothing: true)
       end
 
+      def index
+        if @transactions
+          render(json: @transactions)
+        else
+          render(nothing: true, status: :not_found)
+        end
+      end
+
       private
+
+      def maybe_lookup_transactions
+        if @user
+          @transactions = @user.transactions
+        end
+      end
       
       def maybe_lookup_user
         user_id = params.fetch('user_id', nil)

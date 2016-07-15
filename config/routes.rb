@@ -21,7 +21,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       # new routes
       resources :users, only: [] do
-        resources :transactions, only: [:create, :destroy] do
+        resources :transactions, only: [:index, :create, :destroy] do
           resources :invoices, only: [:create]
         end
       end
