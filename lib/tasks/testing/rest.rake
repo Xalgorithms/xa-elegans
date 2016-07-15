@@ -10,7 +10,6 @@ namespace :testing do
     }
     def conn(host = DEFAULT_HOST)
       rhost = HOSTS.fetch(host, host)
-      p rhost
       @conn ||= Faraday.new("http://#{rhost}") do |f|
         f.request(:url_encoded)
         f.request(:json)
@@ -28,7 +27,6 @@ namespace :testing do
       puts "POST > #{rel}"
       resp = conn(host).post(make_url(rel, version), content)
 
-      p resp
       puts "POST < #{resp.status}"
       puts "# content=#{resp.body}"
     end
@@ -48,6 +46,7 @@ namespace :testing do
 
     desc 'open a transaction via the REST API'
     task :transaction_open, [:user_id, :host] => :environment do |t, args|
+      args.with_defaults(host: DEFAULT_HOST)
       if args.user_id
         puts "# posting transaction (user_id=#{args.user_id})"
         post("/users/#{args.user_id}/transactions", 1, { transaction: {} }, args.host)

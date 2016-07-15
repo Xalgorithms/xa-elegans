@@ -8,7 +8,7 @@ module InvoiceHelper
         fmt = country.address_format if country.address_format
         tmpl = Liquid::Template.parse(fmt)
         lines = tmpl.render(
-          'street' => "#{address.fetch('number')} #{address.fetch('street', {}).fetch('name', nil)}",
+          'street' => "#{address.fetch('number', '')} #{address.fetch('street', {}).fetch('name', '')}",
           'region' => address.fetch('region', nil),
           'postalcode' => address.fetch('zone', nil),
           'city' => address.fetch('city', nil),
