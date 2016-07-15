@@ -1,108 +1,11 @@
-require 'nokogiri'
+require 'ubl/parse'
+require 'ubl/maybes'
 
 module UBL
-  module Parse
-    def parse(urn)
-      load(urn) do |doc|
-        invoice = {}.tap do |o|
-          maybe_find_one(doc, "#{ns(doc, :invoice)}:Invoice") do |invoice_el|
-            maybe_find_one_text(invoice_el, "#{ns(doc, :cbc)}:ID") do |text|
-              o[:id] = text
-            end
-            maybe_find_one_text(invoice_el, "#{ns(doc, :cbc)}:IssueDate") do |text|
-              o[:issued] = text
-            end
-            maybe_find_one_text(invoice_el, "#{ns(doc, :cbc)}:DocumentCurrencyCode") do |text|
-            o[:currency] = text
-            end
-            
-            maybe_find_period(invoice_el) do |period|
-              o[:period] = period
-            end
-            
-            maybe_find_parties(invoice_el) do |parties|
-              o[:parties] = parties
-            end
-          end
-        end
-        
-        yield(invoice)
-      end
-    end
-
-    def load(urn)
-      doc = Nokogiri::XML(open(urn)) do |cfg|
-        cfg.noblanks.noent
-      end
-      yield(doc) if doc
-    end
-    
-    def ns(n, k)
-      if !@nses
-        @namespace_urns ||= {
-          invoice: 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2',
-          cac:     'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2',
-          cbc:     'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2',
-        }
-        doc_nses = n.document.namespaces.invert
-        @nses = @namespace_urns.keys.inject({}) do |o, k|
-          o.merge(k => doc_nses[@namespace_urns[k]].split(':').last)
-        end
-      end
-      
-      @nses[k]
-    end
-  end
-  
-  module Maybes
-    def maybe_find_one(pn, xp, &bl)
-      rv = pn.xpath(xp).first
-      rv = bl.call(rv) if rv && bl
-      rv
-    end
-
-    def maybe_find_set(pn, xp_set, &bl)
-      rv = xp_set.keys.inject({}) do |o, k|
-        maybe_find_one(pn, xp_set[k]) do |n|
-          o = o.merge(k => n)
-        end
-
-        o
-      end
-      rv = bl.call(rv) if rv.any? && bl
-      rv
-    end
-
-    def maybe_find_set_text(pn, xp_set, &bl)
-      rv = {}
-      maybe_find_set(pn, xp_set) do |s|
-        rv = s.inject({}) do |o, kv|
-          o.merge(kv.first => kv.last.text)
-        end
-      end
-
-      rv = bl.call(rv) if rv.any? && bl
-      rv
-    end
-    
-    def maybe_find_one_text(pn, xp, &bl)
-      maybe_find_one(pn, xp) do |n|
-        rv = n.text
-        rv = bl.call(rv) if bl
-        rv
-      end
-    end
-    
-    def maybe_find_one_convert(sym, pn, xp, &bl)
-      maybe_find_one(pn, xp) do |n|
-        rv = send(sym, n)
-        rv = bl.call(rv) if rv && rv.any? && bl
-        rv
-      end
-    end
-  end
-  
   module Invoice
+    include UBL::Parse
+    include UBL::Maybes
+    
     def maybe_find_period(invoice_el, &bl)
       period_set = {
         starts: "#{ns(invoice_el, :cac)}:InvoicePeriod/#{ns(invoice_el, :cbc)}:StartDate",
@@ -206,12 +109,4 @@ module UBL
       end
     end
   end
-end
-
-include UBL::Parse
-include UBL::Maybes
-include UBL::Invoice
-
-parse('ubl/documents/UBL-Invoice-2.1-Example.xml') do |invoice|
-  p invoice
 end
