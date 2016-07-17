@@ -18,9 +18,7 @@ Rails.application.routes.draw do
       resources :documents, only: [:create]
       
       resources :users, only: [] do
-        resources :transactions, only: [:index] do
-          resources :invoices, only: [:create]
-        end
+        resources :transactions, only: [:index]
       end
 
       resources :transactions, only: [] do

@@ -1,7 +1,12 @@
-class InvoiceSerializer < ActiveModel::Serializer
-  attributes :id, :document
+class InvoiceSerializer
+  def self.many(invoices)
+    invoices.map(&self.method(:serialize))
+  end
 
-  def document
-    @object.document.content
+  def self.serialize(invoice)
+    {
+      id: invoice.public_id,
+      transaction: { id: invoice.transact.public_id },
+    }
   end
 end

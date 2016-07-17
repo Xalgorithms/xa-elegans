@@ -1,3 +1,5 @@
 FactoryGirl.define do
-  factory :invoice
+  factory :invoice do
+    public_id { UUID.generate }
+  end
 end
