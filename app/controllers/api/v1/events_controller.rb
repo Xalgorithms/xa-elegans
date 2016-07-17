@@ -25,7 +25,7 @@ module Api
           },
           'invoice_push' => {
             klass: InvoicePushEvent,
-            args: [:transaction_public_id, :content],
+            args: [:transaction_public_id, :document_public_id],
           },
         }
       

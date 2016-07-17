@@ -65,25 +65,26 @@ describe Api::V1::EventsController, type: :controller do
 
   it 'can push invoices' do
     rand_array_of_models(:transaction).each do |trm|
-      content = IO.read('ubl/documents/UBL-Invoice-2.1-Example.xml')
+      rand_array_of_uuids.each do |document_id|
+        parse_event_id = nil
+        expect(InvoiceParseService).to receive(:parse) do |document_id|
+          parse_event_id = document_id
+        end
+        post(:create, event_type: 'invoice_push', invoice_push_event: { transaction_public_id: trm.public_id, document_public_id: document_id })
 
-      parse_event_id = nil
-      expect(InvoiceParseService).to receive(:parse) do |id|
-        parse_event_id = id
+        evt = InvoicePushEvent.last
+
+        expect(evt).to_not be_nil
+        expect(evt.event).to eql(Event.last)
+        expect(evt.transact).to eql(trm)
+        expect(evt.transaction_public_id).to eql(trm.public_id)
+        expect(evt.document_public_id).to eql(document_id)
+
+        expect(response).to be_success
+        expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
+
+        expect(parse_event_id).to eql(document_id)
       end
-      post(:create, event_type: 'invoice_push', invoice_push_event: { transaction_public_id: trm.public_id, content: content })
-
-      evt = InvoicePushEvent.last
-
-      expect(evt).to_not be_nil
-      expect(evt.content).to_not be_nil
-      expect(evt.event).to eql(Event.last)
-      expect(evt.transact).to eql(trm)
-
-      expect(response).to be_success
-      expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
-
-      expect(parse_event_id).to eql(evt.id)
     end
   end
 
