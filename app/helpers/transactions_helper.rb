@@ -1,4 +1,3 @@
-require 'documents/invoice'
 require 'registry/client'
 
 module TransactionsHelper
