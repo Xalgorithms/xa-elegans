@@ -23,6 +23,10 @@ module Api
             klass: TransactionCloseEvent,
             args: [:transaction_public_id],
           },
+          'invoice_push' => {
+            klass: InvoicePushEvent,
+            args: [:transaction_public_id, :content],
+          },
         }
       
         k = params[:event_type]

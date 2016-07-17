@@ -62,4 +62,39 @@ describe Api::V1::EventsController, type: :controller do
       end
     end
   end
+
+  it 'can push invoices' do
+    rand_array_of_models(:transaction).each do |trm|
+      content = IO.read('ubl/documents/UBL-Invoice-2.1-Example.xml')
+
+      parse_event_id = nil
+      expect(InvoiceParseService).to receive(:parse) do |id|
+        parse_event_id = id
+      end
+      post(:create, event_type: 'invoice_push', invoice_push_event: { transaction_public_id: trm.public_id, content: content })
+
+      evt = InvoicePushEvent.last
+
+      expect(evt).to_not be_nil
+      expect(evt.content).to_not be_nil
+      expect(evt.event).to eql(Event.last)
+      expect(evt.transact).to eql(trm)
+
+      expect(response).to be_success
+      expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
+
+      expect(parse_event_id).to eql(evt.id)
+    end
+  end
+
+  it 'can show invoice push events' do
+    rand_times.map { create(:transaction) }.each do |trm|
+      rand_times.map { create(:invoice_push_event, transact: trm, event: create(:event, event_type: 'invoice_push')) }.each do |ipem|
+        get(:show, id: ipem.event.public_id)
+        
+        expect(response).to be_success
+        expect(response_json).to eql(encode_decode(EventSerializer.serialize_invoice_push(ipem.event)))
+      end
+    end
+  end
 end

@@ -26,4 +26,16 @@ describe EventSerializer do
       end
     end
   end
+
+  it 'should serialize InvoicePushEvent' do
+    rand_array_of_models(:transaction).each do |tm|
+      rand_array_of_models(:invoice_push_event, transact: tm).each do |ipe|
+        ex = {
+          id:          ipe.event.public_id,
+          event_type:  'invoice_push',
+        }
+        expect(EventSerializer.serialize(ipe.event)).to eql(ex)
+      end
+    end
+  end
 end

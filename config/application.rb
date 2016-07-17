@@ -25,7 +25,8 @@ module Geghard
     config.active_record.raise_in_transactional_callbacks = true
     config.active_record.observers = [
       :transaction_open_event_observer,
-      :transaction_close_event_observer
+      :transaction_close_event_observer,
+      :invoice_push_event_observer,
     ]
   end
 end
