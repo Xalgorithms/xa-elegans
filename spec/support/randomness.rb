@@ -35,6 +35,10 @@ module Randomness
   def rand_array_of_urls(n = 10)
     rand_array(n) { Faker::Internet.url }
   end
+
+  def rand_array_of_models(name, args = {}, n = 10)
+    rand_array(n) { create(name, args) }
+  end
 end
 
 RSpec.configure do |config|

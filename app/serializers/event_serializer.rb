@@ -5,18 +5,27 @@ class EventSerializer
       transaction_close: method(:serialize_transaction_close),
     }
 
-    @serializers.fetch(event.event_type.to_sym, lambda { |o| {} }).call(event.send("#{event.event_type}_event"))
+    @serializers.fetch(event.event_type.to_sym, lambda { |o| {} }).call(event)
   end
 
   def self.serialize_transaction_open(event)
     {
-      
-    }
+      user: {
+        id: event.transaction_open_event.user.id,
+        email: event.transaction_open_event.user.email,
+      },
+    }.merge(serialize_any(event))
   end
 
   def self.serialize_transaction_close(event)
     {
-      
-    }
+      transaction: {
+        id: event.transaction_close_event.transact.public_id,
+      },
+    }.merge(serialize_any(event))
+  end
+
+  def self.serialize_any(e)
+    { id: e.public_id, event_type: e.event_type }
   end
 end
