@@ -1,6 +1,6 @@
 class EventService
   def self.transaction_open(e)
-    Transaction.create(user: e.user, status: Transaction::STATUS_OPEN)
+    Transaction.create(user: e.user, status: Transaction::STATUS_OPEN, public_id: UUID.generate)
   end
   
   def self.transaction_close(e)

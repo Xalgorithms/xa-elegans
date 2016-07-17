@@ -5,7 +5,7 @@ class TransactionSerializer
 
   def self.serialize(transaction)
     {
-      id: transaction.id,
+      id: transaction.public_id,
       status: Transaction::STATUSES[transaction.status],
       user: {
         email: transaction.user.email,
