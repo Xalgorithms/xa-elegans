@@ -7,6 +7,6 @@ class InvoiceParseService
     doc = Document.find(document_id)
     new.parse(doc.src) do |content|
       doc.update_attributes(content: content)
-    end
+    end if doc.src
   end
 end
