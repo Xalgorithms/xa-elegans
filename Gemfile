@@ -15,6 +15,7 @@ gem 'jquery-rails'
 gem 'js-routes'
 gem 'lodash-rails'
 gem 'uglifier', '>= 1.3.0'
+gem 'coffee-rails'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 
@@ -46,8 +47,6 @@ gem 'countries'
 gem 'currencies'
 gem 'eu_central_bank', git: 'https://github.com/RubyMoney/eu_central_bank.git'
 gem 'money'
-
-# gem 'mongoid', '~> 5.1.0'
 
 # deployment
 gem 'dotenv-rails'
