@@ -13,10 +13,6 @@ module TransactionsHelper
     @status_labels.fetch(t.status, '.status.unknown')
   end
 
-  def transaction_invoice_docs(t)
-    t.invoices.map { |inv| [inv, Documents::Invoice.new(inv.document_id)] }
-  end
-
   def transaction_panel_style(t)
     @styles ||= {
       Transaction::STATUS_OPEN   => 'panel-success',
@@ -32,7 +28,8 @@ module TransactionsHelper
   end
 
   def available_rules
-    @registry_client ||= Registry::Client.new
-    @registry_client.rules
+    # @registry_client ||= Registry::Client.new
+    # @registry_client.rules
+    []
   end
 end

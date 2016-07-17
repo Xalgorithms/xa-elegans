@@ -47,8 +47,8 @@ namespace :rest do
   task :transaction_open, [:user_id, :host] => :environment do |t, args|
     args.with_defaults(host: DEFAULT_HOST)
     if args.user_id
-      puts "# posting transaction (user_id=#{args.user_id})"
-      post("/users/#{args.user_id}/transactions", 1, { transaction: {} }, args.host)
+      puts "# posting event (user_id=#{args.user_id})"
+      post("/events", 1, { event_type: 'transaction_open', transaction_open_event: { user_id: args.user_id } }, args.host)
     else
       puts '! user_id'
     end
@@ -62,6 +62,34 @@ namespace :rest do
       delete("/users/#{args.user_id}/transactions/#{args.transaction_id}", 1, args.host)
     else
       puts '! user_id'
+    end
+  end
+
+  desc 'list transactions'
+  task :transaction_list, [:user_id] => :environment do |t, args|
+    if args.user_id
+      get("/users/#{args.user_id}/transactions", 1)
+    end
+  end
+
+  desc 'push an invoice to a transaction'
+  task :invoice_push, [:transaction_id, :document_id] => :environment do |t, args|
+    args.with_defaults(host: DEFAULT_HOST)
+    if args.transaction_id && args.document_id
+      post("/events", 1, {
+             event_type: 'invoice_push',
+             invoice_push_event: {
+               transaction_public_id: args.transaction_id,
+               document_public_id: args.document_id,
+             },
+           }, args.host)
+    end    
+  end
+
+  desc 'post a document'
+  task :document_post, [:src] => :environment do |t, args|
+    if args.src
+      post('/documents', 1, IO.read(args.src))
     end
   end
 end
