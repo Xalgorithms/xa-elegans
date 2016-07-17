@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160717175735) do
+ActiveRecord::Schema.define(version: 20160717182715) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,12 @@ ActiveRecord::Schema.define(version: 20160717175735) do
 
   add_index "changes", ["invoice_id"], name: "index_changes_on_invoice_id", using: :btree
   add_index "changes", ["rule_id"], name: "index_changes_on_rule_id", using: :btree
+
+  create_table "documents", force: :cascade do |t|
+    t.xml    "src"
+    t.string "public_id"
+    t.jsonb  "content"
+  end
 
   create_table "events", force: :cascade do |t|
     t.string "public_id"

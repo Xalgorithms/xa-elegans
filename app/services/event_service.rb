@@ -11,7 +11,6 @@ class EventService
 
   def self.invoice_push(e)
     attach_transaction(e)
-    InvoiceParseService.parse(e.document_public_id)
   end
 
   private

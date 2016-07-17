@@ -66,10 +66,6 @@ describe Api::V1::EventsController, type: :controller do
   it 'can push invoices' do
     rand_array_of_models(:transaction).each do |trm|
       rand_array_of_uuids.each do |document_id|
-        parse_event_id = nil
-        expect(InvoiceParseService).to receive(:parse) do |document_id|
-          parse_event_id = document_id
-        end
         post(:create, event_type: 'invoice_push', invoice_push_event: { transaction_public_id: trm.public_id, document_public_id: document_id })
 
         evt = InvoicePushEvent.last
@@ -82,8 +78,6 @@ describe Api::V1::EventsController, type: :controller do
 
         expect(response).to be_success
         expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
-
-        expect(parse_event_id).to eql(document_id)
       end
     end
   end
