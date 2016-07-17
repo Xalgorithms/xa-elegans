@@ -11,6 +11,7 @@ class EventService
 
   def self.invoice_push(e)
     attach_transaction(e)
+    Invoice.create(transact: e.transact, document: Document.find_by(public_id: e.document_public_id), public_id: UUID.generate)
   end
 
   private

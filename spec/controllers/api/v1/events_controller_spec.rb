@@ -19,6 +19,7 @@ describe Api::V1::EventsController, type: :controller do
       expect(Transaction.last).to_not be_nil
       expect(Transaction.last.user).to eql(evt.user)
       expect(Transaction.last.status).to eql(Transaction::STATUS_OPEN)
+      expect(Transaction.last.public_id).to_not be_nil
       
       expect(response).to be_success
       expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
@@ -65,8 +66,10 @@ describe Api::V1::EventsController, type: :controller do
 
   it 'can push invoices' do
     rand_array_of_models(:transaction).each do |trm|
-      rand_array_of_uuids.each do |document_id|
-        post(:create, event_type: 'invoice_push', invoice_push_event: { transaction_public_id: trm.public_id, document_public_id: document_id })
+      rand_array_of_models(:document).each do |dm|
+        len = Invoice.all.count
+
+        post(:create, event_type: 'invoice_push', invoice_push_event: { transaction_public_id: trm.public_id, document_public_id: dm.public_id })
 
         evt = InvoicePushEvent.last
 
@@ -74,10 +77,14 @@ describe Api::V1::EventsController, type: :controller do
         expect(evt.event).to eql(Event.last)
         expect(evt.transact).to eql(trm)
         expect(evt.transaction_public_id).to eql(trm.public_id)
-        expect(evt.document_public_id).to eql(document_id)
+        expect(evt.document_public_id).to eql(dm.public_id)
 
         expect(response).to be_success
         expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
+
+        expect(Invoice.all.count).to eql(len + 1)
+        expect(Invoice.last.transact).to eql(trm)
+        expect(Invoice.last.document).to eql(dm)
       end
     end
   end
