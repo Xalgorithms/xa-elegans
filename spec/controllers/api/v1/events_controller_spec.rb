@@ -6,6 +6,7 @@ describe Api::V1::EventsController, type: :controller do
 
   it 'can open transactions' do
     rand_times.map { create(:user) }.each do |um|
+      len = Transaction.all.count
       post(:create, event_type: 'transaction_open', transaction_open_event: { user_id: um.id })
 
       evt = TransactionOpenEvent.last
@@ -14,6 +15,11 @@ describe Api::V1::EventsController, type: :controller do
       expect(evt.event).to eql(Event.last)
       expect(evt.event.public_id).to_not be_nil
 
+      expect(Transaction.all.count).to eql(len + 1)
+      expect(Transaction.last).to_not be_nil
+      expect(Transaction.last.user).to eql(evt.user)
+      expect(Transaction.last.status).to eql(Transaction::STATUS_OPEN)
+      
       expect(response).to be_success
       expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
     end
