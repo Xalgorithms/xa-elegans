@@ -5,7 +5,7 @@ namespace :rest do
 
   DEFAULT_HOST = 'localhost:3000'
   HOSTS = {
-    'staging' => 'geghard-staging.herokuapp.com',
+    'staging' => 'xa-lichen.herokuapp.com',
   }
   def conn(host = DEFAULT_HOST)
     rhost = HOSTS.fetch(host, host)
@@ -66,14 +66,15 @@ namespace :rest do
   end
 
   desc 'list transactions'
-  task :transaction_list, [:user_id] => :environment do |t, args|
+  task :transaction_list, [:user_id, :host] => :environment do |t, args|
+    args.with_defaults(host: DEFAULT_HOST)
     if args.user_id
       get("/users/#{args.user_id}/transactions", 1)
     end
   end
 
   desc 'push an invoice to a transaction'
-  task :invoice_push, [:transaction_id, :document_id] => :environment do |t, args|
+  task :invoice_push, [:transaction_id, :document_id, :host] => :environment do |t, args|
     args.with_defaults(host: DEFAULT_HOST)
     if args.transaction_id && args.document_id
       post("/events", 1, {
@@ -87,9 +88,11 @@ namespace :rest do
   end
 
   desc 'post a document'
-  task :document_post, [:src] => :environment do |t, args|
+  task :document_post, [:src, :host] => :environment do |t, args|
+    args.with_defaults(host: DEFAULT_HOST)
+    p args
     if args.src
-      post('/documents', 1, IO.read(args.src))
+      post('/documents', 1, IO.read(args.src), args.host)
     end
   end
 end
