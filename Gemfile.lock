@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/RubyMoney/eu_central_bank.git
-  revision: 5c6deb226ff6dfff1e46b2490f3cd8aecc96eb97
+  revision: 1cd948b4aadf83ec2a11b8d655a3ed7088bae66c
   specs:
     eu_central_bank (1.0.1)
       money (~> 6.7.0)
