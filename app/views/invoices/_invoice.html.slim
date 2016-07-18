@@ -1,18 +1,14 @@
 div.container-fluid
   div.row
-    - doc.supplier do |party|
-      div.col-md-4
-        = render('invoice/party', party: party, title: t('.titles.supplier'))
-    - doc.customer do |party|
-      div.col-md-4
-        = render('invoice/party', party: party, title: t('.titles.customer'))
-    - doc.payer do |party|
-      div.col-md-4
-        = render('invoice/party', party: party, title: t('.titles.payer'))
-  - doc.delivery do |delivery|
-    div.row
-      div.col-md-6
-        = render('invoice/delivery', delivery: delivery)
+    div.col-md-4
+      = render('invoice/party', party: invoice.document.supplier, title: t('.titles.supplier'))
+    div.col-md-4
+      = render('invoice/party', party: invoice.document.customer, title: t('.titles.customer'))
+    div.col-md-4
+      = render('invoice/party', party: invoice.document.payer, title: t('.titles.payer'))
+  div.row
+    div.col-md-6
+      = render('invoice/delivery', delivery: invoice.document.delivery)
   div.row
     div.col.md-12
-      = render('invoice/items', items: doc.items)
+      = render('invoice/items', items: invoice.document.items)

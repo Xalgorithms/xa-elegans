@@ -3,6 +3,6 @@ div.modal-header
     span aria-hidden='true' &times;
   h4.modal-title#modal-invocation-show= t('.modals.invoice')
 div.modal-body
-  = render('invoice', invoice: @invoice, doc: @invoice_doc)
+  = render('invoice', invoice: @invoice)
 div.modal-footer
   button.btn.btn-default(type="button" data-dismiss="modal")= t('.close')

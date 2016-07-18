@@ -12,6 +12,11 @@ describe Document, type: :model do
       dm = Document.find(create(:document, src: IO.read(fn)).id)
       expect(dm.currency).to eql(dm.content['currency'])
       expect(dm.issued).to eql(DateTime.parse(dm.content['issued']))
+      [:supplier, :customer, :payer].each do |party|
+        expect(dm.send(party)).to eql(dm.content['parties'][party.to_s])
+      end
+      expect(dm.delivery).to eql(dm.content['delivery'])
+      expect(dm.items).to eql(dm.content['lines'])
     end
   end
 end
