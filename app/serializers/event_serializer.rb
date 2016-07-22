@@ -1,9 +1,10 @@
 class EventSerializer
   def self.serialize(event)
     @serializers = {
-      transaction_open:  method(:serialize_transaction_open),
-      transaction_close: method(:serialize_transaction_close),
-      invoice_push:      method(:serialize_invoice_push),
+      transaction_open:   method(:serialize_transaction_open),
+      transaction_close:  method(:serialize_transaction_close),
+      invoice_push:       method(:serialize_invoice_push),
+      transformation_add: method(:serialize_transformation_add),
     }
 
     @serializers.fetch(event.event_type.to_sym, lambda { |o| {} }).call(event)
@@ -28,6 +29,12 @@ class EventSerializer
 
   def self.serialize_invoice_push(event)
     {
+    }.merge(serialize_any(event))
+  end
+
+  def self.serialize_transformation_add(event)
+    {
+      
     }.merge(serialize_any(event))
   end
   

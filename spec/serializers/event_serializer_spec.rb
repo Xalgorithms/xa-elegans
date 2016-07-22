@@ -38,4 +38,14 @@ describe EventSerializer do
       end
     end
   end
+
+  it 'should serialize TransformationAddEvent' do
+    rand_array_of_models(:transformation_add_event).each do |txam|
+      ex = {
+        id: txam.event.public_id,
+        event_type: 'transformation_add',
+      }
+      expect(EventSerializer.serialize(txam.event)).to eql(ex)
+    end
+  end
 end

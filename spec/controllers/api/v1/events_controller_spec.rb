@@ -121,4 +121,13 @@ describe Api::V1::EventsController, type: :controller do
       expect(evt.transformation).to eql(txm)
     end
   end
+
+  it 'can show transformation add events' do
+    rand_times.map { create(:transformation_add_event, event: create(:event, event_type: 'transformation_add')) }.each do |txam|
+      get(:show, id: txam.event.public_id)
+        
+      expect(response).to be_success
+      expect(response_json).to eql(encode_decode(EventSerializer.serialize_transformation_add(txam.event)))
+    end
+  end
 end
