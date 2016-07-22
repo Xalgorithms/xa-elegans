@@ -114,6 +114,8 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.10.0)
       faraday (>= 0.7.4, < 0.10)
+    font-awesome-rails (4.6.3.1)
+      railties (>= 3.2, < 5.1)
     fuubar (2.1.1)
       rspec (~> 3.0)
       ruby-progressbar (~> 1.4)
@@ -300,6 +302,7 @@ DEPENDENCIES
   faker
   faraday
   faraday_middleware
+  font-awesome-rails
   fuubar
   jbuilder (~> 2.0)
   jquery-rails
