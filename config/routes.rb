@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       resources :changes, only: [:index]
     end
     resources :transactions, only: [:index, :show]
+    resources :transformations, only: [:index]
   end
 
   # API
