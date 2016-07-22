@@ -14,6 +14,7 @@ gem 'turbolinks'
 gem 'jquery-rails'
 gem 'js-routes'
 gem 'lodash-rails'
+gem 'knockoutjs-rails'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails'
 # See https://github.com/rails/execjs#readme for more supported runtimes
