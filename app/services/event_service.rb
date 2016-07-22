@@ -14,6 +14,11 @@ class EventService
     Invoice.create(transact: e.transact, document: Document.find_by(public_id: e.document_public_id), public_id: UUID.generate)
   end
 
+  def self.transformation_add(e)
+    txm = Transformation.create(name: e.name, public_id: UUID.generate)
+    e.update_attributes(transformation: txm)
+  end
+  
   private
 
   def self.attach_transaction(e, &bl)

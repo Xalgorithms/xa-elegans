@@ -27,6 +27,10 @@ module Api
             klass: InvoicePushEvent,
             args: [:transaction_public_id, :document_public_id],
           },
+          'transformation_add' => {
+            klass: TransformationAddEvent,
+            args: [:name],
+          },
         }
       
         k = params[:event_type]

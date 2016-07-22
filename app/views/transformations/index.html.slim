@@ -15,6 +15,7 @@
   .modal-dialog role="document"
   .modal-dialog role="document"
     = form_for(TransformationAddEvent.new, url: api_v1_events_path, remote: true) do |f|
+      = hidden_field_tag(:event_type, 'transformation_add')
       .modal-content
         .modal-header
           button.close type="button" data-dismiss="modal"= fa_icon('close')

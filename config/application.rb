@@ -27,6 +27,7 @@ module Geghard
       :transaction_open_event_observer,
       :transaction_close_event_observer,
       :invoice_push_event_observer,
+      :transformation_add_event_observer,
       :document_observer,
     ]
   end
