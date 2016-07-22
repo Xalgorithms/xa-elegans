@@ -1,0 +1,34 @@
+.row
+  .col-md-12
+    button.btn type="button" data-toggle="modal" data-target="#modal-add-transformation"= t('labels.add', scope: 'shared')
+- organize(@transformations, 4).each do |trms|
+  .row
+    - trms.each do |trm|
+      .col-md-3
+        .panel.panel-info
+          .panel-heading
+            .container-fluid
+              span.pull-left= trm.name
+          .panel-body
+
+.modal.fade#modal-add-transformation tabIndex="-1" role="dialog"
+  .modal-dialog role="document"
+  .modal-dialog role="document"
+    = form_for(TransformationAddEvent.new, url: api_v1_events_path, remote: true) do |f|
+      .modal-content
+        .modal-header
+          button.close type="button" data-dismiss="modal"= fa_icon('close')
+          h4.modal-title= t('.labels.modal_add')
+        .modal-body
+          .form-group
+            = f.label(:name, t('.labels.name'))
+            = f.text_field(:name, class: 'form-control')
+
+        .modal-footer
+          button.btn.btn-default type="button" data-dismiss="modal"
+            = fa_icon('close')
+            span= t('labels.close', scope: 'shared')
+          button.btn.btn-primary type="submit"
+            = fa_icon('check')
+            span= t('labels.add', scope: 'shared')
+

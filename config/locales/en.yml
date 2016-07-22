@@ -44,12 +44,20 @@ en:
       modals:
         invoice: invoice
         changes: changes
+  transactions:
+    index:
+      labels:
+        name: Name
   invoices:
     invoice:
       titles:
         supplier: supplier
         customer: customer
         payer: payer
+  shared:
+    labels:
+      add: 'Add'
+      close: 'Close'
   application:
     navbar_section:
       accounts: Accounts
