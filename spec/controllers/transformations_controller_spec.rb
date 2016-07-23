@@ -19,7 +19,7 @@ describe TransformationsController, type: :controller do
 
       get(:index)
 
-      expect(assigns(:transformations)).to match_array(trms)
+      expect(assigns(:transformations)).to match_array(TransformationSerializer.many(trms))
     end
   end
 end

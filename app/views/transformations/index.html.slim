@@ -36,5 +36,5 @@
 = content_for(:javascript) do
   javascript:
     var vm = {
-      transformations: ko.observableArray(#{raw TransformationSerializer.many(@transformations) })
+      transformations: ko.observableArray(#{raw MultiJson.encode(@transformations) })
     };

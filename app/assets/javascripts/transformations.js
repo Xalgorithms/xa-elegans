@@ -2,7 +2,12 @@ function init() {
   console.log('transformations: init');
 
   $('.new_transformation_add_event').on('ajax:success', function (e, o) {
-    console.log(o);
+    $('#modal-add-transformation').modal('toggle');
+    $.getJSON(o.url, function (o) {
+      $.getJSON(o.transformation.url, function (tx) {
+	vm.transformations.push(tx);
+      });
+    });
   });
 
   vm.transformation_parts = ko.computed(function () {

@@ -1,5 +1,5 @@
 class TransformationsController < ApplicationController
   def index
-    @transformations = Transformation.all
+    @transformations = TransformationSerializer.many(Transformation.all)
   end
 end

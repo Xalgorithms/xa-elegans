@@ -1,6 +1,6 @@
 class TransformationSerializer
   def self.many(txms)
-    MultiJson.encode(txms.map(&method(:serialize)))
+    txms.map(&method(:serialize))
   end
 
   def self.serialize(txm)
