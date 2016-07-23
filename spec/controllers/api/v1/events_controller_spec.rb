@@ -130,4 +130,26 @@ describe Api::V1::EventsController, type: :controller do
       expect(response_json).to eql(encode_decode(EventSerializer.serialize_transformation_add(txam.event)))
     end
   end
+
+  it 'can associate rules with transactions' do
+    rand_array_of_models(:transaction).each do |trm|
+      rand_array_of_models(:rule).each do |rm|
+        post(:create, event_type: 'transaction_associate_rule', transaction_associate_rule_event: { transaction_public_id: trm.public_id, rule_public_id: rm.public_id })
+
+        evt = TransactionAssociateRuleEvent.last
+
+        expect(evt).to_not be_nil
+        expect(evt.event).to eql(Event.last)
+
+        expect(evt.transact).to eql(trm)
+        expect(evt.rule).to eql(rm)
+
+        trm = Transaction.find(trm.id)
+        rm = Rule.find(rm.id)
+
+        expect(trm.rules.to_a).to include(rm)
+        expect(rm.transactions.to_a).to include(trm)
+      end
+    end
+  end
 end

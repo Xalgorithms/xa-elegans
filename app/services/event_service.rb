@@ -18,6 +18,13 @@ class EventService
     txm = Transformation.create(name: e.name, public_id: UUID.generate)
     e.update_attributes(transformation: txm)
   end
+
+  def self.transaction_associate_rule(e)
+    trm = Transaction.find_by(public_id: e.transaction_public_id)
+    rm = Rule.find_by(public_id: e.rule_public_id)
+    e.update_attributes(transact: trm, rule: rm)
+    Association.create(transact: trm, rule: rm)
+  end
   
   private
 

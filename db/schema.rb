@@ -11,10 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160723054334) do
+ActiveRecord::Schema.define(version: 20160723061306) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "associations", force: :cascade do |t|
+    t.integer "transaction_id"
+    t.integer "rule_id"
+  end
+
+  add_index "associations", ["rule_id"], name: "index_associations_on_rule_id", using: :btree
+  add_index "associations", ["transaction_id"], name: "index_associations_on_transaction_id", using: :btree
 
   create_table "changes", force: :cascade do |t|
     t.string   "document_id"
@@ -63,6 +71,18 @@ ActiveRecord::Schema.define(version: 20160723054334) do
   create_table "sync_attempts", force: :cascade do |t|
     t.string "token"
   end
+
+  create_table "transaction_associate_rule_events", force: :cascade do |t|
+    t.integer "transaction_id"
+    t.integer "rule_id"
+    t.integer "event_id"
+    t.string  "transaction_public_id"
+    t.string  "rule_public_id"
+  end
+
+  add_index "transaction_associate_rule_events", ["event_id"], name: "index_transaction_associate_rule_events_on_event_id", using: :btree
+  add_index "transaction_associate_rule_events", ["rule_id"], name: "index_transaction_associate_rule_events_on_rule_id", using: :btree
+  add_index "transaction_associate_rule_events", ["transaction_id"], name: "index_transaction_associate_rule_events_on_transaction_id", using: :btree
 
   create_table "transaction_close_events", force: :cascade do |t|
     t.integer "transaction_id"
@@ -122,11 +142,16 @@ ActiveRecord::Schema.define(version: 20160723054334) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
+  add_foreign_key "associations", "rules"
+  add_foreign_key "associations", "transactions"
   add_foreign_key "changes", "invoices"
   add_foreign_key "invoice_push_events", "events"
   add_foreign_key "invoice_push_events", "transactions"
   add_foreign_key "invoices", "documents"
   add_foreign_key "invoices", "transactions", column: "transact_id"
+  add_foreign_key "transaction_associate_rule_events", "events"
+  add_foreign_key "transaction_associate_rule_events", "rules"
+  add_foreign_key "transaction_associate_rule_events", "transactions"
   add_foreign_key "transaction_close_events", "events"
   add_foreign_key "transaction_open_events", "events"
   add_foreign_key "transactions", "users"

@@ -31,6 +31,10 @@ module Api
             klass: TransformationAddEvent,
             args: [:name],
           },
+          'transaction_associate_rule' => {
+            klass: TransactionAssociateRuleEvent,
+            args: [:transaction_public_id, :rule_public_id],
+          },
         }
       
         k = params[:event_type]

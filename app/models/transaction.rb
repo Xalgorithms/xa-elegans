@@ -9,8 +9,9 @@ class Transaction < ActiveRecord::Base
   
   belongs_to :user
   has_many :invoices, foreign_key: 'transact_id'
-  has_many :rules
   has_many :documents, through: :invoices
+  has_many :associations
+  has_many :rules, through: :associations
 
   def as_json(opts={})
     
