@@ -1,5 +1,3 @@
-require 'registry/client'
-
 module TransactionsHelper
   def format_transaction_date(t)
     t.updated_at.to_s(:long)
