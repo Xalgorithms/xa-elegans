@@ -40,8 +40,10 @@ class EventSerializer
   end
 
   def self.serialize_transaction_associate_rule(event)
-    {
-    }.merge(serialize_any(event))
+    {}.tap do |o|
+      o[:transaction] = { id: event.transaction_associate_rule_event.transact.public_id } if event.transaction_associate_rule_event.transact
+      o[:rule] = { reference: event.transaction_associate_rule_event.rule.reference } if event.transaction_associate_rule_event.rule
+    end.merge(serialize_any(event))
   end
   
   def self.serialize_any(e)

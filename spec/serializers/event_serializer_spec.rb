@@ -49,4 +49,18 @@ describe EventSerializer do
       expect(EventSerializer.serialize(txam.event)).to eql(ex)
     end
   end
+
+  it 'should serialize TransactionAssociateRuleEvent' do
+    rand_array_of_models(:transaction_associate_rule_event).each do |tarem|
+      tarem.transact = create(:transaction)
+      tarem.rule = create(:rule)
+      ex = {
+        transaction: { id: tarem.transact.public_id },
+        rule: { reference: tarem.rule.reference },
+        id: tarem.event.public_id,
+        event_type: 'transaction_associate_rule',
+      }
+      expect(EventSerializer.serialize(tarem.event)).to eql(ex)
+    end
+  end
 end

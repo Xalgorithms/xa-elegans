@@ -156,7 +156,9 @@ describe Api::V1::EventsController, type: :controller do
   it 'can show associate events' do
     rand_times.map { create(:transaction_associate_rule_event, event: create(:event, event_type: 'transaction_associate_rule')) }.each do |tarm|
       get(:show, id: tarm.event.public_id)
-        
+
+      tarm = TransactionAssociateRuleEvent.find(tarm.id)
+      
       expect(response).to be_success
       expect(response_json).to eql(encode_decode(EventSerializer.serialize_transaction_associate_rule(tarm.event)))
     end
