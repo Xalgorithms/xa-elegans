@@ -34,7 +34,7 @@ class EventSerializer
 
   def self.serialize_transformation_add(event)
     {
-      
+      transformation: { url: Rails.application.routes.url_helpers.api_v1_transformation_path(event.transformation_add_event.transformation.public_id) }
     }.merge(serialize_any(event))
   end
   

@@ -42,6 +42,7 @@ describe EventSerializer do
   it 'should serialize TransformationAddEvent' do
     rand_array_of_models(:transformation_add_event).each do |txam|
       ex = {
+        transformation: { url: Rails.application.routes.url_helpers.api_v1_transformation_path(txam.transformation.public_id) },
         id: txam.event.public_id,
         event_type: 'transformation_add',
       }
