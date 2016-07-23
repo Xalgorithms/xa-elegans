@@ -9,7 +9,8 @@ class TransactionSerializer
       status: Transaction::STATUSES[transaction.status],
       user: {
         email: transaction.user.email,
-      }
+      },
+      invoices: InvoiceSerializer.many(transaction.invoices, :transaction),
     }
   end
 end

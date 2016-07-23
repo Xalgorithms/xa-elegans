@@ -24,4 +24,28 @@ describe Api::V1::DocumentsController, type: :controller do
 
     expect(parse_document_id).to eql(doc.id)
   end
+
+  it 'should show content of an existing document' do
+    rand_array_of_models(:document).each do |dm|
+      content = rand_array_of_words.inject({}) do |o, w|
+        o.merge(w => Faker::Hacker.noun)
+      end
+
+      dm.update_attributes(content: content)
+
+      get(:show, id: dm.public_id)
+
+      expect(response).to be_success
+      expect(response_json).to eql(encode_decode(content))
+    end
+  end
+
+  it 'should show not found when document is missing' do
+    rand_array_of_uuids.each do |public_id|
+      get(:show, id: public_id)
+
+      expect(response).to_not be_success
+      expect(response).to have_http_status(:not_found)
+    end
+  end
 end

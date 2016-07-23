@@ -16,7 +16,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       # new routes
       resources :events, only: [:show, :create]
-      resources :documents, only: [:create]
+      resources :documents, only: [:create, :show]
       
       resources :users, only: [] do
         resources :transactions, only: [:index]
