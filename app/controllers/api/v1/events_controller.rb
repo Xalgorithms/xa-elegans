@@ -33,7 +33,7 @@ module Api
           },
           'transaction_associate_rule' => {
             klass: TransactionAssociateRuleEvent,
-            args: [:transaction_public_id, :rule_public_id],
+            args: [:transaction_public_id, :rule_public_id, :transformation_public_id],
           },
         }
       

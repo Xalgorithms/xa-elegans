@@ -24,6 +24,13 @@ describe TransactionAssociateRuleEvent, type: :model do
     end
   end
 
+  it 'should associate with transformations' do
+    rand_array_of_models(:transformation) do |txm|
+      em = TransactionAssociateRuleEvent.create(transformation: txm)
+      expect(em.transformation).to eql(txm)
+    end
+  end
+
   it 'should trigger the EventService' do
     expect(EventService).to receive(:transaction_associate_rule)
     TransactionAssociateRuleEvent.create

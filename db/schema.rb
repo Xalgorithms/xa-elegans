@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160723061306) do
+ActiveRecord::Schema.define(version: 20160723232023) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,10 +19,12 @@ ActiveRecord::Schema.define(version: 20160723061306) do
   create_table "associations", force: :cascade do |t|
     t.integer "transaction_id"
     t.integer "rule_id"
+    t.integer "transformation_id"
   end
 
   add_index "associations", ["rule_id"], name: "index_associations_on_rule_id", using: :btree
   add_index "associations", ["transaction_id"], name: "index_associations_on_transaction_id", using: :btree
+  add_index "associations", ["transformation_id"], name: "index_associations_on_transformation_id", using: :btree
 
   create_table "changes", force: :cascade do |t|
     t.string   "document_id"
@@ -78,11 +80,14 @@ ActiveRecord::Schema.define(version: 20160723061306) do
     t.integer "event_id"
     t.string  "transaction_public_id"
     t.string  "rule_public_id"
+    t.integer "transformation_id"
+    t.string  "transformation_public_id"
   end
 
   add_index "transaction_associate_rule_events", ["event_id"], name: "index_transaction_associate_rule_events_on_event_id", using: :btree
   add_index "transaction_associate_rule_events", ["rule_id"], name: "index_transaction_associate_rule_events_on_rule_id", using: :btree
   add_index "transaction_associate_rule_events", ["transaction_id"], name: "index_transaction_associate_rule_events_on_transaction_id", using: :btree
+  add_index "transaction_associate_rule_events", ["transformation_id"], name: "index_transaction_associate_rule_events_on_transformation_id", using: :btree
 
   create_table "transaction_close_events", force: :cascade do |t|
     t.integer "transaction_id"
@@ -144,6 +149,7 @@ ActiveRecord::Schema.define(version: 20160723061306) do
 
   add_foreign_key "associations", "rules"
   add_foreign_key "associations", "transactions"
+  add_foreign_key "associations", "transformations"
   add_foreign_key "changes", "invoices"
   add_foreign_key "invoice_push_events", "events"
   add_foreign_key "invoice_push_events", "transactions"
@@ -152,6 +158,7 @@ ActiveRecord::Schema.define(version: 20160723061306) do
   add_foreign_key "transaction_associate_rule_events", "events"
   add_foreign_key "transaction_associate_rule_events", "rules"
   add_foreign_key "transaction_associate_rule_events", "transactions"
+  add_foreign_key "transaction_associate_rule_events", "transformations"
   add_foreign_key "transaction_close_events", "events"
   add_foreign_key "transaction_open_events", "events"
   add_foreign_key "transactions", "users"

@@ -21,9 +21,11 @@ class EventService
 
   def self.transaction_associate_rule(e)
     trm = Transaction.find_by(public_id: e.transaction_public_id)
+    txm = Transformation.find_by(public_id: e.transformation_public_id)
     rm = Rule.find_by(public_id: e.rule_public_id)
-    e.update_attributes(transact: trm, rule: rm)
-    Association.create(transact: trm, rule: rm)
+    e.update_attributes(transact: trm, rule: rm, transformation: txm)
+
+    Association.create(transact: trm, rule: rm, transformation: txm)
   end
   
   private

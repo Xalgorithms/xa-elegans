@@ -134,7 +134,10 @@ describe Api::V1::EventsController, type: :controller do
   it 'can associate rules with transactions' do
     rand_array_of_models(:transaction).each do |trm|
       rand_array_of_models(:rule).each do |rm|
-        post(:create, event_type: 'transaction_associate_rule', transaction_associate_rule_event: { transaction_public_id: trm.public_id, rule_public_id: rm.public_id })
+        txm = create(:transformation)
+        post(:create, event_type: 'transaction_associate_rule', transaction_associate_rule_event: {
+               transaction_public_id: trm.public_id, rule_public_id: rm.public_id, transformation_public_id: txm.public_id
+             })
 
         evt = TransactionAssociateRuleEvent.last
 
@@ -143,9 +146,15 @@ describe Api::V1::EventsController, type: :controller do
 
         expect(evt.transact).to eql(trm)
         expect(evt.rule).to eql(rm)
+        expect(evt.transformation).to eql(txm)
 
         trm = Transaction.find(trm.id)
         rm = Rule.find(rm.id)
+
+        am = Association.last
+        expect(am.transact).to eql(trm)
+        expect(am.transformation).to eql(txm)
+        expect(am.rule).to eql(rm)
 
         expect(trm.rules.to_a).to include(rm)
         expect(rm.transactions.to_a).to include(trm)
