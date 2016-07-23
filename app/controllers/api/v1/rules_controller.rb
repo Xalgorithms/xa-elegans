@@ -6,7 +6,7 @@ module Api
 
       def index
         RegistryService.sync_rules
-        render(json: Rule.all.map { |rm| rm.reference })
+        render(json: RuleSerializer.many(Rule.all))
       end
     end
   end

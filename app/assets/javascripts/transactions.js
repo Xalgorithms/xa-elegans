@@ -1,5 +1,6 @@
 var form_vm = {
-  transaction_id: ko.observable()
+  transaction_id: ko.observable(),
+  rules: ko.observableArray()
 };
 
 var vm = {
@@ -20,6 +21,8 @@ function init() {
 
   var documents = {
   };
+
+  var rules = ko.observableArray();
   
   $('.new_transaction_associate_rule_event').on('ajax:success', function (e, o) {
     $('#modal-associate').modal('toggle');
@@ -38,6 +41,10 @@ function init() {
 	_.get(documents, inv.id)(content);
       });
     });
+  });
+
+  $.getJSON(Routes.api_v1_rules_path(), function (o) {
+    form_vm.rules(o);
   });
 
   vm.transaction_view_models = ko.computed(function () {

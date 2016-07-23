@@ -13,6 +13,6 @@ describe Api::V1::RulesController, type: :controller do
     get(:index)
 
     expect(response).to be_success
-    expect(response_json).to eql(Rule.all.map { |rm| rm.reference })
+    expect(response_json).to eql(encode_decode(RuleSerializer.many(Rule.all)))
   end
 end
