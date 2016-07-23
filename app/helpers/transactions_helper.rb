@@ -19,15 +19,9 @@ module TransactionsHelper
     @styles.fetch(t.status, 'panel-primary')
   end
 
-  def options_available_rules
-    available_rules.map do |name, o|
-      [name, o['id']]
+  def options_rules
+    Rule.all.map do |rm|
+      [rm.reference, rm.public_id]
     end
-  end
-
-  def available_rules
-    # @registry_client ||= Registry::Client.new
-    # @registry_client.rules
-    []
   end
 end

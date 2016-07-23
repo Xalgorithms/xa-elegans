@@ -1,13 +1,13 @@
-- organize(@transactions, 2).each do |transactions|
-  div.row
-    - transactions.each do |t|
-      div.col-md-6
-        div class="panel #{transaction_panel_style(t)}"
-          div.panel-heading
-            div.container-fluid
-              span.pull-left= format_transaction_date(t)
-              span.pull-right.text-uppercase= t(transaction_status_as_label(t))
-          div.panel-body
+.row
+  .col-md-12
+    .row#transactions data-bind="foreach: transaction_parts"
+      <!-- ko foreach: $parent.decorate_transactions($data) -->
+      .col-md-6
+        div class="panel" data-bind="css: panel_style"
+          .panel-heading
+            .container-fluid
+              span.pull-right.text-uppercase data-bind="text: status_label"
+          .panel-body
             table.table.table-sm
               thead.thead-default
                 tr
@@ -16,18 +16,49 @@
                   th.text-capitalize= t('.heading.date')
                   th
               tbody
-                - t.documents.each do |dm|
-                  tr
-                    td= link_to(dm.id, invoice_path(dm.invoice), data: { toggle: "modal", target: "#modal-invoice-show" })
-                    td= dm.currency
-                    td= dm.issued
-          
-div.modal.fade.modal-wide#modal-invoice-show title="#{t('.modals.invoice')}" tabindex="-1" role="dialog"
-  div.modal-dialog role="document"
-    div.modal-content#modal-content-invoice
-div.modal.fade.modal-wide#modal-changes-show title="#{t('.modals.changes')}" tabindex="-1" role="dialog"
-  div.modal-dialog role="document"
-    div.modal-content#modal-content-changes
+                / - t.documents.each do |dm|
+                /   tr
+                /     td= link_to(dm.id, invoice_path(dm.invoice), data: { toggle: "modal", target: "#modal-invoice-show" })
+                /     td= dm.currency
+                /     td= dm.issued
+          .panel-footer
+            button.btn#button-associate type="button" data-bind="click: trigger_associate"= t('.labels.associate')
+      <!-- /ko -->
+            
+.modal.fade.modal-wide#modal-invoice-show title="#{t('.modals.invoice')}" tabindex="-1" role="dialog"
+  .modal-dialog role="document"
+    .modal-content#modal-content-invoice
 
-javascript:
-  var rules = #{{ available_rules.to_json }};
+.modal.fade#modal-associate tabIndex="-1" role="dialog"
+  .modal-dialog role="document"
+    = form_for(TransactionAssociateRuleEvent.new, url: api_v1_events_path, remote: true) do |f|
+      = hidden_field_tag(:event_type, 'transaction_associate_rule')
+      .modal-content
+        .modal-header
+          button.close type="button" data-dismiss="modal"= fa_icon('close')
+          h4.modal-title= t('.labels.modal_add')
+        .modal-body
+          .form-group
+            = f.label(:rule_public_id, t('.labels.select_rule'))
+            = f.select(:rule_public_id, options_rules, {}, { class: 'form-control' })
+          = f.hidden_field(:transaction_public_id, 'data-bind' => 'value: transaction_id')
+
+        .modal-footer
+          button.btn.btn-default type="button" data-dismiss="modal"
+            = fa_icon('close')
+            span= t('labels.close', scope: 'shared')
+          button.btn.btn-primary type="submit"
+            = fa_icon('check')
+            span= t('labels.add', scope: 'shared')
+
+/ TODO: figure out why translations are not working
+= content_for(:javascript) do
+  javascript:
+    var vm = {
+      transactions: ko.observableArray(#{raw MultiJson.encode(@transactions) })
+    };
+    
+    var labels = {
+      'open' : 'open',
+      'closed' : 'closed'
+    };

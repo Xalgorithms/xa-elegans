@@ -40,6 +40,8 @@ en:
         original: original
         mutated: changed
         currency: currency
+      labels:
+        associate: Associate a rule
         
       modals:
         invoice: invoice
