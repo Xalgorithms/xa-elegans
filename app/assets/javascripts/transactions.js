@@ -1,6 +1,7 @@
 var form_vm = {
-  transaction_id: ko.observable(),
-  rules: ko.observableArray()
+  transaction_id:  ko.observable(),
+  rules:           ko.observableArray(),
+  transformations: ko.observableArray()
 };
 
 var vm = {
@@ -45,6 +46,10 @@ function init() {
 
   $.getJSON(Routes.api_v1_rules_path(), function (o) {
     form_vm.rules(o);
+  });
+
+  $.getJSON(Routes.api_v1_transformations_path(), function (o) {
+    form_vm.transformations(o);
   });
 
   vm.transaction_view_models = ko.computed(function () {

@@ -21,4 +21,12 @@ describe Api::V1::TransformationsController, type: :controller do
       expect(response).to have_http_status(:not_found)
     end
   end
+
+  it 'should yield all transformations' do
+    txms = rand_array_of_models(:transformation)
+    get(:index)
+
+    expect(response).to be_success
+    expect(response_json).to eql(encode_decode(TransformationSerializer.many(txms)))
+  end
 end

@@ -26,7 +26,7 @@ Rails.application.routes.draw do
         resources :invoices, only: [:index]
       end
 
-      resources :transformations, only: [:show]
+      resources :transformations, only: [:show, :index]
       resources :rules, only: [:index]
     end
   end

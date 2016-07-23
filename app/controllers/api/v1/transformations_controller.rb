@@ -14,6 +14,10 @@ module Api
         end
       end
 
+      def index
+        render(json: TransformationSerializer.many(Transformation.all))
+      end
+
       private
 
       def maybe_lookup_transformation

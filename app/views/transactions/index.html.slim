@@ -43,7 +43,10 @@
           .form-group
             = f.label(:rule_public_id, t('.labels.select_rule'))
             = f.select(:rule_public_id, [], {}, { class: 'form-control', 'data-bind' => 'foreach: rules' })
-              option data-bind="attr: { value: $data.public_id }, text: $data.reference"
+              option data-bind="value: $data.id, text: $data.reference"
+            = f.label(:transformation_public_id, t('.labels.select_transformation'))
+            = f.select(:transformation_public_id, [], {}, { class: 'form-control', 'data-bind' => 'foreach: transformations' })
+              option data-bind="value: $data.id, text: $data.name"
           = f.hidden_field(:transaction_public_id, 'data-bind' => 'value: transaction_id')
         .modal-footer
           button.btn.btn-default type="button" data-dismiss="modal"

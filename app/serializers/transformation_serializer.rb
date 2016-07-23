@@ -5,8 +5,8 @@ class TransformationSerializer
 
   def self.serialize(txm)
     {
-      public_id: txm.public_id,
-      name:      txm.name,
+      id:   txm.public_id,
+      name: txm.name,
     }
   end
 end
