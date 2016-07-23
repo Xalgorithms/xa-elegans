@@ -1,7 +1,7 @@
 .row
   .col-md-12
-    .row#transactions data-bind="foreach: transaction_parts"
-      <!-- ko foreach: $parent.decorate_transactions($data) -->
+    .row#transactions data-bind="foreach: transaction_view_models"
+      <!-- ko foreach: $data -->
       .col-md-6
         div class="panel" data-bind="css: panel_style"
           .panel-heading
@@ -15,12 +15,14 @@
                   th.text-capitalize= t('.heading.currency')
                   th.text-capitalize= t('.heading.date')
                   th
-              tbody
-                / - t.documents.each do |dm|
-                /   tr
-                /     td= link_to(dm.id, invoice_path(dm.invoice), data: { toggle: "modal", target: "#modal-invoice-show" })
-                /     td= dm.currency
-                /     td= dm.issued
+              tbody data-bind="foreach: invoices"
+                tr
+                  <!-- ko with: content -->
+                  td
+                    a data-bind="text: id, attr: { href: Routes.invoice_path($parent.id) }" data-toggle="modal" data-target="#modal-invoice-show"
+                  td data-bind="text: currency"
+                  td data-bind="text: issued"
+                  <!-- /ko -->
           .panel-footer
             button.btn#button-associate type="button" data-bind="click: trigger_associate"= t('.labels.associate')
       <!-- /ko -->
@@ -54,9 +56,7 @@
 / TODO: figure out why translations are not working
 = content_for(:javascript) do
   javascript:
-    var vm = {
-      transactions: ko.observableArray(#{raw MultiJson.encode(@transactions) })
-    };
+    var transactions = #{raw MultiJson.encode(@transactions)};
     
     var labels = {
       'open' : 'open',

@@ -9,6 +9,6 @@ class InvoicesController < ApplicationController
 
   def maybe_find_invoice
     id = params.fetch('id', nil)
-    @invoice = Invoice.find(id) if id
+    @invoice = Invoice.find_by(public_id: id) if id
   end
 end
