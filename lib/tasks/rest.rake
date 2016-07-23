@@ -90,7 +90,6 @@ namespace :rest do
   desc 'post a document'
   task :document_post, [:src, :host] => :environment do |t, args|
     args.with_defaults(host: DEFAULT_HOST)
-    p args
     if args.src
       post('/documents', 1, IO.read(args.src), args.host)
     end
