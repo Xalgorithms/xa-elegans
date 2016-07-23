@@ -7,11 +7,4 @@ describe Change, type: :model do
       expect(ch.invoice).to eql(inv)
     end
   end
-
-  it 'is associated with a rule' do
-    rand_array { create(:rule) }.each do |r|
-      ch = create(:change, rule: r)
-      expect(ch.rule).to eql(r)
-    end
-  end
 end

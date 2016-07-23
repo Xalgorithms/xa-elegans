@@ -1,6 +1,5 @@
 FactoryGirl.define do
   factory :rule do
-    public_id { UUID.generate }
-    version { Faker::Number.hexadecimal(6) }
+    reference { "#{Faker::Hacker.noun}:#{Faker::Hacker.noun}:#{Faker::Number.number(4)}" }
   end
 end
