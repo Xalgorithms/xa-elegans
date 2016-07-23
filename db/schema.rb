@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160723043848) do
+ActiveRecord::Schema.define(version: 20160723054334) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,6 +57,11 @@ ActiveRecord::Schema.define(version: 20160723043848) do
 
   create_table "rules", force: :cascade do |t|
     t.string "reference"
+    t.string "public_id"
+  end
+
+  create_table "sync_attempts", force: :cascade do |t|
+    t.string "token"
   end
 
   create_table "transaction_close_events", force: :cascade do |t|

@@ -1,3 +1,5 @@
 global_sections:
   - transactions
   - transformations
+registry:
+  url: http://xa-registry.herokuapp.com
