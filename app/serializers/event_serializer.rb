@@ -43,6 +43,7 @@ class EventSerializer
     {}.tap do |o|
       o[:transaction] = { id: event.transaction_associate_rule_event.transact.public_id } if event.transaction_associate_rule_event.transact
       o[:rule] = { reference: event.transaction_associate_rule_event.rule.reference } if event.transaction_associate_rule_event.rule
+      o[:transformation] = { name: event.transaction_associate_rule_event.transformation.name }
     end.merge(serialize_any(event))
   end
   

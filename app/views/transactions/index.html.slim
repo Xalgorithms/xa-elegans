@@ -23,6 +23,16 @@
                   td data-bind="text: currency"
                   td data-bind="text: issued"
                   <!-- /ko -->
+            table.table.table-sm
+              thead.thead-default
+                tr
+                  th.text-capitalize= t('.heading.rule')
+                  th.text-capitalize= t('.heading.transformation')
+                  th
+              tbody data-bind="foreach: associations"
+                tr
+                  td data-bind="text: rule.reference"
+                  td data-bind="text: transformation.name"
           .panel-footer
             button.btn#button-associate type="button" data-bind="click: trigger_associate"= t('.labels.associate')
       <!-- /ko -->

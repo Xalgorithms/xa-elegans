@@ -11,6 +11,7 @@ class TransactionSerializer
         email: transaction.user.email,
       },
       invoices: InvoiceSerializer.many(transaction.invoices, :transaction),
+      associations: AssociationSerializer.many(transaction.associations),
     }
   end
 end

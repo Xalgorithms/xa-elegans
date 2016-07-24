@@ -11,11 +11,13 @@ describe TransactionSerializer do
     rand_array_of_models(:user).each do |um|
       invoices = rand_array_of_models(:invoice)
       rand_array_of_models(:transaction, user: um, invoices: invoices).each do |tm|
+        am = Association.create(transact: tm, transformation: create(:transformation), rule: create(:rule))
         ex = {
           id: tm.public_id,
           status: Transaction::STATUSES[tm.status],
           user: { email: um.email },
           invoices: InvoiceSerializer.many(invoices, :transaction),
+          associations: AssociationSerializer.many([am], :transaction),
         }
         expect(TransactionSerializer.serialize(tm)).to eql(ex)
       end
