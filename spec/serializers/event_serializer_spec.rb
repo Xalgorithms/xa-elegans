@@ -63,4 +63,15 @@ describe EventSerializer do
       expect(EventSerializer.serialize(tarem.event)).to eql(ex)
     end
   end
+
+  it 'should serialize TransformationDestroyEvent' do
+    rand_array_of_models(:transformation_destroy_event).each do |tdem|
+      ex = {
+        transformation: { id: tdem.public_id },
+        id: tdem.event.public_id,
+        event_type: 'transformation_destroy',
+      }
+      expect(EventSerializer.serialize(tdem.event)).to eql(ex)
+    end
+  end
 end

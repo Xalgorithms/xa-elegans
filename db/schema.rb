@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160723232023) do
+ActiveRecord::Schema.define(version: 20160804025034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -123,6 +123,13 @@ ActiveRecord::Schema.define(version: 20160723232023) do
   add_index "transformation_add_events", ["event_id"], name: "index_transformation_add_events_on_event_id", using: :btree
   add_index "transformation_add_events", ["transformation_id"], name: "index_transformation_add_events_on_transformation_id", using: :btree
 
+  create_table "transformation_destroy_events", force: :cascade do |t|
+    t.string  "public_id"
+    t.integer "event_id"
+  end
+
+  add_index "transformation_destroy_events", ["event_id"], name: "index_transformation_destroy_events_on_event_id", using: :btree
+
   create_table "transformations", force: :cascade do |t|
     t.string "public_id"
     t.string "name"
@@ -163,5 +170,5 @@ ActiveRecord::Schema.define(version: 20160723232023) do
   add_foreign_key "transaction_open_events", "events"
   add_foreign_key "transactions", "users"
   add_foreign_key "transformation_add_events", "events"
-  add_foreign_key "transformation_add_events", "transformations"
+  add_foreign_key "transformation_destroy_events", "events"
 end

@@ -35,6 +35,10 @@ module Api
             klass: TransformationAddEvent,
             args: [:name],
           },
+          'transformation_destroy' => {
+            klass: TransformationDestroyEvent,
+            args: [:public_id],
+          },
           'transaction_associate_rule' => {
             klass: TransactionAssociateRuleEvent,
             args: [:transaction_public_id, :rule_public_id, :transformation_public_id],

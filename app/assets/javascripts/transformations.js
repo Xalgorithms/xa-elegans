@@ -1,3 +1,23 @@
+function make_item_vm(o) {
+  return _.extend(o, {
+    destroy: function () {
+      $.post(Routes.api_v1_events_path(), {
+	event_type: 'transformation_destroy',
+	transformation_destroy_event: { public_id: o.id }
+      }, function (resp) {
+	   $.getJSON(resp.url, function (evt) {
+             vm.transformations.remove(function (it) {
+               return it.id == evt.transformation.id;
+             });
+           });
+      });
+    },
+    format_url: ko.computed(function () {
+      return Routes.api_v1_transformation_path(o.id);
+    })
+  });
+}
+
 function init() {
   console.log('transformations: init');
 
@@ -11,8 +31,12 @@ function init() {
   });
 
   vm.transformation_parts = ko.computed(function () {
-    return _.chunk(vm.transformations(), 4);
+    return _.chunk(_.map(vm.transformations(), make_item_vm), 4);
   });
+
+  vm.format_url = function (o) {
+    return "foo";
+  };
   
   ko.applyBindings(vm, document.getElementById('transformations'));
 }

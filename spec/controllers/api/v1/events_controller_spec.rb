@@ -173,4 +173,29 @@ describe Api::V1::EventsController, type: :controller do
     end
   end
 
+  it 'can destroy transformations' do
+    rand_array_of_models(:transformation).each do |txm|
+      post(:create, event_type: 'transformation_destroy', transformation_destroy_event: {
+             public_id: txm.public_id
+           })
+
+      evt = TransformationDestroyEvent.last
+
+      expect(evt).to_not be_nil
+      expect(evt.event).to eql(Event.last)
+
+      expect { Transformation.find(txm.id) }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  it 'can show tranformation destroy events' do
+    rand_times.map { create(:transformation_destroy_event, event: create(:event, event_type: 'transformation_destroy')) }.each do |tdem|
+      get(:show, id: tdem.event.public_id)
+
+      tdem = TransformationDestroyEvent.find(tdem.id)
+      
+      expect(response).to be_success
+      expect(response_json).to eql(encode_decode(EventSerializer.serialize_transformation_destroy(tdem.event)))
+    end
+  end
 end

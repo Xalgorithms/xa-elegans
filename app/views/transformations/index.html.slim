@@ -9,6 +9,10 @@
             .container-fluid
               span.pull-left data-bind="text: name"
           .panel-body
+          .panel-footer
+            a rel="nofollow" data-bind="click: destroy, attr: { href: format_url }"
+              = fa_icon('remove')
+
       <!-- /ko -->
 
 .modal.fade#modal-add-transformation tabIndex="-1" role="dialog"

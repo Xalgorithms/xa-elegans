@@ -19,6 +19,11 @@ class EventService
     e.update_attributes(transformation: txm)
   end
 
+  def self.transformation_destroy(e)
+    trm = Transformation.find_by(public_id: e.public_id)
+    trm.destroy if trm
+  end
+
   def self.transaction_associate_rule(e)
     trm = Transaction.find_by(public_id: e.transaction_public_id)
     txm = Transformation.find_by(public_id: e.transformation_public_id)

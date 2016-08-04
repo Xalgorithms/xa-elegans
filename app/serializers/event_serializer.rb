@@ -5,6 +5,7 @@ class EventSerializer
       transaction_close:          method(:serialize_transaction_close),
       invoice_push:               method(:serialize_invoice_push),
       transformation_add:         method(:serialize_transformation_add),
+      transformation_destroy:     method(:serialize_transformation_destroy),
       transaction_associate_rule: method(:serialize_transaction_associate_rule),
     }
 
@@ -36,6 +37,12 @@ class EventSerializer
   def self.serialize_transformation_add(event)
     {
       transformation: { url: Rails.application.routes.url_helpers.api_v1_transformation_path(event.transformation_add_event.transformation.public_id) }
+    }.merge(serialize_any(event))
+  end
+  
+  def self.serialize_transformation_destroy(event)
+    {
+      transformation: { id: event.transformation_destroy_event.public_id },
     }.merge(serialize_any(event))
   end
 
