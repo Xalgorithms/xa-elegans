@@ -104,7 +104,14 @@ describe Api::V1::EventsController, type: :controller do
     rand_array_of_words.each do |name|
       len = Transformation.all.count
 
-      post(:create, event_type: 'transformation_add', transformation_add_event: { name: name })
+      src = Faker::Lorem.paragraph
+
+      txm_id = nil
+      expect(ParseService).to receive(:parse_transformation) do |id|
+        txm_id = id
+      end
+      
+      post(:create, event_type: 'transformation_add', transformation_add_event: { name: name, src: src })
 
       evt = TransformationAddEvent.last
 
@@ -117,8 +124,10 @@ describe Api::V1::EventsController, type: :controller do
 
       expect(txm).to_not be_nil
       expect(txm.name).to eql(name)
+      expect(txm.src).to eql(src)
       expect(txm.public_id).to_not be_nil
       expect(evt.transformation).to eql(txm)
+      expect(txm_id).to eql(txm.id)
     end
   end
 

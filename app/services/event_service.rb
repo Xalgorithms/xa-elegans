@@ -15,8 +15,9 @@ class EventService
   end
 
   def self.transformation_add(e)
-    txm = Transformation.create(name: e.name, public_id: UUID.generate)
+    txm = Transformation.create(name: e.name, src: e.src, public_id: UUID.generate)
     e.update_attributes(transformation: txm)
+    ParseService.parse_transformation(txm.id)
   end
 
   def self.transformation_destroy(e)

@@ -33,7 +33,7 @@ module Api
           },
           'transformation_add' => {
             klass: TransformationAddEvent,
-            args: [:name],
+            args: [:name, :src],
           },
           'transformation_destroy' => {
             klass: TransformationDestroyEvent,

@@ -27,6 +27,9 @@
           .form-group
             = f.label(:name, t('.labels.name'))
             = f.text_field(:name, class: 'form-control')
+          .form-group
+            = f.label(:src, t('.labels.src'))
+            = f.text_area(:src, class: 'form-control')
 
         .modal-footer
           button.btn.btn-default type="button" data-dismiss="modal"
