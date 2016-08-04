@@ -3,7 +3,11 @@ module Api
     class EventsController < ActionController::Base
       def create
         @event = make
-        render(json: { url: api_v1_event_path(id: @event.event.public_id) })
+        if @event
+          render(json: { url: api_v1_event_path(id: @event.event.public_id) })
+        else
+          render(nothing: true, status: :not_found)
+        end
       end
       
       def show
@@ -38,9 +42,13 @@ module Api
         }
       
         k = params[:event_type]
-        args = params.require("#{k}_event").permit(*@events[k][:args])
-        
-        @events[k][:klass].create(args.merge(event: Event.create(public_id: UUID.generate, event_type: params[:event_type])))
+        if k
+          args = params.require("#{k}_event").permit(*@events[k][:args])
+          
+          @events[k][:klass].create(args.merge(event: Event.create(public_id: UUID.generate, event_type: params[:event_type])))
+        else
+          nil
+        end
       end
     end
   end
