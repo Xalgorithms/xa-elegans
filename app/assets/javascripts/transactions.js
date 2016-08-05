@@ -70,7 +70,7 @@ function init() {
 	format_url:       ko.computed(function () {
 	  return Routes.api_v1_transformation_path(tr.id);
 	}),
-	close:            function (o) {
+	trigger_close:    function (o) {
 	  $.post(Routes.api_v1_events_path(), {
 	    event_type: 'transaction_close',
 	    transaction_close_event: { transaction_public_id: o.id }
@@ -85,6 +85,9 @@ function init() {
             });
 	  });
 	},
+	closed: ko.computed(function () {
+	  return tr.status === 'closed';
+	}),
 	associations:     ko.observableArray(tr.associations)
       });
     });
