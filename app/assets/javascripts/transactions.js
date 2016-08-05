@@ -58,15 +58,33 @@ function init() {
   
   vm.transaction_view_models = ko.computed(function () {
     var vms = _.map(vm.transactions(), function (tr) {
-      return _.extend(tr, {
+      return _.extend({}, tr, {
 	panel_style :     _.get(styles, tr.status, 'panel-info'),
 	status_label      : _.get(labels, tr.status),
 	trigger_associate : associate,
 	invoices:         _.map(tr.invoices, function (invoice) {
-	  return _.extend(invoice, {
+	  return _.extend({}, invoice, {
 	    content: _.get(documents, invoice.id)
 	  });
-	  }),
+	}),
+	format_url:       ko.computed(function () {
+	  return Routes.api_v1_transformation_path(tr.id);
+	}),
+	close:            function (o) {
+	  $.post(Routes.api_v1_events_path(), {
+	    event_type: 'transaction_close',
+	    transaction_close_event: { transaction_public_id: o.id }
+	  }, function (resp) {
+	    $.getJSON(resp.url, function (evt) {
+              vm.transactions.remove(function (it) {
+		return it.id == evt.transaction.id;
+	      });
+	      $.getJSON(evt.transaction.url, function (tr) {
+		vm.transactions.push(tr);
+	      });
+            });
+	  });
+	},
 	associations:     ko.observableArray(tr.associations)
       });
     });

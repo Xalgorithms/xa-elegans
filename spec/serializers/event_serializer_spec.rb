@@ -22,7 +22,7 @@ describe EventSerializer do
         ex = {
           id:          tce.event.public_id,
           event_type:  'transaction_close',
-          transaction: { id: tm.public_id },
+          transaction: { id: tm.public_id, url: Rails.application.routes.url_helpers.api_v1_transaction_path(tm.public_id) },
         }
         expect(EventSerializer.serialize(tce.event)).to eql(ex)
       end

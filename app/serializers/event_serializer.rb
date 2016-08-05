@@ -25,7 +25,8 @@ class EventSerializer
   def self.serialize_transaction_close(event)
     {
       transaction: {
-        id: event.transaction_close_event.transact.public_id,
+        id:  event.transaction_close_event.transact.public_id,
+        url: Rails.application.routes.url_helpers.api_v1_transaction_path(event.transaction_close_event.transact.public_id)
       },
     }.merge(serialize_any(event))
   end

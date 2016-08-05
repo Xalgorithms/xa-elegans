@@ -40,6 +40,8 @@
             <!-- /ko -->
           .panel-footer
             button.btn#button-associate type="button" data-bind="click: trigger_associate"= t('.labels.associate')
+            a rel="nofollow" data-bind="click: close, attr: { href: format_url }"
+              = fa_icon('remove')
       <!-- /ko -->
             
 .modal.fade.modal-wide#modal-invoice-show title="#{t('.modals.invoice')}" tabindex="-1" role="dialog"
