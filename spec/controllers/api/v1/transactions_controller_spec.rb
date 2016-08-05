@@ -23,4 +23,22 @@ describe Api::V1::TransactionsController, type: :controller do
       expect(response).to have_http_status(:not_found)
     end
   end
+
+  it 'should show transactions' do
+    um = create(:user)
+    rand_array_of_models(:transaction, user: um).each do |trm|
+      get(:show, id: trm.public_id)
+      
+      expect(response).to be_success
+      expect(response_json).to eql(encode_decode(TransactionSerializer.serialize(trm)))
+    end
+  end
+
+  it 'should not show unknown transactions' do
+    rand_array_of_uuids.each do |public_id|
+      get(:show, id: public_id)
+      
+      expect(response).to_not be_success
+    end
+  end
 end

@@ -4,10 +4,12 @@ describe EventSerializer do
   it 'should serialize TransactionOpenEvent' do
     rand_array_of_models(:user).each do |um|
       rand_array_of_models(:transaction_open_event, user: um).each do |toe|
+        toe.update_attributes(transact: create(:transaction, user: um))
         ex = {
-          id:         toe.event.public_id,
-          event_type: 'transaction_open',
-          user:       { id: um.id, email: um.email },
+          id:          toe.event.public_id,
+          event_type:  'transaction_open',
+          user:        { id: um.id, email: um.email },
+          transaction: { url: Rails.application.routes.url_helpers.api_v1_transaction_path(toe.transact.public_id) },
         }
         expect(EventSerializer.serialize(toe.event)).to eql(ex)
       end

@@ -18,6 +18,7 @@ class EventSerializer
         id: event.transaction_open_event.user.id,
         email: event.transaction_open_event.user.email,
       },
+      transaction: { url: Rails.application.routes.url_helpers.api_v1_transaction_path(event.transaction_open_event.transact.public_id) },
     }.merge(serialize_any(event))
   end
 

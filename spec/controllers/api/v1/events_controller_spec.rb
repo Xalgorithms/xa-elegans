@@ -28,7 +28,7 @@ describe Api::V1::EventsController, type: :controller do
 
   it 'can show transaction open events' do
     rand_times.map { create(:user) }.each do |um|
-      rand_times.map { create(:transaction_open_event, user: um, event: create(:event, event_type: 'transaction_open')) }.each do |toem|
+      rand_times.map { create(:transaction_open_event, transact: create(:transaction, user: um), user: um, event: create(:event, event_type: 'transaction_open')) }.each do |toem|
         get(:show, id: toem.event.public_id)
         
         expect(response).to be_success

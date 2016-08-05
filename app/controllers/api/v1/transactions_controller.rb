@@ -4,8 +4,9 @@ module Api
       # TODO: do this properly
       skip_before_filter  :verify_authenticity_token
 
-      before_filter :maybe_lookup_user, only: [:index]
+      before_filter :maybe_lookup_user,         only: [:index]
       before_filter :maybe_lookup_transactions, only: [:index]
+      before_filter :maybe_lookup_transaction,  only: [:show]
 
       def index
         if @transactions
@@ -15,8 +16,21 @@ module Api
         end
       end
 
+      def show
+        if @transaction
+          render(json: TransactionSerializer.serialize(@transaction))
+        else
+          render(nothing: true, status: :not_found)
+        end
+      end
+
       private
 
+      def maybe_lookup_transaction
+        public_id = params.fetch('id', nil)
+        @transaction = Transaction.find_by(public_id: public_id) if public_id
+      end
+      
       def maybe_lookup_transactions
         if @user
           @transactions = @user.transactions

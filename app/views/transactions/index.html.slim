@@ -1,6 +1,7 @@
-.row
+.row#transactions
   .col-md-12
-    .row#transactions data-bind="foreach: transaction_view_models"
+    button.btn data-bind="click: add" type="button"= t('labels.add', scope: 'shared')
+    .row data-bind="foreach: transaction_view_models"
       <!-- ko foreach: $data -->
       .col-md-6
         div class="panel" data-bind="css: panel_style"
@@ -8,6 +9,7 @@
             .container-fluid
               span.pull-right.text-uppercase data-bind="text: status_label"
           .panel-body
+            <!-- ko if: invoices.length > 0 -->
             table.table.table-sm
               thead.thead-default
                 tr
@@ -23,6 +25,8 @@
                   td data-bind="text: currency"
                   td data-bind="text: issued"
                   <!-- /ko -->
+            <!-- /ko -->
+            <!-- ko if: associations.length > 0 -->
             table.table.table-sm
               thead.thead-default
                 tr
@@ -33,6 +37,7 @@
                 tr
                   td data-bind="text: rule.reference"
                   td data-bind="text: transformation.name"
+            <!-- /ko -->
           .panel-footer
             button.btn#button-associate type="button" data-bind="click: trigger_associate"= t('.labels.associate')
       <!-- /ko -->
@@ -70,6 +75,7 @@
 = content_for(:javascript) do
   javascript:
     var transactions = #{raw MultiJson.encode(@transactions)};
+    var user_id = #{current_user.id};
     
     var labels = {
       'open' : 'open',

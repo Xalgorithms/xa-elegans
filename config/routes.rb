@@ -22,7 +22,7 @@ Rails.application.routes.draw do
         resources :transactions, only: [:index]
       end
 
-      resources :transactions, only: [] do
+      resources :transactions, only: [:show] do
         resources :invoices, only: [:index]
       end
 

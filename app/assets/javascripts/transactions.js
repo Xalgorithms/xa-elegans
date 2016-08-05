@@ -54,8 +54,10 @@ function init() {
     form_vm.transformations(o);
   });
 
-  vm.transactions = ko.computed(function () {
-    return _.map(transactions, function (tr) {
+  vm.transactions = ko.observableArray(transactions);
+  
+  vm.transaction_view_models = ko.computed(function () {
+    var vms = _.map(vm.transactions(), function (tr) {
       return _.extend(tr, {
 	panel_style :     _.get(styles, tr.status, 'panel-info'),
 	status_label      : _.get(labels, tr.status),
@@ -68,11 +70,21 @@ function init() {
 	associations:     ko.observableArray(tr.associations)
       });
     });
+    return _.chunk(vms, 4);
   });
-  
-  vm.transaction_view_models = ko.computed(function () {
-    return _.chunk(vm.transactions(), 4);
-  });
+
+  vm.add = function () {
+    $.post(Routes.api_v1_events_path(), {
+      event_type: 'transaction_open',
+      transaction_open_event: { user_id: user_id }
+    }, function (resp) {
+      $.getJSON(resp.url, function (o) {
+	$.getJSON(o.transaction.url, function (o) {
+	  vm.transactions.push(o);
+	});
+      });
+    });
+  };
 
   ko.applyBindings(vm, document.getElementById('transactions'));
   ko.applyBindings(form_vm, document.getElementById('modal-associate'));
