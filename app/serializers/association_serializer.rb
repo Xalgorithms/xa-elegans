@@ -1,6 +1,6 @@
 class AssociationSerializer
   def self.many(ams, container = nil)
-    ams.map(&method(:serialize))
+    ams.map { |am| serialize(am, container) }
   end
 
   def self.serialize(am, container = nil)
