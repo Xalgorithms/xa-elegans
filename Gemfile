@@ -12,7 +12,7 @@ gem 'turbolinks'
 
 # JS related gems
 gem 'jquery-rails'
-gem 'js-routes'
+gem 'js-routes', git: 'https://github.com/railsware/js-routes.git'
 gem 'lodash-rails'
 gem 'knockoutjs-rails'
 gem 'uglifier', '>= 1.3.0'
