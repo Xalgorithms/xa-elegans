@@ -9,7 +9,7 @@
             .container-fluid
               span.pull-right.text-uppercase data-bind="text: status_label"
           .panel-body
-            <!-- ko if: invoices.length > 0 -->
+            <!-- ko if: have_invoices -->
             table.table.table-sm
               thead.thead-default
                 tr
@@ -26,7 +26,7 @@
                   td data-bind="text: issued"
                   <!-- /ko -->
             <!-- /ko -->
-            <!-- ko if: associations.length > 0 -->
+            <!-- ko if: have_associations -->
             table.table.table-sm
               thead.thead-default
                 tr

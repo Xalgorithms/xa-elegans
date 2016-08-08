@@ -59,7 +59,7 @@
     
     vm.transaction_view_models = ko.computed(function () {
       var vms = _.map(vm.transactions(), function (tr) {
-	return _.extend({}, tr, {
+	var vm = _.extend({}, tr, {
 	  panel_style :     _.get(styles, tr.status, 'panel-info'),
 	  status_label      : _.get(labels, tr.status),
 	  trigger_associate : associate,
@@ -67,9 +67,6 @@
 	    return _.extend({}, invoice, {
 	      content: _.get(documents, invoice.id)
 	    });
-	  }),
-	  format_url:       ko.computed(function () {
-	    return Routes.api_v1_transformation_path(tr.id);
 	  }),
 	  trigger_close:    function (o) {
 	    $.post(Routes.api_v1_events_path(), {
@@ -86,12 +83,29 @@
               });
 	    });
 	  },
-	  closed: ko.computed(function () {
-	    return tr.status === 'closed';
-	  }),
 	  associations:     ko.observableArray(tr.associations)
 	});
+
+	// computeds
+	vm.format_url = ko.computed(function () {
+	  return Routes.api_v1_transformation_path(tr.id);
+	});
+	
+	vm.closed = ko.computed(function () {
+	  return 'closed' === tr.status;
+	});
+	
+	vm.have_invoices = ko.computed(function () {
+	  return vm.invoices.length > 0;
+	});
+
+	vm.have_associations = ko.computed(function () {
+	  return vm.associations().length > 0;
+	});
+	
+	return vm;
       });
+
       return _.chunk(vms, 4);
     });
 
