@@ -3,13 +3,13 @@ namespace :rest do
   require 'faraday_middleware'
   require 'json'
 
-  DEFAULT_HOST = 'localhost:3000'
+  DEFAULT_HOST = 'http://localhost:3000'
   HOSTS = {
-    'staging' => 'xa-lichen.herokuapp.com',
+    'staging' => 'https://xa-lichen.herokuapp.com',
   }
   def conn(host = DEFAULT_HOST)
     rhost = HOSTS.fetch(host, host)
-    @conn ||= Faraday.new("http://#{rhost}") do |f|
+    @conn ||= Faraday.new(rhost) do |f|
       f.request(:url_encoded)
       f.request(:json)
       f.response(:json, :content_type => /\bjson$/)
@@ -30,9 +30,9 @@ namespace :rest do
     puts "# content=#{resp.body}"
   end
 
-  def get(rel, version)
+  def get(rel, version, host = DEFAULT_HOST)
     puts "GET > #{rel}"
-    resp = conn.get(make_url(rel, version))
+    resp = conn(host).get(make_url(rel, version))
     puts "GET < #{resp.status}"
     puts "# content=#{resp.body}"
   end
@@ -69,7 +69,7 @@ namespace :rest do
   task :transaction_list, [:user_id, :host] => :environment do |t, args|
     args.with_defaults(host: DEFAULT_HOST)
     if args.user_id
-      get("/users/#{args.user_id}/transactions", 1)
+      get("/users/#{args.user_id}/transactions", 1, args.host)
     end
   end
 
