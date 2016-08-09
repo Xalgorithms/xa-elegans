@@ -65,10 +65,18 @@ describe Api::V1::EventsController, type: :controller do
   end
 
   it 'can push invoices' do
-    rand_array_of_models(:transaction).each do |trm|
+    um = create(:user)
+    rand_array_of_models(:transaction, user: um).each do |trm|
       rand_array_of_models(:document).each do |dm|
         len = Invoice.all.count
 
+        notification_invoice_id = nil
+        expect(NotificationService).to receive(:send) do |user_id, invoice_id, document_id|
+          expect(user_id).to eql(um.id)
+          expect(document_id).to eql(dm.id)
+          notification_invoice_id = invoice_id
+        end
+        
         post(:create, event_type: 'invoice_push', invoice_push_event: { transaction_public_id: trm.public_id, document_public_id: dm.public_id })
 
         evt = InvoicePushEvent.last
@@ -83,6 +91,7 @@ describe Api::V1::EventsController, type: :controller do
         expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
 
         expect(Invoice.all.count).to eql(len + 1)
+        expect(notification_invoice_id).to eql(Invoice.last.id)
         expect(Invoice.last.transact).to eql(trm)
         expect(Invoice.last.document).to eql(dm)
       end

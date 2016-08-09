@@ -11,10 +11,11 @@ class EventService
   end
 
   def self.invoice_push(e)
-    attach_transaction(e)
-    doc = Document.find_by(public_id: e.document_public_id)
-    im = Invoice.create(transact: e.transact, document: doc, public_id: UUID.generate)
-    NotificationService.send(e.transact.user.id, im.public_id, doc.public_id)
+    attach_transaction(e) do |trm|
+      dm = Document.find_by(public_id: e.document_public_id)
+      im = Invoice.create(transact: trm, document: dm, public_id: UUID.generate)
+      NotificationService.send(trm.user.id, im.id, dm.id) if trm.user
+    end
   end
 
   def self.transformation_add(e)

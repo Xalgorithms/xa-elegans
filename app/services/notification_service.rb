@@ -23,9 +23,11 @@ class NotificationService
   def self.send(user_id, invoice_id, document_id)
     cl = GcmClient.new
     um = User.find(user_id)
+    im = Invoce.find(invoice_id)
+    dm = Document.find(document_id)
     um.registrations.each do |rm|
-      Rails.logger.info("sending notification (to=#{rm.token}; document_id=#{document_id}; invoice_id=#{invoice_id})")
-      cl.send(rm.token, invoice_id: invoice_id, document_id: document_id)
+      Rails.logger.info("sending notification (to=#{rm.token}; document_id=#{dm.public_id}; invoice_id=#{im.public_id})")
+      cl.send(rm.token, invoice_id: im.public_id, document_id: dm.public_id)
     end
   end
 end
