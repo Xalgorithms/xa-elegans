@@ -8,10 +8,23 @@ describe Api::V1::InvoicesController, type: :controller do
     rand_array_of_models(:transaction).each do |tm|
       invoices = rand_array_of_models(:invoice, transact_id: tm.id)
       
-      get(:index, transaction_id: tm.id)
+      get(:index, transaction_id: tm.public_id)
 
       expect(response).to be_success
       expect(response_json).to eql(encode_decode(InvoiceSerializer.many(invoices)))
+    end
+  end
+
+  it 'should list all Invoices for a User' do
+    rand_array_of_models(:user).each do |um|
+      ims = rand_array_of_models(:transaction, user: um).inject([]) do |a, trm|
+        a + rand_array_of_models(:invoice, transact: trm)
+      end
+      
+      get(:index, user_id: um.id)
+
+      expect(response).to be_success
+      expect(response_json).to eql(encode_decode(InvoiceSerializer.many(ims)))
     end
   end
 

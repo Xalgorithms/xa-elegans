@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       
       resources :users, only: [] do
         resources :transactions, only: [:index]
+        resources :invoices, only: [:index]
       end
 
       resources :transactions, only: [:show] do
