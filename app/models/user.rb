@@ -6,4 +6,5 @@ class User < ActiveRecord::Base
 
   has_many :transactions, foreign_key: 'user_id', class_name: 'Transaction'
   has_many :invoices, through: :transactions
+  has_many :registrations
 end

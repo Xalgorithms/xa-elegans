@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160805223658) do
+ActiveRecord::Schema.define(version: 20160809044716) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,6 +46,13 @@ ActiveRecord::Schema.define(version: 20160805223658) do
     t.string "event_type"
   end
 
+  create_table "gcm_registrations", force: :cascade do |t|
+    t.string  "token"
+    t.integer "user_id"
+  end
+
+  add_index "gcm_registrations", ["user_id"], name: "index_gcm_registrations_on_user_id", using: :btree
+
   create_table "invoice_push_events", force: :cascade do |t|
     t.integer "transaction_id"
     t.integer "event_id"
@@ -64,6 +71,15 @@ ActiveRecord::Schema.define(version: 20160805223658) do
 
   add_index "invoices", ["document_id"], name: "index_invoices_on_document_id", using: :btree
   add_index "invoices", ["transact_id"], name: "index_invoices_on_transact_id", using: :btree
+
+  create_table "register_events", force: :cascade do |t|
+    t.integer "user_id"
+    t.string  "token"
+    t.integer "event_id"
+  end
+
+  add_index "register_events", ["event_id"], name: "index_register_events_on_event_id", using: :btree
+  add_index "register_events", ["user_id"], name: "index_register_events_on_user_id", using: :btree
 
   create_table "rules", force: :cascade do |t|
     t.string "reference"

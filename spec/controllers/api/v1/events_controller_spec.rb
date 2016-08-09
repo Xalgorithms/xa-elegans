@@ -207,4 +207,27 @@ describe Api::V1::EventsController, type: :controller do
       expect(response_json).to eql(encode_decode(EventSerializer.serialize_transformation_destroy(tdem.event)))
     end
   end
+
+  it 'can create registrations' do
+    rand_array_of_models(:user).each do |um|
+      token = Faker::Number.hexadecimal(100)
+
+      post(:create, event_type: 'register', register_event: {
+             user_id: um.id,
+             token: token,
+           })
+
+      evt = RegisterEvent.last
+
+      expect(evt).to_not be_nil
+      expect(evt.event).to eql(Event.last)
+
+      expect(response).to be_success
+      expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
+
+      um = User.find(um.id)
+      expect(um.registrations.count).to eql(1)
+      expect(um.registrations.first.token).to eql(token)
+    end
+  end
 end

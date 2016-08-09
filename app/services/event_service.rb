@@ -44,4 +44,8 @@ class EventService
 
     bl.call(e.transact) if bl && e.transact
   end
+
+  def self.register(e)
+    Registration.create(token: e.token, user: e.user)
+  end
 end

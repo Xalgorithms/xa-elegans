@@ -43,6 +43,10 @@ module Api
             klass: TransactionAssociateRuleEvent,
             args: [:transaction_public_id, :rule_public_id, :transformation_public_id],
           },
+          'register' => {
+            klass: RegisterEvent,
+            args: [:user_id, :token],
+          },
         }
       
         k = params[:event_type]
