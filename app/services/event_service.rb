@@ -49,6 +49,6 @@ class EventService
   end
 
   def self.register(e)
-    Registration.create(token: e.token, user: e.user)
+    Registration.find_or_create_by(token: e.token, user: e.user)
   end
 end

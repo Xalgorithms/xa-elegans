@@ -239,4 +239,23 @@ describe Api::V1::EventsController, type: :controller do
       expect(um.registrations.first.token).to eql(token)
     end
   end
+
+  it 'does not recreate equivalent registrations' do
+    rand_array_of_models(:user).each do |um|
+      token = Faker::Number.hexadecimal(100)
+
+      post(:create, event_type: 'register', register_event: {
+             user_id: um.id,
+             token: token,
+           })
+
+      post(:create, event_type: 'register', register_event: {
+             user_id: um.id,
+             token: token,
+           })
+
+      um = User.find(um.id)
+      expect(um.registrations.count).to eql(1)
+    end
+  end
 end
