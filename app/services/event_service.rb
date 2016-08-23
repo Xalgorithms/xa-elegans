@@ -54,7 +54,7 @@ class EventService
 
   def self.transaction_execute(e)
     attach_transaction(e) do |tr|
-      Rails.logger.info("transaction_execute (transaction=#{tr.id})")
+      ExecuteService.execute(tr.id)
     end
   end
 end
