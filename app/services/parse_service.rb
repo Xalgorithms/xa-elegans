@@ -7,6 +7,6 @@ class ParseService
 
   def self.parse_transformation(id)
     txm = Transformation.find(id)
-    txm.update_attributes(content: Parser.new.parse([txm.src])) if txm && txm.src
+    txm.update_attributes(content: Parser.new.parse(txm.src.split(/\r\n/))) if txm && txm.src
   end
 end
