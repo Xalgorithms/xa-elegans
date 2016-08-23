@@ -56,7 +56,8 @@
     });
 
     vm.transactions = ko.observableArray(transactions);
-    
+
+    // TODO: clean this up
     vm.transaction_view_models = ko.computed(function () {
       var vms = _.map(vm.transactions(), function (tr) {
 	var vm = _.extend({}, tr, {
@@ -83,6 +84,16 @@
               });
 	    });
 	  },
+          trigger_execute: function (o) {
+            $.post(Routes.api_v1_events_path(), {
+              event_type: 'transaction_execute',
+              transaction_execute_event: { transaction_public_id: o.id }
+            }, function (resp) {
+              $.getJSON(resp.url, function (evt) {
+		console.log(evt);
+	      });
+            });
+          },
 	  associations:     ko.observableArray(tr.associations)
 	});
 
