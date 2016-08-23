@@ -32,6 +32,7 @@ module Geghard
       :transaction_associate_rule_event_observer,
       :register_event_observer,
       :document_observer,
+      :transaction_execute_event_observer,
     ]
   end
 end

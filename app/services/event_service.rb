@@ -51,4 +51,10 @@ class EventService
   def self.register(e)
     Registration.find_or_create_by(token: e.token, user: e.user)
   end
+
+  def self.transaction_execute(e)
+    attach_transaction(e) do |tr|
+      Rails.logger.info("transaction_execute (transaction=#{tr.id})")
+    end
+  end
 end

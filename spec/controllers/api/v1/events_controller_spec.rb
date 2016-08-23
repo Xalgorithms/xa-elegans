@@ -258,4 +258,21 @@ describe Api::V1::EventsController, type: :controller do
       expect(um.registrations.count).to eql(1)
     end
   end
+
+  it 'can execute transactions' do
+    rand_array_of_models(:transaction).each do |trm|
+      post(:create, event_type: 'transaction_execute', transaction_execute_event: {
+             transaction_public_id: trm.public_id
+           })
+
+      evt = TransactionExecuteEvent.last
+
+      expect(evt).to_not be_nil
+      expect(evt.event).to eql(Event.last)
+      expect(evt.transact).to eql(trm)
+
+      expect(response).to be_success
+      expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
+    end
+  end
 end

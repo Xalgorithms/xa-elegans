@@ -47,6 +47,10 @@ module Api
             klass: RegisterEvent,
             args: [:user_id, :token],
           },
+          'transaction_execute' => {
+            klass: TransactionExecuteEvent,
+            args: [:transaction_public_id],
+          },
         }
       
         k = params[:event_type]
