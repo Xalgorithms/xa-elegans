@@ -34,5 +34,6 @@ module Geghard
       :document_observer,
       :transaction_execute_event_observer,
     ]
+    config.xa = config_for(:xa)
   end
 end

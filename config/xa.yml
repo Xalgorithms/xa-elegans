@@ -1,0 +1,11 @@
+production:
+  registry:
+    url: 'https://xa-registry.herokuapp.com'
+
+development:
+  registry:
+    url: 'http://localhost:4000'
+
+test:
+  registry:
+    url: 'http://localhost:4000'
