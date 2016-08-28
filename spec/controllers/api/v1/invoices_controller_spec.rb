@@ -4,6 +4,11 @@ describe Api::V1::InvoicesController, type: :controller do
   include Randomness
   include ResponseJson
 
+  before(:all) do
+    Invoice.destroy_all
+    Transaction.destroy_all
+  end
+  
   it 'should list all Invoices for a Transaction' do
     rand_array_of_models(:transaction).each do |tm|
       invoices = rand_array_of_models(:invoice, transact_id: tm.id)
