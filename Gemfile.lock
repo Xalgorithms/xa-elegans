@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/Xalgorithms/xa-rules.git
-  revision: 7d432373141f72ece18ac3936d0e07643aa9c3d0
+  revision: a46a1ab91b6419c80f8fcf56d732d6d642ff5213
   specs:
     xa-rules (0.0.5)
       faraday

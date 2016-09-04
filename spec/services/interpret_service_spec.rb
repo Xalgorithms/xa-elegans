@@ -11,6 +11,9 @@ describe InterpretService do
     Invoice.destroy_all
     Rule.destroy_all
     Transformation.destroy_all
+    Document.destroy_all
+    Invoice.destroy_all
+    Revision.destroy_all
   end
 
   let(:transform_interpreter) do
@@ -92,22 +95,19 @@ describe InterpretService do
       ],
     }
 
-    ams = rand_array_of_models(:association).map do |am|
-      am.rule = create(:rule)
-
-      am.transformation = create(:transformation, content: transform_content)
-      am
-    end
-
-    ims = rand_array_of_models(:invoice).map do |im|
-      im.update_attributes(document: create(:document, content: document_content))
-      im
+    ams = rand_array_of_models(:association)
+    ams.each do |am|
+      am.update_attributes(rule: create(:rule), transformation: create(:transformation, content: transform_content))
     end
 
     ams.each do |am|
+      ims = rand_array_of_models(:invoice)
+
       ims.each do |im|
         cl = double(XA::Registry::Client)
         
+        revm = create(:revision, invoice: im, document: create(:document, content: document_content))
+
         tables = prepare_expected_tables(document_content, transform_content)
         rule = rule_interpreter.interpret(rule_content)
         ctx = XA::Rules::Context.new(tables)
@@ -118,8 +118,19 @@ describe InterpretService do
         expect(XA::Registry::Client).to receive(:new).with(Rails.configuration.xa['registry']['url']).and_return(cl)
 
         # FIX: artifical - after updates to xa-rules and Document, there should be a new Document formed
-        actual_tables = InterpretService.execute(im.id, am.rule.id, am.transformation.id)
-        expect(actual_tables).to eql(result_tables)
+        old_len = im.revisions.length
+        odm = im.revisions.last.document
+
+        InterpretService.execute(im.id, am.rule.id, am.transformation.id)
+        
+        im = Invoice.find(im.id)
+
+        expect(im.revisions.length).to eql(old_len + 1)
+        ndm = im.revisions.last.document
+        expect(ndm.id).to_not eql(odm.id)
+
+        # the rule didn't update anything, so the content should be equivalent
+        expect(ndm.content).to eql(odm.content)
       end
     end    
   end
