@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160823175507) do
+ActiveRecord::Schema.define(version: 20160904130109) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,15 +25,6 @@ ActiveRecord::Schema.define(version: 20160823175507) do
   add_index "associations", ["rule_id"], name: "index_associations_on_rule_id", using: :btree
   add_index "associations", ["transaction_id"], name: "index_associations_on_transaction_id", using: :btree
   add_index "associations", ["transformation_id"], name: "index_associations_on_transformation_id", using: :btree
-
-  create_table "changes", force: :cascade do |t|
-    t.string   "document_id"
-    t.integer  "invoice_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-  end
-
-  add_index "changes", ["invoice_id"], name: "index_changes_on_invoice_id", using: :btree
 
   create_table "documents", force: :cascade do |t|
     t.xml    "src"
@@ -187,7 +178,6 @@ ActiveRecord::Schema.define(version: 20160823175507) do
   add_foreign_key "associations", "rules"
   add_foreign_key "associations", "transactions"
   add_foreign_key "associations", "transformations"
-  add_foreign_key "changes", "invoices"
   add_foreign_key "invoice_push_events", "events"
   add_foreign_key "invoice_push_events", "transactions"
   add_foreign_key "invoices", "documents"
