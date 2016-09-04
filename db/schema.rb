@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160904130109) do
+ActiveRecord::Schema.define(version: 20160904130539) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,10 +57,8 @@ ActiveRecord::Schema.define(version: 20160904130109) do
   create_table "invoices", force: :cascade do |t|
     t.integer "transact_id"
     t.string  "public_id"
-    t.integer "document_id"
   end
 
-  add_index "invoices", ["document_id"], name: "index_invoices_on_document_id", using: :btree
   add_index "invoices", ["transact_id"], name: "index_invoices_on_transact_id", using: :btree
 
   create_table "register_events", force: :cascade do |t|
@@ -71,6 +69,14 @@ ActiveRecord::Schema.define(version: 20160904130109) do
 
   add_index "register_events", ["event_id"], name: "index_register_events_on_event_id", using: :btree
   add_index "register_events", ["user_id"], name: "index_register_events_on_user_id", using: :btree
+
+  create_table "revisions", force: :cascade do |t|
+    t.integer "document_id"
+    t.integer "invoice_id"
+  end
+
+  add_index "revisions", ["document_id"], name: "index_revisions_on_document_id", using: :btree
+  add_index "revisions", ["invoice_id"], name: "index_revisions_on_invoice_id", using: :btree
 
   create_table "rules", force: :cascade do |t|
     t.string "reference"
@@ -180,8 +186,9 @@ ActiveRecord::Schema.define(version: 20160904130109) do
   add_foreign_key "associations", "transformations"
   add_foreign_key "invoice_push_events", "events"
   add_foreign_key "invoice_push_events", "transactions"
-  add_foreign_key "invoices", "documents"
   add_foreign_key "invoices", "transactions", column: "transact_id"
+  add_foreign_key "revisions", "documents"
+  add_foreign_key "revisions", "invoices"
   add_foreign_key "transaction_associate_rule_events", "events"
   add_foreign_key "transaction_associate_rule_events", "rules"
   add_foreign_key "transaction_associate_rule_events", "transactions"

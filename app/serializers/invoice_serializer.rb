@@ -8,7 +8,9 @@ class InvoiceSerializer
       id: invoice.public_id,
     }.tap do |o|
       o[:transaction] = { id: invoice.transact.public_id } unless :transaction == container || !invoice.transact
-      o[:document] = DocumentSerializer.serialize(invoice.document) if invoice.document
+      o[:revisions] = invoice.revisions.map do |revm|
+        { document: DocumentSerializer.serialize(revm.document) }
+      end
     end
   end
 end

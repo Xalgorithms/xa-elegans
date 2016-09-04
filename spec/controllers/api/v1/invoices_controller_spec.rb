@@ -7,6 +7,8 @@ describe Api::V1::InvoicesController, type: :controller do
   before(:all) do
     Invoice.destroy_all
     Transaction.destroy_all
+    Revision.destroy_all
+    Document.destroy_all
   end
   
   it 'should list all Invoices for a Transaction' do

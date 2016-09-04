@@ -1,6 +1,12 @@
 class Document < ActiveRecord::Base
-  has_one :invoice
+  has_one :revision
+  has_one :invoice, through: :revision
 
+  def initialize(*args)
+    super(*args)
+    self.public_id ||= UUID.generate
+  end
+  
   def currency
     content['currency']
   end

@@ -4,6 +4,15 @@ describe Api::V1::EventsController, type: :controller do
   include Randomness
   include ResponseJson
 
+  after(:all) do
+    Transaction.destroy_all
+    TransactionOpenEvent.destroy_all
+    TransactionCloseEvent.destroy_all
+    Document.destroy_all
+    Invoice.destroy_all
+    Revision.destroy_all
+  end
+  
   it 'can open transactions' do
     rand_times.map { create(:user) }.each do |um|
       len = Transaction.all.count
@@ -91,9 +100,11 @@ describe Api::V1::EventsController, type: :controller do
         expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
 
         expect(Invoice.all.count).to eql(len + 1)
-        expect(notification_invoice_id).to eql(Invoice.last.id)
-        expect(Invoice.last.transact).to eql(trm)
-        expect(Invoice.last.document).to eql(dm)
+        lim = Invoice.last
+        expect(notification_invoice_id).to eql(lim.id)
+        expect(lim.transact).to eql(trm)
+        expect(lim.revisions.length).to eql(1)
+        expect(lim.revisions.first.document).to eql(dm)
       end
     end
   end
