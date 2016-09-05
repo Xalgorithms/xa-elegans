@@ -40,10 +40,15 @@
 
     _.each(transactions, function (tr) {
       _.each(tr.invoices, function (inv) {
+        var latest = _.last(inv.revisions);
 	_.set(documents, inv.id, ko.observable());
-	$.getJSON(inv.document.url, function (content) {
-	  _.get(documents, inv.id)(content);
-	});
+
+        if (latest) {
+          debugger;
+	  $.getJSON(latest.document.url, function (content) {
+	    _.get(documents, inv.id)(content);
+	  });
+        }
       });
     });
 
