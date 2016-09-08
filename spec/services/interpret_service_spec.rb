@@ -4,8 +4,11 @@ require 'xa/registry/client'
 require 'xa/rules/context'
 require 'xa/rules/interpret'
 require 'xa/transforms/interpret'
+require 'xa/util/documents'
 
 describe InterpretService do
+  include XA::Util::Documents
+  
   after(:all) do
     Association.destroy_all
     Invoice.destroy_all
@@ -14,6 +17,7 @@ describe InterpretService do
     Document.destroy_all
     Invoice.destroy_all
     Revision.destroy_all
+    Change.destroy_all
   end
 
   let(:transform_interpreter) do
@@ -240,6 +244,12 @@ describe InterpretService do
             expect(ln[k]).to eql(expectations[:lines][i][k])
           end
         end
+
+        # there should be a change associated with the Document
+        expect(ndm.change).to_not be_nil
+        # it should have the new content that was merged into the previous revision
+        expect(ndm.change.content).to_not be_nil
+        expect(combine_documents([odm.content, ndm.change.content])).to eql(ndm.content)
       end
     end
   end

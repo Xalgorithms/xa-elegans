@@ -24,8 +24,10 @@ class InterpretService
           ctx = XA::Rules::Context.new(tables)
 
           tables = ctx.execute(rule).tables
-          reverse_transform_and_merge(transform_id, doc, tables) do |content|
-            Revision.create(invoice_id: invoice_id, document: Document.create(content: content))
+          reverse_transform_and_merge(transform_id, doc, tables) do |content, new_content|
+            dm = Document.create(content: content)
+            chm = Change.create(document: dm, content: new_content)
+            Revision.create(invoice_id: invoice_id, document: dm)
           end
         end
       end
@@ -85,7 +87,8 @@ class InterpretService
     end
 
     # create a new document
-    yield(docs.combine_documents([doc, shared_content.merge('lines' => lines_content)]))
+    new_content = shared_content.merge('lines' => lines_content)
+    yield(docs.combine_documents([doc, new_content]), new_content)
     
   rescue ActiveRecord::RecordNotFound => e
     Rails.logger.error("! failed to find transformation (id=#{transform_id})")        
