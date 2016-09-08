@@ -5,6 +5,11 @@ describe Document, type: :model do
   
   def with_documents
   end
+
+  after(:all) do
+    Document.destroy_all
+    Change.destroy_all
+  end
   
   it 'provides some properties out of the parsed content' do
     {
@@ -43,6 +48,16 @@ describe Document, type: :model do
       dm = create(:document, revision: revm)
       expect(dm.revision).to eql(revm)
       expect(dm.invoice).to eql(im)
+    end
+  end
+
+  it 'can have a change' do
+    expect(create(:document).change).to be_nil
+    rand_array_of_models(:document).each do |dm|
+      chm = create(:change)
+      dm.update_attributes(change: chm)
+      expect(dm.change).to eql(chm)
+      expect(Document.find(dm.id).change).to eql(chm)
     end
   end
 end

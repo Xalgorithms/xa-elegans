@@ -1,5 +1,6 @@
 class Document < ActiveRecord::Base
   has_one :revision
+  has_one :change
   has_one :invoice, through: :revision
 
   def initialize(*args)
