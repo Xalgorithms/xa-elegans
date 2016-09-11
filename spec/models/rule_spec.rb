@@ -5,6 +5,7 @@ describe Rule, type: :model do
 
   before(:each) do
     Rule.destroy_all
+    Change.destroy_all
     Transaction.destroy_all
     Association.destroy_all
   end
@@ -23,5 +24,15 @@ describe Rule, type: :model do
     end
     
     expect(rm.transactions).to match_array(trms)
+  end
+
+  it 'can have a change' do
+    expect(create(:rule).changes).to be_empty
+    rand_array_of_models(:rule).each do |rm|
+      chm = create(:change)
+      rm.update_attributes(rule_changes: [chm])
+      expect(rm.rule_changes).to include(chm)
+      expect(Rule.find(rm.id).rule_changes).to include(chm)
+    end
   end
 end
