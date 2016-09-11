@@ -19,14 +19,14 @@ class InterpretService
   
   def self.execute(invoice_id, rule_id, transform_id)
     get_latest_invoice_revision(invoice_id) do |doc|
-      download_rule(rule_id) do |rule|
+      download_rule(rule_id) do |rule, rm|
         build_tables_from_transform(doc, transform_id) do |tables|
           ctx = XA::Rules::Context.new(tables)
 
           tables = ctx.execute(rule).tables
           reverse_transform_and_merge(transform_id, doc, tables) do |content, new_content|
             dm = Document.create(content: content)
-            chm = Change.create(document: dm, content: new_content)
+            chm = Change.create(document: dm, content: new_content, rule: rm)
             Revision.create(invoice_id: invoice_id, document: dm)
           end
         end
@@ -49,7 +49,7 @@ class InterpretService
     cl = XA::Registry::Client.new(Rails.configuration.xa['registry']['url'])
     rule_content = cl.rule_by_full_reference(rm.reference)
 
-    yield(RuleInterpreter.new.interpret(rule_content))
+    yield(RuleInterpreter.new.interpret(rule_content), rm)
 
   rescue ActiveRecord::RecordNotFound => e
     Rails.logger.error("! failed to find rule (id=#{rule_id})")

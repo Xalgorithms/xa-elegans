@@ -80,7 +80,7 @@ describe InterpretService do
         ndm = im.revisions.last.document
         expect(ndm.id).to_not eql(odm.id)
 
-        yield(ndm, odm)
+        yield(ndm, odm, am.rule)
       end
     end    
   end
@@ -234,7 +234,7 @@ describe InterpretService do
       ],
     }
     
-    run_rule(document_content, transform_content, rule_content) do |ndm, odm|
+    run_rule(document_content, transform_content, rule_content) do |ndm, odm, rm|
       expect(ndm.content).to_not eql(odm.content)
       expectations[:shared].keys.each do |k|
         expect(ndm.content[k]).to eql(expectations[:shared][k])
@@ -249,6 +249,7 @@ describe InterpretService do
         expect(ndm.change).to_not be_nil
         # it should have the new content that was merged into the previous revision
         expect(ndm.change.content).to_not be_nil
+        expect(ndm.change.rule).to eql(rm)
         expect(combine_documents([odm.content, ndm.change.content])).to eql(ndm.content)
       end
     end
