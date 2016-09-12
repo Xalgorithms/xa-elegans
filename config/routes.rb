@@ -29,6 +29,10 @@ Rails.application.routes.draw do
 
       resources :transformations, only: [:show, :index]
       resources :rules, only: [:index]
+
+      resources :invoices, only: [] do
+        resource :change, only: [:show]
+      end
     end
   end
 end
