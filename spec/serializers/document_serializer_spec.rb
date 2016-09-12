@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe InvoiceSerializer do
+describe DocumentSerializer do
   it 'should serialize' do
     rand_array_of_models(:document).each do |dm|
       ex = {
