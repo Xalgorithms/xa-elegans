@@ -44,7 +44,6 @@
 	_.set(documents, inv.id, ko.observable());
 
         if (latest) {
-          debugger;
 	  $.getJSON(latest.document.url, function (content) {
 	    _.get(documents, inv.id)(content);
 	  });
