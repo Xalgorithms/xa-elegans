@@ -1,3 +1,5 @@
+require 'ubl/invoice'
+
 namespace :db do
   desc "add a new user"
   task :add_user, [:email, :password, :fullname] => :environment do |t, args|
@@ -16,52 +18,30 @@ namespace :db do
     end
   end
 
-  desc 'add an account for a user'
-  task :add_account, [:email, :name] => :environment do |t, args|
+  desc 'add testing document'
+  task :add_document, [:user_id, :path] => :environment do |t, args|
+    include UBL::Invoice    
+
+    um = User.find(args.user_id)
+    puts "> creating transaction structure (user=#{args.user_id})"
+    txm = Transaction.create(public_id: UUID.generate, user: um, status: Transaction::STATUS_OPEN)
+    im = Invoice.create(public_id: UUID.generate, transact: txm)
+
+    puts "> created (transaction=#{txm.public_id}; invoice=#{im.public_id}"
     
-    if args.email && args.name
-      u = User.find_by_email(args.email)
-      if u
-        acc = Account.create(name: args.name)
-        u.accounts << acc
-        puts "# account added"
-      else
-        puts "! failed to locate user (email=#{args.email})"        
-      end
-    else
-      puts "! email and name are required"
-    end
-  end
-  
-  desc 'clear all data without dropping, ignoring users'
-  task :clear_all, [] => :environment do |t, args|
-    puts '# purging SQL data'
-    [Change, Invoice, Rule, Transaction].each do |cl|
-      n = cl.destroy_all.length
-      puts "# #{cl} => #{n}"
+    puts "> creating document (path=#{args.path})"
+    ubl = File.read(args.path)
+    dm = Document.create(public_id: UUID.generate, src: ubl)
+    puts "> created (document=#{dm.public_id})"
+
+    puts "> parsing UBL"
+    parse(ubl) do |content|
+      dm.update_attributes(content: content)
+      puts "> parsed"
     end
 
-    puts '# purging Mongo data'
-    [Documents::Invoice, Documents::Change].each do |cl|
-      n = cl.destroy_all
-      puts "# #{cl} => #{n}"
-    end
-  end
-
-  desc 'list all objects'
-  task :show_all, [] => :environment do |t, args|
-    puts '# showing SQL objects'
-    [Change, Invoice, Rule, Transaction].each do |cl|
-      cl.all.each do |o|
-        puts " > #{o.inspect}"
-      end
-    end
-
-    puts '# showing Mongo objects'
-    [Documents::Invoice, Documents::Change].each do |cl|
-      cl.all.each do |o|
-        puts " > #{cl} (_id=#{o[:_id]})"
-      end
-    end
+    puts "> attaching new revision to invoice"
+    rm = Revision.create(invoice: im, document: dm)
+    puts "> created (revision=#{rm.id})"
   end
 end
