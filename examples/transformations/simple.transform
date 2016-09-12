@@ -1,0 +1,3 @@
+ADAPTS invoice
+MAKE simple
+USE price.amount AS price

@@ -1,4 +1,5 @@
 require 'ubl/invoice'
+require 'xa/transforms/parse'
 
 namespace :db do
   desc "add a new user"
@@ -19,15 +20,37 @@ namespace :db do
   end
 
   desc 'add testing document'
-  task :add_document, [:user_id, :path] => :environment do |t, args|
-    include UBL::Invoice    
+  task :add_document, [:user_id, :path, :transform_path, :rule_ref] => :environment do |t, args|
+    class InvoiceParser
+      include UBL::Invoice
+    end
+
+    class TransformParser
+      include XA::Transforms::Parse
+
+      def parse_content(content)
+        parse(content.split(/\n/))
+      end
+    end
 
     um = User.find(args.user_id)
+
     puts "> creating transaction structure (user=#{args.user_id})"
     txm = Transaction.create(public_id: UUID.generate, user: um, status: Transaction::STATUS_OPEN)
     im = Invoice.create(public_id: UUID.generate, transact: txm)
-
     puts "> created (transaction=#{txm.public_id}; invoice=#{im.public_id}"
+
+    name = File.basename(args.transform_path, '.transform')
+    puts "> creating transformation (path=#{args.transform_path}; name=#{name})"
+    src = File.read(args.transform_path)
+    trm = Transformation.create(public_id: UUID.generate, name: name, src: src)
+    trm.update_attributes(content: TransformParser.new.parse_content(src))
+    puts "> created (transformation=#{trm.public_id})"
+
+    puts "> association with transaction"
+    rm = Rule.create(public_id: UUID.generate, reference: args.rule_ref)
+    am = Association.create(transact: txm, rule: rm, transformation: trm)
+    puts "> created (rule=#{rm.public_id}; association=#{am.id})"
     
     puts "> creating document (path=#{args.path})"
     ubl = File.read(args.path)
@@ -35,7 +58,7 @@ namespace :db do
     puts "> created (document=#{dm.public_id})"
 
     puts "> parsing UBL"
-    parse(ubl) do |content|
+    InvoiceParser.new.parse(ubl) do |content|
       dm.update_attributes(content: content)
       puts "> parsed"
     end
