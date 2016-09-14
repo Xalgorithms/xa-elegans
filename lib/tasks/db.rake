@@ -19,6 +19,12 @@ namespace :db do
     end
   end
 
+  desc 'update rule reference'
+  task :update_rule_reference, [:rule_id, :rule_ref] => :environment do |t, args|
+    rm = Rule.find_by(public_id: args.rule_id)
+    rm.update_attributes(reference: args.rule_ref)
+  end
+  
   desc 'add testing document'
   task :add_document, [:user_id, :path, :transform_path, :rule_ref] => :environment do |t, args|
     class InvoiceParser
@@ -38,7 +44,7 @@ namespace :db do
     puts "> creating transaction structure (user=#{args.user_id})"
     txm = Transaction.create(public_id: UUID.generate, user: um, status: Transaction::STATUS_OPEN)
     im = Invoice.create(public_id: UUID.generate, transact: txm)
-    puts "> created (transaction=#{txm.public_id}; invoice=#{im.public_id}"
+    puts "> created (transaction=#{txm.public_id}; invoice=#{im.public_id})"
 
     name = File.basename(args.transform_path, '.transform')
     puts "> creating transformation (path=#{args.transform_path}; name=#{name})"
