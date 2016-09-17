@@ -1,3 +1,4 @@
 ADAPTS invoice
 MAKE simple
 USE price.amount AS price
+USE price.code AS code
