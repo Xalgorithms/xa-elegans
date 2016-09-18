@@ -19,10 +19,19 @@ namespace :db do
     end
   end
 
+  desc 'list all rules'
+  task :list_rules, [] => :environment do |t, args|
+    Rule.all.each do |rm|
+      puts "id=#{rm.public_id}; reference=#{rm.reference}"
+    end
+  end
+  
   desc 'update rule reference'
   task :update_rule_reference, [:rule_id, :rule_ref] => :environment do |t, args|
     rm = Rule.find_by(public_id: args.rule_id)
     rm.update_attributes(reference: args.rule_ref)
+    rm.reload
+    puts "id=#{rm.public_id}; reference=#{rm.reference}"
   end
   
   desc 'add testing document'
