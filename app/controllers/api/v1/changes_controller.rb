@@ -1,6 +1,10 @@
+require 'xa/util/documents'
+
 module Api
   module V1
     class ChangesController < ActionController::Base
+      include XA::Util::Documents
+      
       # TODO: do this properly
       skip_before_filter  :verify_authenticity_token
       
@@ -12,8 +16,10 @@ module Api
           latest = @invoice.revisions[-1]
           previous = @invoice.revisions[-2]
           content = {}.tap do |o|
-            o[:latest] = latest.document.change.content if latest && latest.document && latest.document.change
-            o[:previous] = previous.document.change.content if previous && previous.document && previous.document.change
+            if latest && latest.document && latest.document.change
+              o[:latest] = latest.document.change.content
+              o[:previous] = extract_corresponding(previous.document.content, latest.document.change.content) if previous && previous.document && previous.document.content
+            end
           end
         end
 
