@@ -31,6 +31,7 @@ Rails.application.routes.draw do
       resources :rules, only: [:index]
 
       resources :invoices, only: [] do
+        get 'latest', to: 'invoices#latest'
         resource :change, only: [:show]
       end
     end

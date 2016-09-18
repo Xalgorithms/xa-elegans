@@ -43,4 +43,34 @@ describe Api::V1::InvoicesController, type: :controller do
       expect(response).to have_http_status(:not_found)
     end
   end
+
+  it 'should yield the latest associated document' do
+    rand_array_of_models(:invoice).each do |im|
+      pdm = Document.create(invoice: im, content: { Faker::Hipster.word => Faker::Hipster.word })
+      ndm = Document.create(invoice: im, content: { Faker::Hipster.word => Faker::Hipster.word })
+
+      get(:latest, invoice_id: im.public_id)
+
+      expect(response).to be_success
+      expect(response_json).to eql(ndm.content)
+    end
+  end
+
+  it 'should yield not found for latest if the invoice has no revisions' do
+    rand_array_of_models(:invoice).each do |im|
+      get(:latest, invoice_id: im.public_id)
+
+      expect(response).to_not be_success
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  it 'should yield not found for latest if the invoice does not exist' do
+    rand_array_of_uuids.each do |public_id|
+      get(:latest, invoice_id: public_id)
+
+      expect(response).to_not be_success
+      expect(response).to have_http_status(:not_found)
+    end
+  end
 end

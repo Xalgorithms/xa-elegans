@@ -6,6 +6,7 @@ module Api
 
       before_filter :maybe_lookup_transaction, only: [:index]
       before_filter :maybe_lookup_user,        only: [:index]
+      before_filter :maybe_lookup_invoice,     only: [:latest]
 
       def index
         if @rel
@@ -14,8 +15,25 @@ module Api
           render(nothing: true, status: :not_found)
         end
       end
+
+      def latest
+        if @rel && @rel.revisions.any?
+          render(json: @rel.revisions.last.document.content)
+        else
+          render(nothing: true, status: :not_found)
+        end
+      end
       
       private
+
+      def maybe_lookup_invoice
+        id = params.fetch('invoice_id', nil)
+        begin
+          @rel = Invoice.find_by(public_id: id) if id
+        rescue ActiveRecord::RecordNotFound => e
+          Rails.logger.info("? Failed to find invoice (id=#{id})")
+        end
+      end
 
       def maybe_lookup_transaction
         id = params.fetch('transaction_id', nil)
