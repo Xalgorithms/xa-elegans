@@ -18,7 +18,7 @@ module Api
 
       def latest
         if @rel && @rel.revisions.any?
-          render(json: @rel.revisions.last.document.content)
+          render(json: DocumentSerializer.serialize(@rel.revisions.last.document))
         else
           render(nothing: true, status: :not_found)
         end

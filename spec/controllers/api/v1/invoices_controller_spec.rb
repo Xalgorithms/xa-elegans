@@ -46,13 +46,13 @@ describe Api::V1::InvoicesController, type: :controller do
 
   it 'should yield the latest associated document' do
     rand_array_of_models(:invoice).each do |im|
-      pdm = Document.create(invoice: im, content: { Faker::Hipster.word => Faker::Hipster.word })
-      ndm = Document.create(invoice: im, content: { Faker::Hipster.word => Faker::Hipster.word })
+      pdm = Document.create(invoice: im)
+      ndm = Document.create(invoice: im)
 
       get(:latest, invoice_id: im.public_id)
 
       expect(response).to be_success
-      expect(response_json).to eql(ndm.content)
+      expect(response_json).to eql(encode_decode(DocumentSerializer.serialize(ndm)))
     end
   end
 
