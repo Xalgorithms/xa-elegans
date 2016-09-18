@@ -2,3 +2,5 @@ ADAPTS invoice
 MAKE simple
 USE price.amount AS price
 USE price.code AS code
+MAKE final_pricing
+USE price.amount AS final_price
