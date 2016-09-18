@@ -21,7 +21,7 @@ class InterpretService
     get_latest_invoice_revision(invoice_id) do |doc|
       download_rule(rule_id) do |rule, rm|
         build_tables_from_transform(doc, transform_id) do |tables|
-          ctx = XA::Rules::Context.new(tables)
+          ctx = XA::Rules::Context.new(tables, Rails.logger)
 
           tables = ctx.execute(rule).tables
           reverse_transform_and_merge(transform_id, doc, tables) do |content, new_content|
@@ -46,17 +46,27 @@ class InterpretService
   
   def self.download_rule(rule_id)
     rm = Rule.find(rule_id)
-    cl = XA::Registry::Client.new(Rails.configuration.xa['registry']['url'])
-    rule_content = cl.rule_by_full_reference(rm.reference)
 
-    yield(RuleInterpreter.new.interpret(rule_content), rm)
+    url = Rails.configuration.xa['registry']['url']
+    Rails.logger.info("> downloading rule from registry (rule=#{rm.public_id}; url=#{url})")
+    cl = XA::Registry::Client.new(url)
+    rule_content = cl.rule_by_full_reference(rm.reference)
+    if rule_content
+      Rails.logger.info("> got a valid rule, yielding with interpretation")
+      yield(RuleInterpreter.new.interpret(rule_content), rm)
+    else
+      Rails.logger.error("! failed to download the rule")
+    end
 
   rescue ActiveRecord::RecordNotFound => e
     Rails.logger.error("! failed to find rule (id=#{rule_id})")
   end
 
   def self.build_tables_from_transform(document, transform_id)
+    Rails.logger.info("> building tables (transform=#{transform_id})")
+
     txm = Transformation.find(transform_id)
+
     shared_content = document.except('lines')
     document_table = document.fetch('lines', []).map do |ln|
       shared_content.merge(ln)
@@ -70,6 +80,9 @@ class InterpretService
   def self.reverse_transform_and_merge(transform_id, doc, tables)
     docs = Documents.new
     txm = Transformation.find(transform_id)
+
+    Rails.logger.info("> reversing transformation (tables=#{tables})")
+    
     all_content = TransformInterpreter.new.misinterpret(tables, txm.content['tables'])
   # search through all_content to determine fields that should appear in shared_content
     shared_content = all_content.inject({}) do |sc, d|
