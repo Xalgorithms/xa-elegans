@@ -27,7 +27,7 @@ class NotificationService
     dm = Document.find(document_id)
     um.registrations.each do |rm|
       Rails.logger.info("sending notification (to=#{rm.token}; document_id=#{dm.public_id}; invoice_id=#{im.public_id})")
-      cl.send(rm.token, invoice_id: im.public_id, document_id: dm.public_id)
+      cl.send(rm.token, invoice_id: im.public_id, document_id: dm.public_id, transaction_id: im.transact.public_id)
     end
   end
 end
