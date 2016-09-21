@@ -8,6 +8,8 @@ describe Api::V1::EventsController, type: :controller do
     Transaction.destroy_all
     TransactionOpenEvent.destroy_all
     TransactionCloseEvent.destroy_all
+    TransactionExecuteEvent.destroy_all
+    TransactionAddInvoiceEvent.destroy_all
     Document.destroy_all
     Invoice.destroy_all
     Revision.destroy_all
@@ -284,6 +286,39 @@ describe Api::V1::EventsController, type: :controller do
 
       expect(response).to be_success
       expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
+    end
+  end
+
+  it 'can add invoices by url' do
+    rand_array_of_models(:transaction).each do |trm|
+      url = Faker::Internet.url
+      src = File.read('ubl/documents/icelandic-guitar/t0.xml')
+
+      expect(DownloadService).to receive(:get).with(url).and_yield(src)
+
+      post(:create, event_type: 'transaction_add_invoice', transaction_add_invoice_event: {
+             url: url,
+             transaction_public_id: trm.public_id,
+           })
+
+      evt = TransactionAddInvoiceEvent.last
+
+      expect(evt).to_not be_nil
+      expect(evt.event).to eql(Event.last)
+      expect(evt.transact).to eql(trm)
+
+      expect(response).to be_success
+      expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
+
+      trm.reload
+      expect(trm.invoices.count).to eql(1)
+
+      im = trm.invoices.last
+      expect(im).to_not be_nil
+      expect(im.revisions.count).to eql(1)
+
+      dm = im.revisions.last.document
+      expect(dm.src).to_not be_nil
     end
   end
 end

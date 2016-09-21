@@ -58,4 +58,15 @@ class EventService
       ExecuteService.execute(tr.id)
     end
   end
+
+  def self.transaction_add_invoice(e)
+    attach_transaction(e) do |trm|
+      DownloadService.get(e.url) do |src|
+        dm = Document.create(src: src)
+        im = Invoice.create(transact: trm)
+        Revision.create(document: dm, invoice: im)
+        InvoiceParseService.parse(dm.id)
+      end
+    end
+  end
 end
