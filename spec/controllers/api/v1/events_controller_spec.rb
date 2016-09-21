@@ -290,11 +290,20 @@ describe Api::V1::EventsController, type: :controller do
   end
 
   it 'can add invoices by url' do
-    rand_array_of_models(:transaction).each do |trm|
+    um = create(:user)
+    rand_array_of_models(:transaction, user: um).each do |trm|
       url = Faker::Internet.url
       src = File.read('ubl/documents/icelandic-guitar/t0.xml')
 
       expect(DownloadService).to receive(:get).with(url).and_yield(src)
+      notification_invoice_id = nil
+      notification_document_id = nil
+      expect(NotificationService).to receive(:send) do |user_id, invoice_id, document_id|
+        expect(user_id).to eql(um.id)
+        notification_document_id = document_id
+        notification_invoice_id = invoice_id
+      end
+
 
       post(:create, event_type: 'transaction_add_invoice', transaction_add_invoice_event: {
              url: url,
@@ -318,11 +327,11 @@ describe Api::V1::EventsController, type: :controller do
       im = trm.invoices.last
       expect(im).to_not be_nil
       expect(im.revisions.count).to eql(1)
+      expect(notification_invoice_id).to eql(im.id)
 
       dm = im.revisions.last.document
       expect(dm.src).to_not be_nil
-
-      # invoice/document on event
+      expect(notification_document_id).to eql(dm.id)
 
       get(:show, id: evt.event.public_id)
       

@@ -67,6 +67,7 @@ class EventService
         Revision.create(document: dm, invoice: im)
         InvoiceParseService.parse(dm.id)
         e.update_attributes(invoice: im, document: dm)
+        NotificationService.send(trm.user.id, im.id, dm.id) if trm.user
       end
     end
   end
