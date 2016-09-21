@@ -64,7 +64,7 @@
     // TODO: clean this up
     vm.transaction_view_models = ko.computed(function () {
       var vms = _.map(vm.transactions(), function (tr) {
-	var vm = _.extend({}, tr, {
+	var tr_vm = _.extend({}, tr, {
 	  panel_style :     _.get(styles, tr.status, 'panel-info'),
 	  status_label      : _.get(labels, tr.status),
 	  trigger_associate : associate,
@@ -79,6 +79,7 @@
 	      transaction_close_event: { transaction_public_id: o.id }
 	    }, function (resp) {
 	      $.getJSON(resp.url, function (evt) {
+                debugger;
 		vm.transactions.remove(function (it) {
 		  return it.id == evt.transaction.id;
 		});
@@ -102,23 +103,23 @@
 	});
 
 	// computeds
-	vm.format_url = ko.computed(function () {
+	tr_vm.format_url = ko.computed(function () {
 	  return Routes.api_v1_transformation_path(tr.id);
 	});
 	
-	vm.closed = ko.computed(function () {
+	tr_vm.closed = ko.computed(function () {
 	  return 'closed' === tr.status;
 	});
 	
-	vm.have_invoices = ko.computed(function () {
-	  return vm.invoices.length > 0;
+	tr_vm.have_invoices = ko.computed(function () {
+	  return tr_vm.invoices.length > 0;
 	});
 
-	vm.have_associations = ko.computed(function () {
-	  return vm.associations().length > 0;
+	tr_vm.have_associations = ko.computed(function () {
+	  return tr_vm.associations().length > 0;
 	});
 	
-	return vm;
+	return tr_vm;
       });
 
       return _.chunk(vms, 4);
