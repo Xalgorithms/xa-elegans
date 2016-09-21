@@ -9,4 +9,15 @@ describe Invoice, type: :model do
       expect(im.documents).to match_array(dms)
     end
   end
+
+  it 'should auto-assign public id' do
+    rand_times.each do
+      expect(Invoice.create.public_id).to_not be_nil
+    end
+
+    rand_times.each do
+      id = UUID.generate
+      expect(Invoice.create(public_id: id).public_id).to eql(id)
+    end
+  end
 end
