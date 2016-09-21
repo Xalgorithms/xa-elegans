@@ -76,4 +76,17 @@ describe EventSerializer do
       expect(EventSerializer.serialize(tdem.event)).to eql(ex)
     end
   end
+
+  it 'should serialize TransactionAddInvoiceEvent' do
+    rand_array_of_models(:transaction_add_invoice_event).each do |taiem|
+      ex = {
+        transaction: { id: taiem.transact.public_id },
+        invoice: { id: taiem.invoice.public_id, url: Rails.application.routes.url_helpers.api_v1_invoice_path(taiem.invoice.public_id) },
+        document: { id: taiem.document.public_id, url: Rails.application.routes.url_helpers.api_v1_document_path(taiem.document.public_id) },
+        id: taiem.event.public_id,
+        event_type: 'transaction_add_invoice',
+      }
+      expect(EventSerializer.serialize(taiem.event)).to eql(ex)
+    end
+  end
 end

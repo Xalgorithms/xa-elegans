@@ -7,6 +7,7 @@ class EventSerializer
       transformation_add:         method(:serialize_transformation_add),
       transformation_destroy:     method(:serialize_transformation_destroy),
       transaction_associate_rule: method(:serialize_transaction_associate_rule),
+      transaction_add_invoice:    method(:serialize_transaction_add_invoice),
     }
 
     @serializers.fetch(event.event_type.to_sym, lambda { |o| {} }).call(event)
@@ -53,6 +54,20 @@ class EventSerializer
       o[:transaction] = { id: event.transaction_associate_rule_event.transact.public_id } if event.transaction_associate_rule_event.transact
       o[:rule] = { reference: event.transaction_associate_rule_event.rule.reference } if event.transaction_associate_rule_event.rule
       o[:transformation] = { name: event.transaction_associate_rule_event.transformation.name } if event.transaction_associate_rule_event.transformation
+    end.merge(serialize_any(event))
+  end
+
+  def self.serialize_transaction_add_invoice(event)
+    {}.tap do |o|
+      o[:transaction] = { id: event.transaction_add_invoice_event.transact.public_id } if event.transaction_add_invoice_event.transact
+      o[:invoice] = {
+        id: event.transaction_add_invoice_event.invoice.public_id,
+        url: Rails.application.routes.url_helpers.api_v1_invoice_path(event.transaction_add_invoice_event.invoice.public_id),
+      } if event.transaction_add_invoice_event.invoice
+      o[:document] = {
+        id: event.transaction_add_invoice_event.document.public_id,
+        url: Rails.application.routes.url_helpers.api_v1_document_path(event.transaction_add_invoice_event.document.public_id),
+      } if event.transaction_add_invoice_event.document
     end.merge(serialize_any(event))
   end
   

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160921094641) do
+ActiveRecord::Schema.define(version: 20160921114044) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -101,9 +101,13 @@ ActiveRecord::Schema.define(version: 20160921094641) do
     t.string  "url"
     t.integer "transaction_id"
     t.integer "event_id"
+    t.integer "invoice_id"
+    t.integer "document_id"
   end
 
+  add_index "transaction_add_invoice_events", ["document_id"], name: "index_transaction_add_invoice_events_on_document_id", using: :btree
   add_index "transaction_add_invoice_events", ["event_id"], name: "index_transaction_add_invoice_events_on_event_id", using: :btree
+  add_index "transaction_add_invoice_events", ["invoice_id"], name: "index_transaction_add_invoice_events_on_invoice_id", using: :btree
   add_index "transaction_add_invoice_events", ["transaction_id"], name: "index_transaction_add_invoice_events_on_transaction_id", using: :btree
 
   create_table "transaction_associate_rule_events", force: :cascade do |t|

@@ -6,7 +6,7 @@ module Api
 
       before_filter :maybe_lookup_transaction, only: [:index]
       before_filter :maybe_lookup_user,        only: [:index]
-      before_filter :maybe_lookup_invoice,     only: [:latest]
+      before_filter :maybe_lookup_invoice,     only: [:latest, :show]
 
       def index
         if @rel
@@ -23,11 +23,22 @@ module Api
           render(nothing: true, status: :not_found)
         end
       end
+
+      def show
+        if @rel
+          render(json: InvoiceSerializer.serialize(@rel))
+        else
+          render(nothing: true, status: :not_found)
+        end
+      end
       
       private
 
       def maybe_lookup_invoice
-        id = params.fetch('invoice_id', nil)
+        id = ['invoice_id', 'id'].inject(nil) do |v, k|
+          v ||= params.fetch(k, v)
+        end
+        
         begin
           @rel = Invoice.find_by(public_id: id) if id
         rescue ActiveRecord::RecordNotFound => e

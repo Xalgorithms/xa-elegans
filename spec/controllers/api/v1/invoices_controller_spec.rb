@@ -73,4 +73,22 @@ describe Api::V1::InvoicesController, type: :controller do
       expect(response).to have_http_status(:not_found)
     end
   end
+
+  it 'should show an invoice' do
+    rand_array_of_models(:invoice).each do |im|
+      get(:show, id: im.public_id)
+
+      expect(response).to be_success
+      expect(response_json).to eql(encode_decode(InvoiceSerializer.serialize(im)))
+    end
+  end
+
+  it 'should yield not found if the invoice shown does not exist' do
+    rand_array_of_uuids.each do |id|
+      get(:show, id: id)
+
+      expect(response).to_not be_success
+      expect(response).to have_http_status(:not_found)
+    end
+  end
 end

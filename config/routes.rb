@@ -30,7 +30,7 @@ Rails.application.routes.draw do
       resources :transformations, only: [:show, :index]
       resources :rules, only: [:index]
 
-      resources :invoices, only: [] do
+      resources :invoices, only: [:show] do
         get 'latest', to: 'invoices#latest'
         resource :change, only: [:show]
       end

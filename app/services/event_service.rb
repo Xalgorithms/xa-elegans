@@ -66,6 +66,7 @@ class EventService
         im = Invoice.create(transact: trm)
         Revision.create(document: dm, invoice: im)
         InvoiceParseService.parse(dm.id)
+        e.update_attributes(invoice: im, document: dm)
       end
     end
   end

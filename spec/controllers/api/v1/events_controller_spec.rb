@@ -306,6 +306,8 @@ describe Api::V1::EventsController, type: :controller do
       expect(evt).to_not be_nil
       expect(evt.event).to eql(Event.last)
       expect(evt.transact).to eql(trm)
+      expect(evt.invoice).to eql(Invoice.last)
+      expect(evt.document).to eql(Document.last)
 
       expect(response).to be_success
       expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
@@ -319,6 +321,13 @@ describe Api::V1::EventsController, type: :controller do
 
       dm = im.revisions.last.document
       expect(dm.src).to_not be_nil
+
+      # invoice/document on event
+
+      get(:show, id: evt.event.public_id)
+      
+      expect(response).to be_success
+      expect(response_json).to eql(encode_decode(EventSerializer.serialize_transaction_add_invoice(evt.event)))
     end
   end
 end
