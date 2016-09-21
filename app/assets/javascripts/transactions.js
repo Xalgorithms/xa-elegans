@@ -1,16 +1,25 @@
 (function () {
-  var form_vm = {
+  var associate_vm = {
     transaction_id:  ko.observable(),
     rules:           ko.observableArray(),
     transformations: ko.observableArray()
   };
 
-  var vm = {
+  var add_invoice_vm = {
+    transaction_id: ko.observable()
+  };
+
+  var page_vm = {
   };
 
   function associate(tr) {
     $('#modal-associate').modal('toggle');
-    form_vm.transaction_id(tr.id);
+    associate_vm.transaction_id(tr.id);
+  }
+
+  function add_invoice(tr) {
+    $('#modal-add-invoice').modal('toggle');
+    add_invoice_vm.transaction_id(tr.id);
   }
 
   function init() {
@@ -29,12 +38,26 @@
     $('.new_transaction_associate_rule_event').on('ajax:success', function (e, o) {
       $('#modal-associate').modal('toggle');
       $.getJSON(o.url, function (o) {
-	var tr = _.find(vm.transactions(), function (tr) {
+	var tr = _.find(page_vm.transactions(), function (tr) {
 	  return tr.id == o.transaction.id;
 	});
 	if (tr) {
 	  tr.associations.push(o);
 	}
+      });    
+    });
+    
+    $('.new_transaction_add_invoice_event').on('ajax:success', function (e, o) {
+      $('#modal-add-invoice').modal('toggle');
+      $.getJSON(o.url, function (event) {
+	$.getJSON(event.invoice.url, function (invoice) {
+	  var tr = _.find(page_vm.transactions(), function (tr) {
+	    return tr.id == event.transaction.id;
+	  });
+	  if (tr) {
+	    tr.invoices.push(invoice);
+	  }	  
+	});
       });    
     });
 
@@ -52,39 +75,39 @@
     });
 
     $.getJSON(Routes.api_v1_rules_path(), function (o) {
-      form_vm.rules(o);
+      associate_vm.rules(o);
     });
 
     $.getJSON(Routes.api_v1_transformations_path(), function (o) {
-      form_vm.transformations(o);
+      associate_vm.transformations(o);
     });
 
-    vm.transactions = ko.observableArray(transactions);
+    page_vm.transactions = ko.observableArray(transactions);
 
     // TODO: clean this up
-    vm.transaction_view_models = ko.computed(function () {
-      var vms = _.map(vm.transactions(), function (tr) {
+    page_vm.transaction_view_models = ko.computed(function () {
+      var vms = _.map(page_vm.transactions(), function (tr) {
 	var tr_vm = _.extend({}, tr, {
 	  panel_style :     _.get(styles, tr.status, 'panel-info'),
 	  status_label      : _.get(labels, tr.status),
 	  trigger_associate : associate,
-	  invoices:         _.map(tr.invoices, function (invoice) {
+          trigger_add_invoice: add_invoice,
+	  invoices:         ko.observableArray(_.map(tr.invoices, function (invoice) {
 	    return _.extend({}, invoice, {
 	      content: _.get(documents, invoice.id)
 	    });
-	  }),
+	  })),
 	  trigger_close:    function (o) {
 	    $.post(Routes.api_v1_events_path(), {
 	      event_type: 'transaction_close',
 	      transaction_close_event: { transaction_public_id: o.id }
 	    }, function (resp) {
 	      $.getJSON(resp.url, function (evt) {
-                debugger;
-		vm.transactions.remove(function (it) {
+		page_vm.transactions.remove(function (it) {
 		  return it.id == evt.transaction.id;
 		});
 		$.getJSON(evt.transaction.url, function (tr) {
-		  vm.transactions.push(tr);
+		  page_vm.transactions.push(tr);
 		});
               });
 	    });
@@ -112,7 +135,7 @@
 	});
 	
 	tr_vm.have_invoices = ko.computed(function () {
-	  return tr_vm.invoices.length > 0;
+	  return tr_vm.invoices().length > 0;
 	});
 
 	tr_vm.have_associations = ko.computed(function () {
@@ -125,21 +148,24 @@
       return _.chunk(vms, 4);
     });
 
-    vm.add = function () {
+    page_vm.add = function () {
       $.post(Routes.api_v1_events_path(), {
 	event_type: 'transaction_open',
 	transaction_open_event: { user_id: user_id }
       }, function (resp) {
 	$.getJSON(resp.url, function (o) {
 	  $.getJSON(o.transaction.url, function (o) {
-	    vm.transactions.push(o);
+	    page_vm.transactions.push(o);
 	  });
 	});
       });
     };
 
-    ko.applyBindings(vm, document.getElementById('transactions'));
-    ko.applyBindings(form_vm, document.getElementById('modal-associate'));
+    applyManyBindings({
+      'transactions': page_vm,
+      'modal-associate': associate_vm,
+      'modal-add-invoice' : add_invoice_vm
+    });
   }
 
   init_on_page('transactions', init);

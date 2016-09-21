@@ -44,6 +44,7 @@
             <!-- ko ifnot: closed -->
             button.btn#button-close type="button" data-bind="click: trigger_close"= t('.labels.close')
             <!-- /ko -->
+            button.btn#button-add-invoice type="button" data-bind="click: trigger_add_invoice"= t('.labels.add_invoice')
       <!-- /ko -->
             
 .modal.fade.modal-wide#modal-invoice-show title="#{t('.modals.invoice')}" tabindex="-1" role="dialog"
@@ -66,6 +67,27 @@
             = f.label(:transformation_public_id, t('.labels.select_transformation'))
             = f.select(:transformation_public_id, [], {}, { class: 'form-control', 'data-bind' => 'foreach: transformations' })
               option data-bind="value: $data.id, text: $data.name"
+          = f.hidden_field(:transaction_public_id, 'data-bind' => 'value: transaction_id')
+        .modal-footer
+          button.btn.btn-default type="button" data-dismiss="modal"
+            = fa_icon('close')
+            span= t('labels.close', scope: 'shared')
+          button.btn.btn-primary type="submit"
+            = fa_icon('check')
+            span= t('labels.add', scope: 'shared')
+
+.modal.fade#modal-add-invoice tabIndex="-1" role="dialog"
+  .modal-dialog role="document"
+    = form_for(TransactionAddInvoiceEvent.new, url: api_v1_events_path, remote: true) do |f|
+      = hidden_field_tag(:event_type, 'transaction_add_invoice')
+      .modal-content
+        .modal-header
+          button.close type="button" data-dismiss="modal"= fa_icon('close')
+          h4.modal-title= t('.labels.modal_add')
+        .modal-body
+          .form-group
+            = f.label(:url, t('.labels.select_rule'))
+            = f.text_field(:url, value: 'https://raw.githubusercontent.com/Xalgorithms/xa-elegans/master/ubl/documents/icelandic-guitar/t0.xml', class: 'form-control')
           = f.hidden_field(:transaction_public_id, 'data-bind' => 'value: transaction_id')
         .modal-footer
           button.btn.btn-default type="button" data-dismiss="modal"
