@@ -2,7 +2,7 @@ bank = EuCentralBank.new
 
 if !Rails.env.test?
   cache_dir = Rails.root.join('tmp', 'cache')
-  Dir.mkdir(cache_dir) if !Dir.exists?(cache_dir)
+  FileUtils.mkdir_p(cache_dir) if !Dir.exists?(cache_dir)
   cf = File.join(cache_dir, 'eu_bank_rates.xml')
   bank.save_rates(cf)
   bank.update_rates(cf)
