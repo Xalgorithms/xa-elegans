@@ -1,0 +1,18 @@
+FROM ruby:2.3
+
+RUN bundle config --global frozen 1
+
+RUN mkdir -p /app
+WORKDIR /app
+
+COPY Gemfile /app
+COPY Gemfile.lock /app
+
+RUN bundle install --without test development
+
+COPY . /app
+
+ENV RAILS_ENV production
+ENV RACK_ENV production
+ENV SECRET_KEY_BASE 'assembly-secret'
+RUN rake assets:precompile
