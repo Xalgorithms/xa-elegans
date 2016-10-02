@@ -1,0 +1,21 @@
+sudo: required
+language: ruby
+services:
+- docker
+
+before_install:
+  - "./start_containers.sh"
+
+script:
+  - bundle exec rake spec
+
+after_success:
+  - "./build_images.sh"
+  - "./publish_images.sh"
+
+deploy:
+  provider: releases
+  api_key:
+    secure: mb/C9vm6l+kwq37j3pwF78bnsJEdEoOwarjoIBxXZ1ICvsMiYfJKKTXZzv75lO0l7bs8IkGclQgyZQxF5Fbulq7K+qe6VaISfko+R9TVs+n2eW6xWaGuyZ7ogbSEnkgpYoKoOuE+M6TYl7yZfZemNs3TYAtzBQ6wFHRisVW2F6qjAbQBqtK2KYNyFf/kY+ZDW47UHFWv+fGpsYx45p+eUg3/WrUrzfTDYy/obTKGVjLMv2S13980rW0sQm04b2r1i7ZNmdYz9BEvWV7jNV+9lYS4PxUOCWInriVyeTDJK0hVGoOfPkLcsNIbX8f2qUOXGvXA+ZyeHOowk2Up+dx5bWpYEnqtrt4sUh9Dy/bT83sxBEKeIZte/y88Uu3FPttZdyIiofBV4pgjB+hz5r6VGBAGXQU3N3lPXeBXwfpNjKd5vf9aTsD40va8k7Ui644y033JbJN9D87UvP/iRmPIVLxk82oAZrJ1V6OMKjZuN0tSfKzvn9wzLcOykvWJp+pWioIVwVsS0MYT7+cJpshBAtmCkjwn6pBR4V9BdXzuRILq3EfvUiOffFdotM0lu0EgzIynPC6XwM+QDEWc93PFjfYexc74mS4nMEI6IGZajXpOiMOA/StOqW/36Ov979Ki1LLrNVdrP9kk1a8xaSi2XR6WKv1q09w20p7eyiIEtOs=
+  on:
+    repo: Xalgorithms/xa-lichen
