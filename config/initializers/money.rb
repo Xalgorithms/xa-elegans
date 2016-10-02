@@ -1,6 +1,7 @@
 bank = EuCentralBank.new
 
 if !Rails.env.test?
+  Dir.mkdir(Rails.root.join('tmp', 'cache'))
   cf = Rails.root.join('tmp', 'cache', 'eu_bank_rates.xml')
   bank.save_rates(cf)
   bank.update_rates(cf)
