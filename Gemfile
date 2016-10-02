@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby "2.3.0"
+ruby "2.3.1"
 
 # basics
 gem 'active_model_serializers'
@@ -18,7 +18,7 @@ gem 'knockoutjs-rails'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails'
 # See https://github.com/rails/execjs#readme for more supported runtimes
-# gem 'therubyracer', platforms: :ruby
+gem 'therubyracer', platforms: :ruby
 
 # style related gems
 #gem 'bootstrap', '~> 4.0.0.alpha3'
