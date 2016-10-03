@@ -7,8 +7,8 @@ before_install:
   - "./start_containers.sh"
 
 script:
-  - RAILS_ENV=test bundle exec rake db:create db:migrate
-  - bundle exec rake spec
+  - POSTGRES_PORT=8888 RAILS_ENV=test bundle exec rake db:create db:migrate
+  - POSTGRES_PORT=8888 RAILS_ENV=test bundle exec rake spec
 
 after_success:
   - "./build_images.sh"
