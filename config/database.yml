@@ -14,8 +14,6 @@ default_postgres: &default_postgres
   pool: 5
   username: <%= ENV["DB_USERNAME"] %>
   password: <%= ENV["DB_PASSWORD"] %>
-  # port conflicts with travis ci
-  port: 8888
 
 development_postgres: &development_postgres
   <<: *default_postgres
@@ -38,4 +36,7 @@ development:
 test:
   <<: *development_postgres
   database: geghard_TEST
+  # port conflicts with travis ci, so the EXTERNAL port of the
+  # container used for TESTING ONLY is now 8888
+  port: 8888
   
