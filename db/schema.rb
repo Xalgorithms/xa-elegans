@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160921114044) do
+ActiveRecord::Schema.define(version: 20161018192402) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -95,6 +95,15 @@ ActiveRecord::Schema.define(version: 20160921114044) do
   create_table "sync_attempts", force: :cascade do |t|
     t.string "token"
   end
+
+  create_table "tradeshift_keys", force: :cascade do |t|
+    t.string  "key"
+    t.string  "secret"
+    t.string  "tenant_id"
+    t.integer "user_id"
+  end
+
+  add_index "tradeshift_keys", ["user_id"], name: "index_tradeshift_keys_on_user_id", using: :btree
 
   create_table "transaction_add_invoice_events", force: :cascade do |t|
     t.string  "transaction_public_id"
@@ -212,6 +221,7 @@ ActiveRecord::Schema.define(version: 20160921114044) do
   add_foreign_key "invoices", "transactions", column: "transact_id"
   add_foreign_key "revisions", "documents"
   add_foreign_key "revisions", "invoices"
+  add_foreign_key "tradeshift_keys", "users"
   add_foreign_key "transaction_associate_rule_events", "events"
   add_foreign_key "transaction_associate_rule_events", "rules"
   add_foreign_key "transaction_associate_rule_events", "transactions"

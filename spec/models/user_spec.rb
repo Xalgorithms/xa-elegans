@@ -7,6 +7,7 @@ describe User, type: :model do
     Registration.destroy_all
     User.destroy_all
     Transaction.destroy_all
+    TradeshiftKey.destroy_all
   end
 
   it 'has many registrations' do
@@ -32,6 +33,13 @@ describe User, type: :model do
 
       um = User.find(um.id)
       expect(um.invoices).to match_array(ims)
+    end
+  end
+
+  it 'has a tradeshift key' do
+    rand_array_of_models(:user).each do |um|
+      tkm = create(:tradeshift_key, user: um)
+      expect(um.tradeshift_key).to eql(tkm)
     end
   end
 end
