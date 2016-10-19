@@ -33,6 +33,12 @@ namespace :db do
     rm.reload
     puts "id=#{rm.public_id}; reference=#{rm.reference}"
   end
+
+  desc 'configure tradeshift'
+  task :configure_tradeshift, [:user_id, :key, :secret, :tenant_id] => :environment do |t, args|
+    um = User.find(args.user_id)
+    um.update_attributes(tradeshift_key: TradeshiftKey.create(key: args.key, secret: args.secret, tenant_id: args.tenant_id))
+  end
   
   desc 'add testing document'
   task :add_document, [:user_id, :path, :transform_path, :rule_ref] => :environment do |t, args|
