@@ -339,4 +339,24 @@ describe Api::V1::EventsController, type: :controller do
       expect(response_json).to eql(encode_decode(EventSerializer.serialize_transaction_add_invoice(evt.event)))
     end
   end
+
+  it 'can bind invoice sources' do
+    rand_array_of_models(:transaction).each do |trm|
+      source = rand_one(Transaction::SOURCES)
+      post(:create, event_type: 'transaction_bind_source', transaction_bind_source_event: {
+             transaction_public_id: trm.public_id,
+             source: source,
+           })
+
+      evt = TransactionBindSourceEvent.last
+
+      expect(evt).to_not be_nil
+      expect(evt.event).to eql(Event.last)
+      expect(evt.transact).to eql(trm)
+      expect(evt.source).to eql(source.to_s)
+
+      expect(response).to be_success
+      expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
+    end
+  end
 end

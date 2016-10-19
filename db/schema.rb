@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161018192402) do
+ActiveRecord::Schema.define(version: 20161019181513) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -134,6 +134,16 @@ ActiveRecord::Schema.define(version: 20161018192402) do
   add_index "transaction_associate_rule_events", ["transaction_id"], name: "index_transaction_associate_rule_events_on_transaction_id", using: :btree
   add_index "transaction_associate_rule_events", ["transformation_id"], name: "index_transaction_associate_rule_events_on_transformation_id", using: :btree
 
+  create_table "transaction_bind_source_events", force: :cascade do |t|
+    t.string  "source"
+    t.integer "transaction_id"
+    t.integer "event_id"
+    t.string  "transaction_public_id"
+  end
+
+  add_index "transaction_bind_source_events", ["event_id"], name: "index_transaction_bind_source_events_on_event_id", using: :btree
+  add_index "transaction_bind_source_events", ["transaction_id"], name: "index_transaction_bind_source_events_on_transaction_id", using: :btree
+
   create_table "transaction_close_events", force: :cascade do |t|
     t.integer "transaction_id"
     t.integer "event_id"
@@ -166,6 +176,7 @@ ActiveRecord::Schema.define(version: 20161018192402) do
     t.datetime "updated_at", null: false
     t.integer  "status"
     t.string   "public_id"
+    t.string   "source"
   end
 
   add_index "transactions", ["user_id"], name: "index_transactions_on_user_id", using: :btree

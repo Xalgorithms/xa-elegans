@@ -55,6 +55,10 @@ module Api
             klass: TransactionAddInvoiceEvent,
             args: [:transaction_public_id, :url],
           },
+          'transaction_bind_source' => {
+            klass: TransactionBindSourceEvent,
+            args: [:transaction_public_id, :source],
+          },
         }
       
         k = params[:event_type]

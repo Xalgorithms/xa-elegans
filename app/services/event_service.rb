@@ -71,4 +71,10 @@ class EventService
       end
     end
   end
+
+  def self.transaction_bind_source(e)
+    attach_transaction(e) do |trm|
+      trm.update_attributes(source: e.source.to_sym)
+    end
+  end
 end

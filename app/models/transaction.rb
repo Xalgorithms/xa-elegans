@@ -6,6 +6,10 @@ class Transaction < ActiveRecord::Base
     STATUS_OPEN   => :open,
     STATUS_CLOSED => :closed,
   }
+
+  SOURCES = [
+    :tradeshift,
+  ]
   
   belongs_to :user
   has_many :invoices, foreign_key: 'transact_id'
