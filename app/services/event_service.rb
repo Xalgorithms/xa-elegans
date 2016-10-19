@@ -13,9 +13,11 @@ class EventService
   def self.invoice_push(e)
     attach_transaction(e) do |trm|
       dm = Document.find_by(public_id: e.document_public_id)
-      im = Invoice.create(transact: trm, public_id: UUID.generate)
-      revm = Revision.create(document: dm, invoice: im)
-      NotificationService.send(trm.user.id, im.id, dm.id) if trm.user
+      if dm
+        InvoiceService.create_from_document(trm.id, dm.id) do |im|
+          NotificationService.send(trm.user.id, im.id, dm.id) if trm.user
+        end
+      end
     end
   end
 
