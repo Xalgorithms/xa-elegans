@@ -13,11 +13,7 @@ class EventService
   def self.invoice_push(e)
     attach_transaction(e) do |trm|
       dm = Document.find_by(public_id: e.document_public_id)
-      if dm
-        InvoiceService.create_from_document(trm.id, dm.id) do |im|
-          NotificationService.send(trm.user.id, im.id, dm.id) if trm.user
-        end
-      end
+      InvoiceService.create_from_document(trm.id, dm.id) if dm
     end
   end
 
@@ -65,11 +61,9 @@ class EventService
     attach_transaction(e) do |trm|
       DownloadService.get(e.url) do |src|
         dm = Document.create(src: src)
-        im = Invoice.create(transact: trm)
-        Revision.create(document: dm, invoice: im)
-        InvoiceParseService.parse(dm.id)
-        e.update_attributes(invoice: im, document: dm)
-        NotificationService.send(trm.user.id, im.id, dm.id) if trm.user
+        InvoiceService.create_from_document(trm.id, dm.id) do |im|
+          e.update_attributes(invoice: im, document: dm)
+        end
       end
     end
   end
