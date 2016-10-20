@@ -7,8 +7,13 @@
         div class="panel" data-bind="css: panel_style"
           .panel-heading
             .container-fluid
+              <!-- ko if: source -->
+              span Source:&nbsp;
+              span data-bind="text: source"
+              <!-- /ko -->
               span.pull-right.text-uppercase data-bind="text: status_label"
           .panel-body
+            div
             <!-- ko if: have_invoices -->
             table.table.table-sm
               thead.thead-default
@@ -45,6 +50,7 @@
             button.btn#button-close type="button" data-bind="click: trigger_close"= t('.labels.close')
             <!-- /ko -->
             button.btn#button-add-invoice type="button" data-bind="click: trigger_add_invoice"= t('.labels.add_invoice')
+            button.btn#button-bind-source type="button" data-bind="click: trigger_bind_source"= t('.labels.bind_source')
       <!-- /ko -->
             
 .modal.fade.modal-wide#modal-invoice-show title="#{t('.modals.invoice')}" tabindex="-1" role="dialog"
@@ -89,6 +95,27 @@
             = f.label(:url, t('.labels.select_rule'))
             = f.text_field(:url, value: 'https://raw.githubusercontent.com/Xalgorithms/xa-elegans/master/ubl/documents/icelandic-guitar/t0.xml', class: 'form-control')
           = f.hidden_field(:transaction_public_id, 'data-bind' => 'value: transaction_id')
+        .modal-footer
+          button.btn.btn-default type="button" data-dismiss="modal"
+            = fa_icon('close')
+            span= t('labels.close', scope: 'shared')
+          button.btn.btn-primary type="submit"
+            = fa_icon('check')
+            span= t('labels.add', scope: 'shared')
+
+.modal.fade#modal-bind-source tabIndex="-1" role="dialog"
+  .modal-dialog role="document"
+    = form_for(TransactionBindSourceEvent.new, url: api_v1_events_path, remote: true) do |f|
+      = hidden_field_tag(:event_type, 'transaction_bind_source')
+      = f.hidden_field(:transaction_public_id, 'data-bind' => 'value: transaction_id')
+      .modal-content
+        .modal-header
+          button.close type="button" data-dismiss="modal"= fa_icon('close')
+          h4.modal-title= t('.labels.modal_bind_source')
+        .modal-body
+          .form-group
+            = f.label(:source, t('.labels.select_source'))
+            = f.select(:source, Transaction::SOURCES, {}, { class: 'form-control' })
         .modal-footer
           button.btn.btn-default type="button" data-dismiss="modal"
             = fa_icon('close')

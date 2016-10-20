@@ -9,6 +9,10 @@
     transaction_id: ko.observable()
   };
 
+  var bind_source_vm = {
+    transaction_id: ko.observable()
+  };
+
   var page_vm = {
   };
 
@@ -20,6 +24,11 @@
   function add_invoice(tr) {
     $('#modal-add-invoice').modal('toggle');
     add_invoice_vm.transaction_id(tr.id);
+  }
+
+  function bind_source(tr) {
+    $('#modal-bind-source').modal('toggle');
+    bind_source_vm.transaction_id(tr.id);
   }
 
   function init() {
@@ -61,6 +70,18 @@
       });    
     });
 
+    $('.new_transaction_bind_source_event').on('ajax:success', function (e, o) {
+      $('#modal-bind-source').modal('toggle');
+      $.getJSON(o.url, function (event) {
+	var tr = _.find(page_vm.transactions(), function (tr) {
+	  return tr.id == event.transaction.id;
+	});
+	if (tr) {
+	  console.log('TODO: update not finished');
+	}
+      });
+    });
+
     _.each(transactions, function (tr) {
       _.each(tr.invoices, function (inv) {
         var latest = _.last(inv.revisions);
@@ -84,7 +105,7 @@
 
     page_vm.transactions = ko.observableArray(transactions);
 
-    // TODO: clean this up
+    // TODO: clean this up it's not working in the update searches above
     page_vm.transaction_view_models = ko.computed(function () {
       var vms = _.map(page_vm.transactions(), function (tr) {
 	var tr_vm = _.extend({}, tr, {
@@ -97,6 +118,7 @@
 	      content: _.get(documents, invoice.id)
 	    });
 	  })),
+          trigger_bind_source: bind_source,
 	  trigger_close:    function (o) {
 	    $.post(Routes.api_v1_events_path(), {
 	      event_type: 'transaction_close',
@@ -122,7 +144,8 @@
 	      });
             });
           },
-	  associations:     ko.observableArray(tr.associations)
+	  associations:     ko.observableArray(tr.associations),
+	  source:           ko.observable(tr.source)
 	});
 
 	// computeds
@@ -164,7 +187,8 @@
     applyManyBindings({
       'transactions': page_vm,
       'modal-associate': associate_vm,
-      'modal-add-invoice' : add_invoice_vm
+      'modal-add-invoice' : add_invoice_vm,
+      'modal-bind-source' : bind_source_vm
     });
   }
 
