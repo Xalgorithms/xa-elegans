@@ -12,6 +12,8 @@ class TransactionSerializer
       },
       invoices: InvoiceSerializer.many(transaction.invoices, :transaction),
       associations: AssociationSerializer.many(transaction.associations, :transaction),
-    }
+    }.tap do |o|
+      o[:source] = transaction.source if transaction.source
+    end
   end
 end

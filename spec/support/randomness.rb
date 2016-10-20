@@ -2,6 +2,10 @@ module Randomness
   def rand_one(a)
     a[rand(a.length)]
   end
+
+  def rand_one_or_nil(a)
+    rand(1) > 0 ? rand_one(a) : nil
+  end
     
   def rand_times(i = 10)
     (1 + rand(i)).times

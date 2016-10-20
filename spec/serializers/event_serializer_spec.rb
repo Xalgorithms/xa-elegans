@@ -89,4 +89,16 @@ describe EventSerializer do
       expect(EventSerializer.serialize(taiem.event)).to eql(ex)
     end
   end
+
+  it 'should serialize TransactionBindSourceEvent' do
+    rand_array_of_models(:transaction_bind_source_event, source: rand_one(Transaction::SOURCES)).each do |em|
+      ex = {
+        transaction: { id: em.transact.public_id },
+        id: em.event.public_id,
+        event_type: 'transaction_bind_source',
+        source: em.source
+      }
+      expect(EventSerializer.serialize(em.event)).to eql(ex)
+    end
+  end
 end

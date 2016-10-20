@@ -23,4 +23,18 @@ describe TransactionSerializer do
       end
     end
   end
+
+  it 'optionally serializes source' do
+    trm = create(:transaction, user: create(:user))
+
+    ac = TransactionSerializer.serialize(trm)
+    expect(ac).to_not have_key(:source)
+
+    source = rand_one(Transaction::SOURCES).to_s
+    trm.update_attributes(source: source)
+
+    ac = TransactionSerializer.serialize(trm)
+    expect(ac).to have_key(:source)
+    expect(ac[:source]).to eql(source)
+  end
 end

@@ -8,6 +8,7 @@ class EventSerializer
       transformation_destroy:     method(:serialize_transformation_destroy),
       transaction_associate_rule: method(:serialize_transaction_associate_rule),
       transaction_add_invoice:    method(:serialize_transaction_add_invoice),
+      transaction_bind_source:    method(:serialize_transaction_bind_source),
     }
 
     @serializers.fetch(event.event_type.to_sym, lambda { |o| {} }).call(event)
@@ -71,6 +72,13 @@ class EventSerializer
     end.merge(serialize_any(event))
   end
   
+  def self.serialize_transaction_bind_source(event)
+    {}.tap do |o|
+      o[:transaction] = { id: event.transaction_bind_source_event.transact.public_id } if event.transaction_bind_source_event.transact
+      o[:source] = event.transaction_bind_source_event.source
+    end.merge(serialize_any(event))
+  end
+
   def self.serialize_any(e)
     { id: e.public_id, event_type: e.event_type }
   end
