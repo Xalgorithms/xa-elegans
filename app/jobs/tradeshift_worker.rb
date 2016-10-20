@@ -28,24 +28,51 @@ class TradeshiftWorker
     Rails.logger.info("< #{resp.code}")
     
     o = MultiJson.decode(resp.body)
-    o.fetch('Document', []).map do |o|
+    documents = o.fetch('Document', []).map do |o|
       {
         id: o['DocumentId'],
         uri: o['URI'],
         type: o['DocumentType']['type'],
         last_edit: o['LastEdit'],
       }
-    end.map do |o|
-      Rails.logger.info("> requesting document (id=#{o[:id]})")
-      resp = token.get(o[:uri], 'X-Tradeshift-TenantId' => tk.tenant_id)
-      Rails.logger.info("< #{resp.code}")
+    end.each do |o|
+      Rails.logger.info("making document (public_id=#{o[:id]}; last_edit=#{o[:last_edit]})")
+      dt = DateTime.parse(o[:last_edit])
+      # zero out ms
+      dt = dt.change(sec: dt.sec)
+      dm = Document.find_by(public_id: o[:id])
+
+      if dm
+        Rails.logger.info("document exists (id=#{dm.id}, last_edit=#{o[:last_edit]}; last_sync=#{dm.tradeshift_sync_state.last_sync})")
+        if dm.tradeshift_sync_state.last_sync < dt
+          Rails.logger.info("document is updated")
+          
+          Rails.logger.info("> requesting document (id=#{o[:id]})")
+          resp = token.get(o[:uri], 'X-Tradeshift-TenantId' => tk.tenant_id)
+          Rails.logger.info("< #{resp.code}")
+
+          dm.update_attributes(src: resp.body)
+        else
+          Rails.logger.info('document is up-to-date')
+        end
+      else
+        Rails.logger.info("creating document")
+
+        Rails.logger.info("> requesting document (id=#{o[:id]})")
+        resp = token.get(o[:uri], 'X-Tradeshift-TenantId' => tk.tenant_id)
+        Rails.logger.info("< #{resp.code}")
+
+        yield(Document.create(public_id: o[:id], src: resp.body, tradeshift_sync_state: TradeshiftSyncState.create(last_sync: dt)))
+      end
     end
   end
   
   def work_on_user(um)
     Rails.logger.info("syncing tradeshift (user=#{um.id})")
-    pull_from_tradeshift(um.tradeshift_key) do |docs|
+    pull_from_tradeshift(um.tradeshift_key) do |dm|
+      Rails.logger.info('processing new documents')
       um.transactions.select { |trm| 'tradeshift' == trm.source }.each do |trm|
+        InvoiceService.create_from_document(trm.id, dm.id)
       end
     end
   end

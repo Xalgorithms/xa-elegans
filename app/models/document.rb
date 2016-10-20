@@ -2,6 +2,7 @@ class Document < ActiveRecord::Base
   has_one :revision
   has_one :change
   has_one :invoice, through: :revision
+  has_one :tradeshift_sync_state
 
   def initialize(*args)
     super(*args)

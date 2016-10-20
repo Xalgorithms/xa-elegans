@@ -60,4 +60,14 @@ describe Document, type: :model do
       expect(Document.find(dm.id).change).to eql(chm)
     end
   end
+
+  it 'can have a tradeshift sync state' do
+    expect(create(:document).tradeshift_sync_state).to be_nil
+    rand_array_of_models(:document).each do |dm|
+      ssm = create(:tradeshift_sync_state)
+      dm.update_attributes(tradeshift_sync_state: ssm)
+      expect(dm.tradeshift_sync_state).to eql(ssm)
+      expect(Document.find(dm.id).tradeshift_sync_state).to eql(ssm)
+    end
+  end
 end

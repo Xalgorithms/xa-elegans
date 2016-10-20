@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161019181513) do
+ActiveRecord::Schema.define(version: 20161020023736) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -104,6 +104,13 @@ ActiveRecord::Schema.define(version: 20161019181513) do
   end
 
   add_index "tradeshift_keys", ["user_id"], name: "index_tradeshift_keys_on_user_id", using: :btree
+
+  create_table "tradeshift_sync_states", force: :cascade do |t|
+    t.datetime "last_sync"
+    t.integer  "document_id"
+  end
+
+  add_index "tradeshift_sync_states", ["document_id"], name: "index_tradeshift_sync_states_on_document_id", using: :btree
 
   create_table "transaction_add_invoice_events", force: :cascade do |t|
     t.string  "transaction_public_id"
