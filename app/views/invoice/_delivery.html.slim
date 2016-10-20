@@ -1,4 +1,5 @@
-h5= "Delivery on #{Date.parse(delivery['date']).to_s(:long)}"
-- format_address(delivery.fetch('address', nil)) do |lines|
-  - lines.each do |ln|
-    div= ln
+- if delivery
+  h5= "Delivery on #{Date.parse(delivery['date']).to_s(:long)}"
+  - format_address(delivery.fetch('address', nil)) do |lines|
+    - lines.each do |ln|
+      div= ln
