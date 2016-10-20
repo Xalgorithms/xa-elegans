@@ -41,7 +41,9 @@ gem 'faraday'
 gem 'faraday_middleware'
 gem 'liquid'
 gem 'nokogiri'
+gem 'oauth'
 gem 'settingslogic'
+gem 'sidekiq'
 gem 'uuid'
 
 # libs for UBL
