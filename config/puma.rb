@@ -5,7 +5,7 @@ threads threads_count, threads_count
 preload_app!
 
 rackup      DefaultRackup
-port        ENV['XA_LICHEN_PORT'] || 3000
+port        ENV['XA_LICHEN_PORT'] || ENV['PORT'] || 3000
 environment ENV['RACK_ENV'] || 'development'
 
 on_worker_boot do
