@@ -39,6 +39,41 @@ namespace :db do
     um = User.find(args.user_id)
     um.update_attributes(tradeshift_key: TradeshiftKey.create(key: args.key, secret: args.secret, tenant_id: args.tenant_id))
   end
+
+  class TransformParser
+    include XA::Transforms::Parse
+    
+    def parse_content(content)
+      parse(content.split(/\n/))
+    end
+  end
+
+  def add_testing_transaction(user_id, transform_path, rule_ref, &bl)
+    um = User.find(user_id)
+
+    puts "> creating transaction structure (user=#{user_id})"
+    txm = Transaction.create(public_id: UUID.generate, user: um, status: Transaction::STATUS_OPEN)
+    puts "> created (transaction=#{txm.public_id})"
+
+    name = File.basename(transform_path, '.transform')
+    puts "> creating transformation (path=#{transform_path}; name=#{name})"
+    src = File.read(transform_path)
+    trm = Transformation.create(public_id: UUID.generate, name: name, src: src)
+    trm.update_attributes(content: TransformParser.new.parse_content(src))
+    puts "> created (transformation=#{trm.public_id})"
+
+    puts "> association with transaction"
+    rm = Rule.create(public_id: UUID.generate, reference: rule_ref)
+    am = Association.create(transact: txm, rule: rm, transformation: trm)
+    puts "> created (rule=#{rm.public_id}; association=#{am.id})"
+
+    bl.call(txm) if bl
+  end
+  
+  desc 'add testing transaction'
+  task :add_transaction, [:user_id, :transform_path, :rule_ref] => :environment do |t, args|
+    add_testing_transaction(args.user_id, args.transform_path, args.rule_ref)
+  end
   
   desc 'add testing document'
   task :add_document, [:user_id, :path, :transform_path, :rule_ref] => :environment do |t, args|
@@ -46,46 +81,24 @@ namespace :db do
       include UBL::Invoice
     end
 
-    class TransformParser
-      include XA::Transforms::Parse
+    add_testing_transaction(args.user_id, args.transform_path, args.rule_ref) do |txm|
+      puts "> creating invoice"
+      im = Invoice.create(public_id: UUID.generate, transact: txm)
 
-      def parse_content(content)
-        parse(content.split(/\n/))
+      puts "> creating document (path=#{args.path})"
+      ubl = File.read(args.path)
+      dm = Document.create(public_id: UUID.generate, src: ubl)
+      puts "> created (document=#{dm.public_id})"
+
+      puts "> parsing UBL"
+      InvoiceParser.new.parse(ubl) do |content|
+        dm.update_attributes(content: content)
+        puts "> parsed"
       end
+
+      puts "> attaching new revision to invoice"
+      rm = Revision.create(invoice: im, document: dm)
+      puts "> created (revision=#{rm.id})"
     end
-
-    um = User.find(args.user_id)
-
-    puts "> creating transaction structure (user=#{args.user_id})"
-    txm = Transaction.create(public_id: UUID.generate, user: um, status: Transaction::STATUS_OPEN)
-    im = Invoice.create(public_id: UUID.generate, transact: txm)
-    puts "> created (transaction=#{txm.public_id}; invoice=#{im.public_id})"
-
-    name = File.basename(args.transform_path, '.transform')
-    puts "> creating transformation (path=#{args.transform_path}; name=#{name})"
-    src = File.read(args.transform_path)
-    trm = Transformation.create(public_id: UUID.generate, name: name, src: src)
-    trm.update_attributes(content: TransformParser.new.parse_content(src))
-    puts "> created (transformation=#{trm.public_id})"
-
-    puts "> association with transaction"
-    rm = Rule.create(public_id: UUID.generate, reference: args.rule_ref)
-    am = Association.create(transact: txm, rule: rm, transformation: trm)
-    puts "> created (rule=#{rm.public_id}; association=#{am.id})"
-    
-    puts "> creating document (path=#{args.path})"
-    ubl = File.read(args.path)
-    dm = Document.create(public_id: UUID.generate, src: ubl)
-    puts "> created (document=#{dm.public_id})"
-
-    puts "> parsing UBL"
-    InvoiceParser.new.parse(ubl) do |content|
-      dm.update_attributes(content: content)
-      puts "> parsed"
-    end
-
-    puts "> attaching new revision to invoice"
-    rm = Revision.create(invoice: im, document: dm)
-    puts "> created (revision=#{rm.id})"
   end
 end
