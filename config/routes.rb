@@ -18,7 +18,7 @@ Rails.application.routes.draw do
       resources :events, only: [:show, :create]
       resources :documents, only: [:create, :show]
       
-      resources :users, only: [] do
+      resources :users, only: [:show] do
         resources :transactions, only: [:index]
         resources :invoices, only: [:index]
       end
