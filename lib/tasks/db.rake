@@ -101,4 +101,18 @@ namespace :db do
       puts "> created (revision=#{rm.id})"
     end
   end
+
+  desc 'clear all invoices and related documents associated w/a transaction'
+  task :clear_all_invoices, [:transaction_public_id] => :environment do |t, args|
+    txm = Transaction.find(args.transaction_public_id)
+    txm.invoices.inject([]) do |a, im|
+      a + im.revisions.to_a
+    end.each do |rvm|
+      dm = rvm.document
+      im = rvm.invoice
+      rvm.destroy
+      dm.destroy
+      im.destroy
+    end
+  end
 end
