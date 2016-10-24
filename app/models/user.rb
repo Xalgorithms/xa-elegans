@@ -8,4 +8,9 @@ class User < ActiveRecord::Base
   has_many :invoices, through: :transactions
   has_many :registrations
   has_one  :tradeshift_key
+
+  def initialize(*args)
+    super(*args)
+    self.public_id ||= UUID.generate
+  end
 end

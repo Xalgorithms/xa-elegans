@@ -42,4 +42,14 @@ describe User, type: :model do
       expect(um.tradeshift_key).to eql(tkm)
     end
   end
+
+  it 'automatically has a public id' do
+    id = UUID.generate
+
+    um = create(:user, public_id: id)
+    expect(um.public_id).to eql(id)
+
+    rm = create(:user)
+    expect(um.public_id).to_not be_nil
+  end
 end
