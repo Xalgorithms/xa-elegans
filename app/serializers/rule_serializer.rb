@@ -1,9 +1,5 @@
-class RuleSerializer
-  def self.many(rms)
-    rms.map(&method(:serialize))
-  end
-
-  def self.serialize(rm)
+class RuleSerializer < Serializer
+  def self.serialize(rm, container=nil)
     {
       id:        rm.public_id,
       reference: rm.reference,

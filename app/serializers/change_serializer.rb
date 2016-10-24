@@ -1,5 +1,5 @@
-class ChangeSerializer
-  def self.serialize(chm)
+class ChangeSerializer < Serializer
+  def self.serialize(chm, container=nil)
     {
       content: chm.content,
     }

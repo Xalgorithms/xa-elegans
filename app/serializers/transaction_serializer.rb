@@ -1,9 +1,5 @@
-class TransactionSerializer
-  def self.many(transactions)
-    transactions.map(&self.method(:serialize))
-  end
-
-  def self.serialize(transaction)
+class TransactionSerializer < Serializer
+  def self.serialize(transaction, container=nil)
     {
       id: transaction.public_id,
       status: Transaction::STATUSES[transaction.status],

@@ -1,5 +1,5 @@
-class EventSerializer
-  def self.serialize(event)
+class EventSerializer < Serializer
+  def self.serialize(event, container=nil)
     @serializers = {
       transaction_open:           method(:serialize_transaction_open),
       transaction_close:          method(:serialize_transaction_close),

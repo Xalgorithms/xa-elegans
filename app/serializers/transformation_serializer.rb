@@ -1,9 +1,5 @@
-class TransformationSerializer
-  def self.many(txms)
-    txms.map(&method(:serialize))
-  end
-
-  def self.serialize(txm)
+class TransformationSerializer < Serializer
+  def self.serialize(txm, container=nil)
     {
       id:   txm.public_id,
       name: txm.name,

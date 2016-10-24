@@ -1,8 +1,4 @@
-class AssociationSerializer
-  def self.many(ams, container = nil)
-    ams.map { |am| serialize(am, container) }
-  end
-
+class AssociationSerializer < Serializer
   def self.serialize(am, container = nil)
     {
       rule:           RuleSerializer.serialize(am.rule),

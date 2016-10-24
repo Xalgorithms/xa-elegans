@@ -1,8 +1,4 @@
-class InvoiceSerializer
-  def self.many(invoices, container = nil)
-    invoices.map { |im| serialize(im, container) }
-  end
-
+class InvoiceSerializer < Serializer
   def self.serialize(invoice, container = nil)
     {
       id: invoice.public_id,

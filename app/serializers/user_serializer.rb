@@ -1,9 +1,5 @@
-class UserSerializer
-  def self.many(ums)
-    ums.map(&method(:serialize))
-  end
-
-  def self.serialize(um)
+class UserSerializer < Serializer
+  def self.serialize(um, container=nil)
     {
       id:    um.public_id,
       email: um.email,
