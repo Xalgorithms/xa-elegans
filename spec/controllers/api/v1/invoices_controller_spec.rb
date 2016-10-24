@@ -28,7 +28,7 @@ describe Api::V1::InvoicesController, type: :controller do
         a + rand_array_of_models(:invoice, transact: trm)
       end
       
-      get(:index, user_id: um.id)
+      get(:index, user_id: um.public_id)
 
       expect(response).to be_success
       expect(response_json).to eql(encode_decode(InvoiceSerializer.many(ims)))

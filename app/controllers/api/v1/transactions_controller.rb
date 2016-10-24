@@ -40,7 +40,7 @@ module Api
       def maybe_lookup_user
         user_id = params.fetch('user_id', nil)
         begin
-          @user = User.find(user_id) if user_id
+          @user = User.find_by(public_id: user_id) if user_id
         rescue
           Rails.logger.warn("! Failed lookup (user_id=#{user_id})")
         end

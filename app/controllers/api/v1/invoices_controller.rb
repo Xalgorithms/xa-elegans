@@ -58,7 +58,7 @@ module Api
       def maybe_lookup_user
         id = params.fetch('user_id', nil)
         begin
-          @rel = User.find(id) if id
+          @rel = User.find_by(public_id: id) if id
         rescue ActiveRecord::RecordNotFound => e
           Rails.logger.info("? Failed to find user (id=#{id})")
         end

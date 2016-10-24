@@ -8,7 +8,7 @@ describe Api::V1::TransactionsController, type: :controller do
     rand_times.map { create(:user) }.each do |um|
       transactions = rand_times.map { create(:transaction, user: um, status: rand_one(Transaction::STATUSES.keys)) }
       
-      get(:index, user_id: um.id)
+      get(:index, user_id: um.public_id)
 
       expect(response).to be_success
       expect(response_json).to eql(encode_decode(TransactionSerializer.many(transactions)))
