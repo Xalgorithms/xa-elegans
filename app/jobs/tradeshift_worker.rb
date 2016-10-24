@@ -35,6 +35,9 @@ class TradeshiftWorker
         type: o['DocumentType']['type'],
         last_edit: o['LastEdit'],
       }
+    end.select do |o|
+      # for now, only handle invoices
+      'invoice' == o[:type]
     end.each do |o|
       Rails.logger.info("making document (public_id=#{o[:id]}; last_edit=#{o[:last_edit]})")
       dt = DateTime.parse(o[:last_edit])
