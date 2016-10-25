@@ -1,7 +1,5 @@
 (function () {
   function init() {
-    console.log('settings: init');
-
     var page_vm = {
       section: ko.observable(default_section),
       vms: {}

@@ -32,8 +32,6 @@
   }
 
   function init() {
-    console.log('transactions: init');
-
     var styles = {
       'open' : 'panel-success',
       'closed' : 'panel-info'

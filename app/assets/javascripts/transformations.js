@@ -20,8 +20,6 @@
   }
 
   function init() {
-    console.log('transformations: init');
-
     $('.new_transformation_add_event').on('ajax:success', function (e, o) {
       $('#modal-add-transformation').modal('toggle');
       $.getJSON(o.url, function (o) {
