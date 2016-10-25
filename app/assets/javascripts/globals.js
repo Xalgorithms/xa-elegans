@@ -13,7 +13,9 @@ function init_on_page(name, fn) {
 }
 
 function applyManyBindings(o) {
-  _.each(o, function (vm, el) {
-    ko.applyBindings(vm, document.getElementById(el));
+  _.each(o, function (vm, id) {
+    var el = document.getElementById(id);
+    ko.cleanNode(el);
+    ko.applyBindings(vm, el);
   });
 }
