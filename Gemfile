@@ -3,7 +3,6 @@ source 'https://rubygems.org'
 ruby "2.3.1"
 
 # basics
-gem 'active_model_serializers'
 gem 'rails-observers'
 gem 'devise'
 gem 'rails', '4.2.4'
