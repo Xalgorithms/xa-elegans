@@ -17,8 +17,8 @@ Rails.application.routes.draw do
       # new routes
       resources :events, only: [:show, :create]
       resources :documents, only: [:create, :show]
-      
-      resources :users, only: [:show] do
+
+      resources :users, only: [:show], constraints: { id: /[^\/]+/ } do
         resources :transactions, only: [:index]
         resources :invoices, only: [:index]
       end
