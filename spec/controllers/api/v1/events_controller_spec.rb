@@ -235,7 +235,7 @@ describe Api::V1::EventsController, type: :controller do
       token = Faker::Number.hexadecimal(100)
 
       post(:create, event_type: 'register', register_event: {
-             user_id: um.id,
+             user_public_id: um.public_id,
              token: token,
            })
 
@@ -258,12 +258,12 @@ describe Api::V1::EventsController, type: :controller do
       token = Faker::Number.hexadecimal(100)
 
       post(:create, event_type: 'register', register_event: {
-             user_id: um.id,
+             user_public_id: um.public_id,
              token: token,
            })
 
       post(:create, event_type: 'register', register_event: {
-             user_id: um.id,
+             user_public_id: um.public_id,
              token: token,
            })
 

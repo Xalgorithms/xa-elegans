@@ -48,7 +48,13 @@ class EventService
   end
 
   def self.register(e)
-    Registration.find_or_create_by(token: e.token, user: e.user)
+    um = User.find_by(public_id: e.user_public_id)
+    if um
+      e.update_attributes(user: um)
+      Registration.find_or_create_by(token: e.token, user: um)
+    else
+      Rails.logger.warn("! failed to locate user (id=#{e.user_public_id})")
+    end
   end
 
   def self.transaction_execute(e)

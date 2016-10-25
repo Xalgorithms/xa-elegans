@@ -45,7 +45,7 @@ module Api
           },
           'register' => {
             klass: RegisterEvent,
-            args: [:user_id, :token],
+            args: [:user_public_id, :token],
           },
           'transaction_execute' => {
             klass: TransactionExecuteEvent,
