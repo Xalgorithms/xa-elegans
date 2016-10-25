@@ -1,12 +1,13 @@
 .row#page
   .col-md-2
     ul.nav.nav-pills.nav-stacked
-      li data-bind="css: general_active()"
-        a(href='#' data-bind='click: section_clicked' data-target='general')= t('.general')
-      li data-bind="css: tradeshift_active()"
-        a(href='#' data-bind='click: section_clicked' data-target='tradeshift')= t('.tradeshift')
+      - @sections.each do |name|
+        li data-bind="css: #{name}_active()"
+          a(href='#' data-bind='click: section_clicked' data-target="#{name}")= t(".sections.#{name}")
   .col-md-10#sections
-    = render('tradeshift_settings')
-    = render('general_settings')
+    - @sections.each do |name|
+      = render('section', name: name)
 = content_for(:javascript) do
   javascript:
+    var sections = #{raw MultiJson.encode(@sections)};
+    var default_section = "#{@default_section}";

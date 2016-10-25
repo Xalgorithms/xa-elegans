@@ -2,5 +2,12 @@ global_sections:
   - transactions
   - transformations
   - settings
+
+settings:
+  default_section: general
+  sections:
+    - general
+    - tradeshift
+  
 registry:
   url: http://xa-registry.herokuapp.com

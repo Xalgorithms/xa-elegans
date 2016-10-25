@@ -1,0 +1,8 @@
+.container-fluid data-bind="visible: is_#{name}"
+  .row
+    .col-md-6
+      .panel.panel-default
+        .panel-heading
+          span= t(".sections.#{name}")
+        .panel-body id="#{name}"
+          = render("#{name}_settings")
