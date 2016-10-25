@@ -52,4 +52,12 @@ describe User, type: :model do
     rm = create(:user)
     expect(um.public_id).to_not be_nil
   end
+
+  it 'should associate with a settings update event' do
+    rand_array_of_models(:user).each do |um|
+      em = SettingsUpdateEvent.create(user: um)
+      um.reload
+      expect(um.settings_update_event).to eql(em)
+    end
+  end
 end

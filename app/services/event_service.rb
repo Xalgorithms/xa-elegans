@@ -1,4 +1,8 @@
 class EventService
+  def self.process(et, args)
+    self.send(et, Event.create(event_type: et), args)
+  end
+  
   def self.transaction_open(e)
     trm = Transaction.create(user: e.user, status: Transaction::STATUS_OPEN, public_id: UUID.generate)
     e.update_attributes(transact: trm)
@@ -77,6 +81,15 @@ class EventService
   def self.transaction_bind_source(e)
     attach_transaction(e) do |trm|
       trm.update_attributes(source: e.source.to_sym) if e.source
+    end
+  end
+
+  def self.settings_update(bem, args)
+    um = User.find_by(public_id: args.fetch(:user_id, nil))
+    if um
+      tka = args.fetch(:tradeshift, nil)
+      tkm = TradeshiftKey.find_or_create_by(tka.slice(:key, :secret, :tenant_id).merge(user: um)) if tka
+      em = SettingsUpdateEvent.create(user: um, event: bem)
     end
   end
 end

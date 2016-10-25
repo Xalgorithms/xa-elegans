@@ -362,4 +362,35 @@ describe Api::V1::EventsController, type: :controller do
       expect(trm.source).to eql(source.to_s)
     end
   end
+
+  it 'can accept settings changes for tradeshift' do
+    rand_array_of_models(:user).each do |um|
+      k = Faker::Number.hexadecimal(10)
+      s = Faker::Number.hexadecimal(10)
+      tid = Faker::Number.hexadecimal(10)
+      post(:create, event_type: 'settings_update', payload: {
+             user_id: um.public_id,
+             tradeshift: {
+               key: k,
+               secret: s,
+               tenant_id: tid,
+             },
+           })
+
+      evt = SettingsUpdateEvent.last
+
+      expect(evt).to_not be_nil
+      expect(evt.event).to eql(Event.last)
+      expect(evt.user).to eql(um)
+
+      expect(response).to be_success
+      expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
+
+      um.reload
+      expect(um.tradeshift_key).to_not be_nil
+      expect(um.tradeshift_key.key).to eql(k)
+      expect(um.tradeshift_key.secret).to eql(s)
+      expect(um.tradeshift_key.tenant_id).to eql(tid)
+    end
+  end
 end

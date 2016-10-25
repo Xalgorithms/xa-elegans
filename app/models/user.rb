@@ -8,6 +8,7 @@ class User < ActiveRecord::Base
   has_many :invoices, through: :transactions
   has_many :registrations
   has_one  :tradeshift_key
+  has_one  :settings_update_event
 
   def initialize(*args)
     super(*args)

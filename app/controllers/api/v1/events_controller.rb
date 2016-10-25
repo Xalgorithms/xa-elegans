@@ -18,7 +18,7 @@ module Api
       private
 
       def make
-        @events = {
+        @old_events ||= {
           'transaction_open' => {
             klass: TransactionOpenEvent,
             args: [:user_id],
@@ -60,12 +60,24 @@ module Api
             args: [:transaction_public_id, :source],
           },
         }
+
+        @events ||= {
+          'settings_update' => {
+            klass: SettingsUpdateEvent,
+            args: [:user_id, tradeshift: [:key, :secret, :tenant_id]],
+          },
+        }
       
         k = params[:event_type]
         if k
-          args = params.require("#{k}_event").permit(*@events[k][:args])
-          
-          @events[k][:klass].create(args.merge(event: Event.create(public_id: UUID.generate, event_type: params[:event_type])))
+          if @old_events.include?(k)
+            args = params.require("#{k}_event").permit(*@old_events[k][:args])
+            
+            @old_events[k][:klass].create(args.merge(event: Event.create(public_id: UUID.generate, event_type: params[:event_type])))
+          elsif @events.include?(k)
+            args = params.require("payload").permit(*@events[k][:args])
+            EventService.process(params[:event_type], args)
+          end
         else
           nil
         end
