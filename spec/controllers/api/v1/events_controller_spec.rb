@@ -357,6 +357,9 @@ describe Api::V1::EventsController, type: :controller do
 
       expect(response).to be_success
       expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
+
+      trm.reload
+      expect(trm.source).to eql(source.to_s)
     end
   end
 end
