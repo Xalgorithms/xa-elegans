@@ -1,0 +1,12 @@
+.row#page
+  .col-md-2
+    ul.nav.nav-pills.nav-stacked
+      li data-bind="css: general_active()"
+        a(href='#' data-bind='click: section_clicked' data-target='general')= t('.general')
+      li data-bind="css: tradeshift_active()"
+        a(href='#' data-bind='click: section_clicked' data-target='tradeshift')= t('.tradeshift')
+  .col-md-10#sections
+    = render('tradeshift_settings')
+    = render('general_settings')
+= content_for(:javascript) do
+  javascript:

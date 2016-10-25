@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     end
     resources :transactions, only: [:index, :show]
     resources :transformations, only: [:index]
+    resources :settings, only: [:index]
   end
 
   # API
