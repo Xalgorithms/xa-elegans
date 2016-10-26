@@ -51,6 +51,7 @@
             <!-- /ko -->
             button.btn#button-add-invoice type="button" data-bind="click: trigger_add_invoice"= t('.labels.add_invoice')
             button.btn#button-bind-source type="button" data-bind="click: trigger_bind_source"= t('.labels.bind_source')
+            button.btn type="button" data-bind="click: trigger_tradeshift_sync"= t('.labels.tradeshift_sync')
       <!-- /ko -->
             
 .modal.fade.modal-wide#modal-invoice-show title="#{t('.modals.invoice')}" tabindex="-1" role="dialog"
@@ -128,7 +129,7 @@
 = content_for(:javascript) do
   javascript:
     var transactions = #{raw MultiJson.encode(@transactions)};
-    var user_id = #{current_user.id};
+    var user_id = '#{current_user.public_id}';
     
     var labels = {
       'open' : 'open',

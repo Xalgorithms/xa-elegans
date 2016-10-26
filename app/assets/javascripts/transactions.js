@@ -142,6 +142,16 @@
 	      });
             });
           },
+          trigger_tradeshift_sync: function (o) {
+            var evt = {
+              event_type: 'tradeshift_sync',
+              payload: { user_id: user_id }
+            };
+
+            $.post(Routes.api_v1_events_path(), evt, function (o) {
+              console.log(o);
+            });
+          },
 	  associations:     ko.observableArray(tr.associations),
 	  source:           ko.observable(tr.source)
 	});
