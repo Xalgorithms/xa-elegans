@@ -63,8 +63,10 @@ module Api
 
         @events ||= {
           'settings_update' => {
-            klass: SettingsUpdateEvent,
             args: [:user_id, tradeshift: [:key, :secret, :tenant_id]],
+          },
+          'tradeshift_sync' => {
+            args: [:user_id],
           },
         }
       

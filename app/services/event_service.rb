@@ -86,10 +86,24 @@ class EventService
 
   def self.settings_update(bem, args)
     um = User.find_by(public_id: args.fetch(:user_id, nil))
+    em = nil
     if um
       tka = args.fetch(:tradeshift, nil)
       tkm = TradeshiftKey.find_or_create_by(tka.slice(:key, :secret, :tenant_id).merge(user: um)) if tka
       em = SettingsUpdateEvent.create(user: um, event: bem)
     end
+
+    em
+  end
+
+  def self.tradeshift_sync(bem, args)
+    em = nil
+    um = User.find_by(public_id: args.fetch(:user_id, nil))
+    if um
+      em = TradeshiftSyncEvent.create(user: um, event: bem)
+      TradeshiftWorker.perform_async(um.id)
+    end
+    
+    em
   end
 end

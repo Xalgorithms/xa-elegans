@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161025213649) do
+ActiveRecord::Schema.define(version: 20161026170350) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -113,6 +113,14 @@ ActiveRecord::Schema.define(version: 20161025213649) do
   end
 
   add_index "tradeshift_keys", ["user_id"], name: "index_tradeshift_keys_on_user_id", using: :btree
+
+  create_table "tradeshift_sync_events", force: :cascade do |t|
+    t.integer "event_id"
+    t.integer "user_id"
+  end
+
+  add_index "tradeshift_sync_events", ["event_id"], name: "index_tradeshift_sync_events_on_event_id", using: :btree
+  add_index "tradeshift_sync_events", ["user_id"], name: "index_tradeshift_sync_events_on_user_id", using: :btree
 
   create_table "tradeshift_sync_states", force: :cascade do |t|
     t.datetime "last_sync"
@@ -250,6 +258,8 @@ ActiveRecord::Schema.define(version: 20161025213649) do
   add_foreign_key "revisions", "documents"
   add_foreign_key "revisions", "invoices"
   add_foreign_key "tradeshift_keys", "users"
+  add_foreign_key "tradeshift_sync_events", "events"
+  add_foreign_key "tradeshift_sync_events", "users"
   add_foreign_key "transaction_associate_rule_events", "events"
   add_foreign_key "transaction_associate_rule_events", "rules"
   add_foreign_key "transaction_associate_rule_events", "transactions"

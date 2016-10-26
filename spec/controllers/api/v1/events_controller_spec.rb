@@ -393,4 +393,23 @@ describe Api::V1::EventsController, type: :controller do
       expect(um.tradeshift_key.tenant_id).to eql(tid)
     end
   end
+
+  it 'can trigger a tradeshift sync' do
+    rand_array_of_models(:user).each do |um|
+      expect(TradeshiftWorker).to receive(:perform_async).with(um.id)
+      
+      post(:create, event_type: 'tradeshift_sync', payload: {
+             user_id: um.public_id,
+           })
+
+      evt = TradeshiftSyncEvent.last
+
+      expect(evt).to_not be_nil
+      expect(evt.event).to eql(Event.last)
+      expect(evt.user).to eql(um)
+
+      expect(response).to be_success
+      expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
+    end
+  end
 end

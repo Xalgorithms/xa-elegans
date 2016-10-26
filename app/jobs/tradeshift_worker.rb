@@ -6,14 +6,11 @@ class TradeshiftWorker
   CONSUMER_KEY='OwnAccount' # Vendor id + random string (From App Developer (App->Tools->Tradeshift API Keys)
   CONSUMER_SECRET='OwnAccount' # Example secret (for the app to be authorized, from App Developer (App->Tools->Tradeshift API Keys))
 
-  def perform
+  def perform(user_id)
     Rails.logger.info('starting tradeshift worker')
-    User.all.select { |um| um.tradeshift_key }.each(&method(:work_on_user))
-
-    if Rails.env.production?
-      Rails.logger.debug('scheduling next work')
-      TradeshiftWorker.perform_in(1.hour)
-    end
+    work_on_user(User.find(user_id))
+  rescue ActiveRecord::RecordNotFound => e
+    Rails.logger.warn("! failed to locate user (user_id=#{user_id})")
   end
 
   private
