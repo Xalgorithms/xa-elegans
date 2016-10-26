@@ -1,12 +1,18 @@
-.row#page
-  .col-md-2
-    ul.nav.nav-pills.nav-stacked
+#page
+  .row data-bind='if: have_message'
+    .alert.alert-success
+      span data-bind='text: message'
+      button.close type='button' data-bind='click: clear_message'
+        = fa_icon('close')
+  .row
+    .col-md-2
+      ul.nav.nav-pills.nav-stacked
+        - @sections.each do |name|
+          li data-bind="css: vms['#{name}'].active()"
+            a(href='#' data-bind='click: section_clicked' data-target="#{name}")= t(".sections.#{name}")
+    .col-md-10#sections
       - @sections.each do |name|
-        li data-bind="css: vms['#{name}'].active()"
-          a(href='#' data-bind='click: section_clicked' data-target="#{name}")= t(".sections.#{name}")
-  .col-md-10#sections
-    - @sections.each do |name|
-      = render('section', name: name)
+        = render('section', name: name)
 = content_for(:javascript) do
   javascript:
     var sections = #{raw MultiJson.encode(@sections)};
