@@ -368,6 +368,17 @@ describe Api::V1::EventsController, type: :controller do
       k = Faker::Number.hexadecimal(10)
       s = Faker::Number.hexadecimal(10)
       tid = Faker::Number.hexadecimal(10)
+
+      # randomly assign an existing value
+      maybe_call do
+        TradeshiftKey.create(
+          key: Faker::Number.hexadecimal(10),
+          secret: Faker::Number.hexadecimal(10),
+          tenant_id: Faker::Number.hexadecimal(10),
+          user: um
+        )
+      end
+      
       post(:create, event_type: 'settings_update', payload: {
              user_id: um.public_id,
              tradeshift: {
@@ -391,6 +402,8 @@ describe Api::V1::EventsController, type: :controller do
       expect(um.tradeshift_key.key).to eql(k)
       expect(um.tradeshift_key.secret).to eql(s)
       expect(um.tradeshift_key.tenant_id).to eql(tid)
+
+      expect(TradeshiftKey.where(user_id: um.id).count).to eql(1)
     end
   end
 

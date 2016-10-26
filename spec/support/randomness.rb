@@ -3,6 +3,10 @@ module Randomness
     a[rand(a.length)]
   end
 
+  def maybe_call(&bl)
+    bl.call if rand(1) > 0
+  end
+
   def rand_one_or_nil(a)
     rand(1) > 0 ? rand_one(a) : nil
   end
