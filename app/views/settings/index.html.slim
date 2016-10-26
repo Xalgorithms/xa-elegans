@@ -2,7 +2,7 @@
   .col-md-2
     ul.nav.nav-pills.nav-stacked
       - @sections.each do |name|
-        li data-bind="css: #{name}_active()"
+        li data-bind="css: vms['#{name}'].active()"
           a(href='#' data-bind='click: section_clicked' data-target="#{name}")= t(".sections.#{name}")
   .col-md-10#sections
     - @sections.each do |name|
