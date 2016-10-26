@@ -22,6 +22,7 @@ Rails.application.routes.draw do
       resources :users, only: [:show], constraints: { id: /[^\/]+/ } do
         resources :transactions, only: [:index]
         resources :invoices, only: [:index]
+        resources :settings, only: [:index]
       end
 
       resources :transactions, only: [:show] do
