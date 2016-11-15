@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161115051702) do
+ActiveRecord::Schema.define(version: 20161115055105) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -263,7 +263,6 @@ ActiveRecord::Schema.define(version: 20161115051702) do
   add_foreign_key "invoice_push_events", "events"
   add_foreign_key "invoice_push_events", "transactions"
   add_foreign_key "invoices", "transactions", column: "transact_id"
-  add_foreign_key "revisions", "documents"
   add_foreign_key "revisions", "invoices"
   add_foreign_key "tradeshift_keys", "users"
   add_foreign_key "tradeshift_sync_events", "events"

@@ -451,7 +451,7 @@ describe Api::V1::EventsController, type: :controller do
         expect(Revision.find_by(id: id)).to be_nil
       end
       document_ids.each do |id|
-        expect(Document.find_by(id: id)).to_not be_nil
+        expect(Document.find_by(id: id)).to be_nil
       end
     end
   end

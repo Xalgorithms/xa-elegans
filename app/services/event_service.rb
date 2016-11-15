@@ -115,6 +115,7 @@ class EventService
     im = Invoice.find_by(public_id: args.fetch(:invoice_id, nil))
     if im
       em = InvoiceDestroyEvent.create(invoice_id: im.public_id, event: bem)
+      im.documents.each(&:destroy)
       im.destroy
     end
     em
