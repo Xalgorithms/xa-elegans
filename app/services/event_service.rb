@@ -4,8 +4,11 @@ class EventService
   end
   
   def self.transaction_open(e)
-    trm = Transaction.create(user: e.user, status: Transaction::STATUS_OPEN, public_id: UUID.generate)
-    e.update_attributes(transact: trm)
+    ap e
+    um = User.where(public_id: e.user_public_id).first
+    ap um
+    trm = Transaction.create(user: um, status: Transaction::STATUS_OPEN, public_id: UUID.generate)
+    e.update_attributes(transact: trm, user: um)
   end
   
   def self.transaction_close(e)

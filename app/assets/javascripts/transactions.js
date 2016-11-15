@@ -182,7 +182,7 @@
     page_vm.add = function () {
       $.post(Routes.api_v1_events_path(), {
 	event_type: 'transaction_open',
-	transaction_open_event: { user_id: user_id }
+	transaction_open_event: { user_public_id: user_id }
       }, function (resp) {
 	$.getJSON(resp.url, function (o) {
 	  $.getJSON(o.transaction.url, function (o) {

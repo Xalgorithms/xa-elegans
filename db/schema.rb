@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161026170350) do
+ActiveRecord::Schema.define(version: 20161115041641) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -189,6 +189,7 @@ ActiveRecord::Schema.define(version: 20161026170350) do
     t.integer "user_id"
     t.integer "event_id"
     t.integer "transaction_id"
+    t.string  "user_public_id"
   end
 
   add_index "transaction_open_events", ["event_id"], name: "index_transaction_open_events_on_event_id", using: :btree

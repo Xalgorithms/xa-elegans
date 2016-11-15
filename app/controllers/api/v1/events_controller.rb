@@ -21,7 +21,7 @@ module Api
         @old_events ||= {
           'transaction_open' => {
             klass: TransactionOpenEvent,
-            args: [:user_id],
+            args: [:user_public_id],
           },
           'transaction_close' => {
             klass: TransactionCloseEvent,
