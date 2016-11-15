@@ -3,7 +3,7 @@ require 'rails_helper'
 describe EventSerializer do
   it 'should serialize TransactionOpenEvent' do
     rand_array_of_models(:user).each do |um|
-      rand_array_of_models(:transaction_open_event, user: um).each do |toe|
+      rand_array_of_models(:transaction_open_event, user_public_id: um.public_id).each do |toe|
         toe.update_attributes(transact: create(:transaction, user: um))
         ex = {
           id:          toe.event.public_id,
