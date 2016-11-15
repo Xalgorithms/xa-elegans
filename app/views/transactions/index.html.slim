@@ -18,12 +18,16 @@
             table.table.table-sm
               thead.thead-default
                 tr
+                  th
                   th.text-capitalize= t('.heading.number')
                   th.text-capitalize= t('.heading.currency')
                   th.text-capitalize= t('.heading.date')
                   th
               tbody data-bind="foreach: invoices"
                 tr
+                  td
+                    a rel="nofollow" data-bind="click: destroy, attr: { href: format_url }"
+                      = fa_icon('remove')            
                   <!-- ko with: content -->
                   td
                     a data-bind="text: id, attr: { href: Routes.invoice_path($parent.id) }" data-toggle="modal" data-target="#modal-invoice-show"

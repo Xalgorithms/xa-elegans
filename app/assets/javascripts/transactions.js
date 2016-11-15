@@ -106,16 +106,33 @@
     // TODO: clean this up it's not working in the update searches above
     page_vm.transaction_view_models = ko.computed(function () {
       var vms = _.map(page_vm.transactions(), function (tr) {
+        var invoices_vms = ko.observableArray(_.map(tr.invoices, function (invoice) {
+	  return _.extend({}, invoice, {
+	    content: _.get(documents, invoice.id),
+            destroy: function (o, e) {
+              var evt = {
+                event_type: 'invoice_destroy',
+                payload: { invoice_id: invoice.id }
+              };
+
+              $.post(Routes.api_v1_events_path(), evt, function (o) {
+		invoices_vms.remove(function (o) {
+		  return o.id == invoice.id;
+		});
+              });
+            },
+            format_url: ko.computed(function () {
+              return Routes.api_v1_invoice_path(invoice.id);
+            })
+	  });
+	}));
+	
 	var tr_vm = _.extend({}, tr, {
 	  panel_style :     _.get(styles, tr.status, 'panel-info'),
 	  status_label      : _.get(labels, tr.status),
 	  trigger_associate : associate,
           trigger_add_invoice: add_invoice,
-	  invoices:         ko.observableArray(_.map(tr.invoices, function (invoice) {
-	    return _.extend({}, invoice, {
-	      content: _.get(documents, invoice.id)
-	    });
-	  })),
+	  invoices:         invoices_vms,
           trigger_bind_source: bind_source,
 	  trigger_close:    function (o) {
 	    $.post(Routes.api_v1_events_path(), {
