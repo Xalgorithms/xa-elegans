@@ -25,6 +25,22 @@ namespace :db do
       puts "id=#{rm.public_id}; reference=#{rm.reference}"
     end
   end
+
+  desc 'list all users'
+  task :list_users, [] => :environment do |t, args|
+    User.all.each do |um|
+      puts "id=#{um.public_id}; email=#{um.email}"
+    end
+  end
+  
+  desc 'list all transactions'
+  task :list_transactions, [:user_id] => :environment do |t, args|
+    um = User.where(public_id: args.user_id).first
+    um.transactions.each do |trm|
+      puts "id=#{trm.public_id}"
+    end
+  end
+    
   
   desc 'update rule reference'
   task :update_rule_reference, [:rule_id, :rule_ref] => :environment do |t, args|
@@ -104,7 +120,7 @@ namespace :db do
 
   desc 'clear all invoices and related documents associated w/a transaction'
   task :clear_all_invoices, [:transaction_public_id] => :environment do |t, args|
-    txm = Transaction.find(args.transaction_public_id)
+    txm = Transaction.where(public_id: args.transaction_public_id).first
     rvms = txm.invoices.inject([]) do |a, im|
       a + im.revisions.to_a
     end
