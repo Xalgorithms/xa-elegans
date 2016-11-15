@@ -68,6 +68,9 @@ module Api
           'tradeshift_sync' => {
             args: [:user_id],
           },
+          'invoice_destroy' => {
+            args: [:invoice_id],
+          },
         }
       
         k = params[:event_type]

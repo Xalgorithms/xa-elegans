@@ -4,9 +4,7 @@ class EventService
   end
   
   def self.transaction_open(e)
-    ap e
     um = User.where(public_id: e.user_public_id).first
-    ap um
     trm = Transaction.create(user: um, status: Transaction::STATUS_OPEN, public_id: UUID.generate)
     e.update_attributes(transact: trm, user: um)
   end
@@ -109,6 +107,16 @@ class EventService
       TradeshiftWorker.perform_async(um.id)
     end
 
+    em
+  end
+
+  def self.invoice_destroy(bem, args)
+    em = nil
+    im = Invoice.find_by(public_id: args.fetch(:invoice_id, nil))
+    if im
+      em = InvoiceDestroyEvent.create(invoice_id: im.public_id, event: bem)
+      im.destroy
+    end
     em
   end
 end

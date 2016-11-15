@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161115041641) do
+ActiveRecord::Schema.define(version: 20161115051702) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,6 +52,13 @@ ActiveRecord::Schema.define(version: 20161115041641) do
   end
 
   add_index "gcm_registrations", ["user_id"], name: "index_gcm_registrations_on_user_id", using: :btree
+
+  create_table "invoice_destroy_events", force: :cascade do |t|
+    t.string  "invoice_id"
+    t.integer "event_id"
+  end
+
+  add_index "invoice_destroy_events", ["event_id"], name: "index_invoice_destroy_events_on_event_id", using: :btree
 
   create_table "invoice_push_events", force: :cascade do |t|
     t.integer "transaction_id"

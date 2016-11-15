@@ -10,6 +10,7 @@ describe Api::V1::EventsController, type: :controller do
     TransactionCloseEvent.destroy_all
     TransactionExecuteEvent.destroy_all
     TransactionAddInvoiceEvent.destroy_all
+    InvoiceDestroyEvent.destroy_all
     Document.destroy_all
     Invoice.destroy_all
     Revision.destroy_all
@@ -423,6 +424,35 @@ describe Api::V1::EventsController, type: :controller do
 
       expect(response).to be_success
       expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
+    end
+  end
+  
+  it 'can remove an invoice' do
+    rand_array_of_models(:invoice).each do |im|
+      dms = rand_array_of_models(:document)
+      im.update_attributes(documents: dms)
+
+      invoice_id = im.id
+      document_ids = dms.map(&:id)
+      revision_ids = im.revisions.map(&:id)
+
+      post(:create, event_type: 'invoice_destroy', payload: { invoice_id: im.public_id })
+
+      evt = InvoiceDestroyEvent.last
+      expect(evt).to_not be_nil
+      expect(evt.invoice_id).to eql(im.public_id)
+      expect(evt.event).to eql(Event.last)
+
+      expect(response).to be_success
+      expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
+
+      expect(Invoice.find_by(id: invoice_id)).to be_nil
+      revision_ids.each do |id|
+        expect(Revision.find_by(id: id)).to be_nil
+      end
+      document_ids.each do |id|
+        expect(Document.find_by(id: id)).to_not be_nil
+      end
     end
   end
 end
