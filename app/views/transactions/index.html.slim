@@ -27,12 +27,17 @@
                 tr
                   td
                     a rel="nofollow" data-bind="click: destroy, attr: { href: format_url }"
-                      = fa_icon('remove')            
-                  <!-- ko with: content -->
-                  td
-                    a data-bind="text: id, attr: { href: Routes.invoice_path($parent.id) }" data-toggle="modal" data-target="#modal-invoice-show"
-                  td data-bind="text: currency"
-                  td data-bind="text: issued"
+                      = fa_icon('remove')
+                  <!-- ko if: content -->
+                    <!-- ko with: content -->
+                    td
+                      a data-bind="text: id, attr: { href: Routes.invoice_path($parent.id) }" data-toggle="modal" data-target="#modal-invoice-show"
+                    td data-bind="text: currency"
+                    td data-bind="text: issued"
+                    <!-- /ko -->
+                  <!-- /ko -->
+                  <!-- ko ifnot: content -->
+                    <td>No document available for latest revision</td>
                   <!-- /ko -->
             <!-- /ko -->
             <!-- ko if: have_associations -->
