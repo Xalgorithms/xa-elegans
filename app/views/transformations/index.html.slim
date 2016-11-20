@@ -1,46 +1,23 @@
-.row
-  .col-md-12
-    button.btn type="button" data-toggle="modal" data-target="#modal-add-transformation"= t('labels.add', scope: 'shared')
-    .row#transformations data-bind="foreach: transformation_parts"
-      <!-- ko foreach: $data -->
-      .col-md-3
-        .panel.panel-info
-          .panel-heading
-            .container-fluid
-              span.pull-left data-bind="text: name"
-          .panel-body
-          .panel-footer
-            a rel="nofollow" data-bind="click: destroy, attr: { href: format_url }"
-              = fa_icon('remove')
+#page
+  .row
+    .col-md-12
+      button.btn type="button" data-toggle="modal" data-target="#modal-add-transformation"= t('labels.add', scope: 'shared')
+      .row data-bind="foreach: transformation_parts"
+        <!-- ko foreach: $data -->
+        .col-md-3
+          .panel.panel-info
+            .panel-heading
+              .container-fluid
+                span.pull-left data-bind="text: name"
+            .panel-body
+            .panel-footer
+              a rel="nofollow" data-bind="click: destroy, attr: { href: format_url }"
+                = fa_icon('remove')
 
-      <!-- /ko -->
+        <!-- /ko -->
 
-.modal.fade#modal-add-transformation tabIndex="-1" role="dialog"
-  .modal-dialog role="document"
-    = form_for(TransformationAddEvent.new, url: api_v1_events_path, remote: true) do |f|
-      = hidden_field_tag(:event_type, 'transformation_add')
-      .modal-content
-        .modal-header
-          button.close type="button" data-dismiss="modal"= fa_icon('close')
-          h4.modal-title= t('.labels.modal_add')
-        .modal-body
-          .form-group
-            = f.label(:name, t('.labels.name'))
-            = f.text_field(:name, class: 'form-control')
-          .form-group
-            = f.label(:src, t('.labels.src'))
-            = f.text_area(:src, class: 'form-control')
-
-        .modal-footer
-          button.btn.btn-default type="button" data-dismiss="modal"
-            = fa_icon('close')
-            span= t('labels.close', scope: 'shared')
-          button.btn.btn-primary type="submit"
-            = fa_icon('check')
-            span= t('labels.add', scope: 'shared')
+  = render('modal_add_transformation')
 
 = content_for(:javascript) do
   javascript:
-    var vm = {
-      transformations: ko.observableArray(#{raw MultiJson.encode(@transformations) })
-    };
+    var transformations = #{ raw MultiJson.encode(@transformations) };

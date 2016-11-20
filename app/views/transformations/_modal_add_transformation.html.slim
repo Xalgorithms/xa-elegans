@@ -1,0 +1,25 @@
+.modal.fade#modal-add-transformation tabIndex="-1" role="dialog"
+  .modal-dialog role="document"
+    .modal-content
+      .modal-header
+        button.close type="button" data-dismiss="modal"= fa_icon('close')
+        h4.modal-title= t('.labels.modal_add')
+      .modal-body
+        <!-- ko with: modals.add_transformation -->
+        .form-horizontal
+          .form-group
+            label.col-sm-2.control-label(for='name') Name
+            div.col-sm-10
+              input.form-control#name(type='text' data-bind='value: name')
+          .form-group
+            label.col-sm-2.control-label(for='src') Source
+            div.col-sm-10
+              textarea.form-control#src(rows='4' data-bind='value: src')
+        <!-- /ko -->
+      .modal-footer
+        button.btn.btn-default type="button" data-dismiss="modal"
+          = fa_icon('close')
+          span= t('labels.close', scope: 'shared')
+        button.btn.btn-primary type='button' data-bind='click: send_transformation'
+          = fa_icon('check')
+          span= t('labels.add', scope: 'shared')
