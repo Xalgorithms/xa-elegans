@@ -19,10 +19,6 @@ module Api
 
       def make
         @old_events ||= {
-          'transaction_execute' => {
-            klass: TransactionExecuteEvent,
-            args: [:transaction_public_id],
-          },
           'transaction_add_invoice' => {
             klass: TransactionAddInvoiceEvent,
             args: [:transaction_public_id, :url],
@@ -57,6 +53,9 @@ module Api
           },
           'register' => {
             args: [:user_id, :token],
+          },
+          'transaction_execute' => {
+            args: [:transaction_id],
           },
           'tradeshift_sync' => {
             args: [:user_id],

@@ -13,12 +13,6 @@ class EventService
     bl.call(e.transact) if bl && e.transact
   end
 
-  def self.transaction_execute(e)
-    attach_transaction(e) do |tr|
-      ExecuteService.execute(tr.id)
-    end
-  end
-
   def self.transaction_add_invoice(e)
     attach_transaction(e) do |trm|
       DownloadService.get(e.url) do |src|
@@ -109,6 +103,13 @@ class EventService
       RegisterEvent.create(token: token, user: um, event: bem)
     else
       Rails.logger.warn("! failed to locate user (id=#{e.user_public_id})")
+    end
+  end
+
+  def self.transaction_execute(bem, args)
+    with_transaction(args) do |txm|
+      ExecuteService.execute(txm.id)
+      TransactionExecuteEvent.create(transact: txm, event: bem)
     end
   end
 

@@ -277,8 +277,8 @@ describe Api::V1::EventsController, type: :controller do
 
   it 'can execute transactions' do
     rand_array_of_models(:transaction).each do |trm|
-      post(:create, event_type: 'transaction_execute', transaction_execute_event: {
-             transaction_public_id: trm.public_id
+      post(:create, event_type: 'transaction_execute', payload: {
+             transaction_id: trm.public_id
            })
 
       evt = TransactionExecuteEvent.last
