@@ -19,10 +19,6 @@ module Api
 
       def make
         @old_events ||= {
-          'transaction_bind_source' => {
-            klass: TransactionBindSourceEvent,
-            args: [:transaction_public_id, :source],
-          },
         }
 
         @events ||= {
@@ -55,6 +51,9 @@ module Api
           },
           'transaction_add_invoice' => {
             args: [:transaction_id, :url],
+          },
+          'transaction_bind_source' => {
+            args: [:transaction_id, :source],
           },
           'tradeshift_sync' => {
             args: [:user_id],

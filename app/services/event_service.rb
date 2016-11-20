@@ -13,12 +13,6 @@ class EventService
     bl.call(e.transact) if bl && e.transact
   end
 
-  def self.transaction_bind_source(e)
-    attach_transaction(e) do |trm|
-      trm.update_attributes(source: e.source.to_sym) if e.source
-    end
-  end
-
   def self.settings_update(bem, args)
     um = User.find_by(public_id: args.fetch(:user_id, nil))
     em = nil
@@ -115,6 +109,14 @@ class EventService
       end
 
       em
+    end
+  end
+
+  def self.transaction_bind_source(bem, args)
+    with_transaction(args) do |txm|
+      source = args.fetch(:source, nil)
+      txm.update_attributes(source: source.to_sym) if source
+      TransactionBindSourceEvent.create(source: source, transact: txm, event: bem)
     end
   end
 

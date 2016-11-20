@@ -346,8 +346,8 @@ describe Api::V1::EventsController, type: :controller do
   it 'can bind invoice sources' do
     rand_array_of_models(:transaction).each do |trm|
       source = rand_one(Transaction::SOURCES)
-      post(:create, event_type: 'transaction_bind_source', transaction_bind_source_event: {
-             transaction_public_id: trm.public_id,
+      post(:create, event_type: 'transaction_bind_source', payload: {
+             transaction_id: trm.public_id,
              source: source,
            })
 
