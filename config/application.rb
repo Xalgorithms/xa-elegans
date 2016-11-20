@@ -25,7 +25,6 @@ module Geghard
     config.active_record.raise_in_transactional_callbacks = true
     config.active_record.observers = [
       :document_observer,
-      :transaction_add_invoice_event_observer,
       :transaction_bind_source_event_observer
     ]
     config.xa = config_for(:xa)

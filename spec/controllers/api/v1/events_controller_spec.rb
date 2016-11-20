@@ -308,9 +308,9 @@ describe Api::V1::EventsController, type: :controller do
       end
 
 
-      post(:create, event_type: 'transaction_add_invoice', transaction_add_invoice_event: {
+      post(:create, event_type: 'transaction_add_invoice', payload: {
              url: url,
-             transaction_public_id: trm.public_id,
+             transaction_id: trm.public_id,
            })
 
       evt = TransactionAddInvoiceEvent.last

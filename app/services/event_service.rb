@@ -13,17 +13,6 @@ class EventService
     bl.call(e.transact) if bl && e.transact
   end
 
-  def self.transaction_add_invoice(e)
-    attach_transaction(e) do |trm|
-      DownloadService.get(e.url) do |src|
-        dm = Document.create(src: src)
-        InvoiceService.create_from_document(trm.id, dm.id) do |im|
-          e.update_attributes(invoice: im, document: dm)
-        end
-      end
-    end
-  end
-
   def self.transaction_bind_source(e)
     attach_transaction(e) do |trm|
       trm.update_attributes(source: e.source.to_sym) if e.source
@@ -110,6 +99,22 @@ class EventService
     with_transaction(args) do |txm|
       ExecuteService.execute(txm.id)
       TransactionExecuteEvent.create(transact: txm, event: bem)
+    end
+  end
+
+  def self.transaction_add_invoice(bem, args)
+    with_transaction(args) do |txm|
+      url = args.fetch(:url, nil)
+      em = TransactionAddInvoiceEvent.create(url: url, transact: txm, event: bem)
+
+      DownloadService.get(url) do |src|
+        dm = Document.create(src: src)
+        InvoiceService.create_from_document(txm.id, dm.id) do |im|
+          em.update_attributes(invoice: im, document: dm)
+        end
+      end
+
+      em
     end
   end
 
