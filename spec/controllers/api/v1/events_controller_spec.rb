@@ -235,8 +235,8 @@ describe Api::V1::EventsController, type: :controller do
     rand_array_of_models(:user).each do |um|
       token = Faker::Number.hexadecimal(100)
 
-      post(:create, event_type: 'register', register_event: {
-             user_public_id: um.public_id,
+      post(:create, event_type: 'register', payload: {
+             user_id: um.public_id,
              token: token,
            })
 
@@ -244,6 +244,8 @@ describe Api::V1::EventsController, type: :controller do
 
       expect(evt).to_not be_nil
       expect(evt.event).to eql(Event.last)
+      expect(evt.user).to eql(um)
+      expect(evt.token).to eql(token)
 
       expect(response).to be_success
       expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
@@ -258,13 +260,13 @@ describe Api::V1::EventsController, type: :controller do
     rand_array_of_models(:user).each do |um|
       token = Faker::Number.hexadecimal(100)
 
-      post(:create, event_type: 'register', register_event: {
-             user_public_id: um.public_id,
+      post(:create, event_type: 'register', payload: {
+             user_id: um.public_id,
              token: token,
            })
 
-      post(:create, event_type: 'register', register_event: {
-             user_public_id: um.public_id,
+      post(:create, event_type: 'register', payload: {
+             user_id: um.public_id,
              token: token,
            })
 

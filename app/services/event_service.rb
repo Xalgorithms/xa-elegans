@@ -13,16 +13,6 @@ class EventService
     bl.call(e.transact) if bl && e.transact
   end
 
-  def self.register(e)
-    um = User.find_by(public_id: e.user_public_id)
-    if um
-      e.update_attributes(user: um)
-      Registration.find_or_create_by(token: e.token, user: um)
-    else
-      Rails.logger.warn("! failed to locate user (id=#{e.user_public_id})")
-    end
-  end
-
   def self.transaction_execute(e)
     attach_transaction(e) do |tr|
       ExecuteService.execute(tr.id)
@@ -108,6 +98,17 @@ class EventService
       rm = Rule.find_by(public_id: args.fetch(:rule_id, nil))
       Association.create(transact: txm, rule: rm, transformation: trm)
       TransactionAssociateRuleEvent.create(transact: txm, transformation: trm, rule: rm, event: bem)
+    end
+  end
+
+  def self.register(bem, args)
+    um = User.find_by(public_id: args.fetch(:user_id, nil))
+    if um
+      token = args.fetch(:token, '')
+      Registration.find_or_create_by(token: token, user: um)
+      RegisterEvent.create(token: token, user: um, event: bem)
+    else
+      Rails.logger.warn("! failed to locate user (id=#{e.user_public_id})")
     end
   end
 
