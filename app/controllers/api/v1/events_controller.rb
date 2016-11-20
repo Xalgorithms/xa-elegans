@@ -18,9 +18,6 @@ module Api
       private
 
       def make
-        @old_events ||= {
-        }
-
         @events ||= {
           'transaction_open' => {
             args: [:user_id],
@@ -64,15 +61,9 @@ module Api
         }
       
         k = params[:event_type]
-        if k
-          if @old_events.include?(k)
-            args = params.require("#{k}_event").permit(*@old_events[k][:args])
-            
-            @old_events[k][:klass].create(args.merge(event: Event.create(public_id: UUID.generate, event_type: params[:event_type])))
-          elsif @events.include?(k)
-            args = params.require("payload").permit(*@events[k][:args])
-            EventService.process(params[:event_type], args)
-          end
+        if k && @events.include?(k)
+          args = params.require("payload").permit(*@events[k][:args])
+          EventService.process(params[:event_type], args)
         else
           nil
         end

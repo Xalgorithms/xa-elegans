@@ -5,14 +5,6 @@ class EventService
   
   private
 
-  def self.attach_transaction(e, &bl)
-    if !e.transact
-      e.update_attributes(transact: Transaction.find_by(public_id: e.transaction_public_id))
-    end
-
-    bl.call(e.transact) if bl && e.transact
-  end
-
   def self.settings_update(bem, args)
     um = User.find_by(public_id: args.fetch(:user_id, nil))
     em = nil
