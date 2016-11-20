@@ -133,7 +133,7 @@ describe Api::V1::EventsController, type: :controller do
         txm_id = id
       end
       
-      post(:create, event_type: 'transformation_add', transformation_add_event: { name: name, src: src })
+      post(:create, event_type: 'transformation_add', payload: { name: name, src: src })
 
       evt = TransformationAddEvent.last
 
@@ -206,14 +206,15 @@ describe Api::V1::EventsController, type: :controller do
 
   it 'can destroy transformations' do
     rand_array_of_models(:transformation).each do |txm|
-      post(:create, event_type: 'transformation_destroy', transformation_destroy_event: {
-             public_id: txm.public_id
+      post(:create, event_type: 'transformation_destroy', payload: {
+             transformation_id: txm.public_id
            })
 
       evt = TransformationDestroyEvent.last
 
       expect(evt).to_not be_nil
       expect(evt.event).to eql(Event.last)
+      expect(evt.public_id).to eql(txm.public_id)
 
       expect { Transformation.find(txm.id) }.to raise_error(ActiveRecord::RecordNotFound)
     end

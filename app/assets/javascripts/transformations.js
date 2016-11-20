@@ -4,7 +4,7 @@
       destroy: function () {
         $.post(Routes.api_v1_events_path(), {
 	  event_type: 'transformation_destroy',
-	  transformation_destroy_event: { public_id: o.id }
+	  payload: { transformation_id: o.id }
         }, function (resp) {
 	     $.getJSON(resp.url, function (evt) {
                vm.transformations.remove(function (it) {

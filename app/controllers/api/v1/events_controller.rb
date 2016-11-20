@@ -19,14 +19,6 @@ module Api
 
       def make
         @old_events ||= {
-          'transformation_add' => {
-            klass: TransformationAddEvent,
-            args: [:name, :src],
-          },
-          'transformation_destroy' => {
-            klass: TransformationDestroyEvent,
-            args: [:public_id],
-          },
           'transaction_associate_rule' => {
             klass: TransactionAssociateRuleEvent,
             args: [:transaction_public_id, :rule_public_id, :transformation_public_id],
@@ -59,8 +51,14 @@ module Api
           'invoice_push' => {
             args: [:transaction_id, :document_id],
           },
+          'transformation_add' => {
+            args: [:name, :src],
+          },
           'settings_update' => {
             args: [:user_id, tradeshift: [:key, :secret, :tenant_id]],
+          },
+          'transformation_destroy' => {
+            args: [:transformation_id],
           },
           'tradeshift_sync' => {
             args: [:user_id],

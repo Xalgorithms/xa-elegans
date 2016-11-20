@@ -3,17 +3,6 @@ class EventService
     self.send(et, Event.create(event_type: et), args)
   end
   
-  def self.transformation_add(e)
-    txm = Transformation.create(name: e.name, src: e.src, public_id: UUID.generate)
-    e.update_attributes(transformation: txm)
-    ParseService.parse_transformation(txm.id)
-  end
-
-  def self.transformation_destroy(e)
-    trm = Transformation.find_by(public_id: e.public_id)
-    trm.destroy if trm
-  end
-
   def self.transaction_associate_rule(e)
     trm = Transaction.find_by(public_id: e.transaction_public_id)
     txm = Transformation.find_by(public_id: e.transformation_public_id)
@@ -107,6 +96,19 @@ class EventService
       InvoiceService.create_from_document(txm.id, dm.id) if dm && txm
       InvoicePushEvent.create(transact: txm, document: dm, event: bem)
     end
+  end
+
+  def self.transformation_add(bem, args)
+    trm = Transformation.create(name: args.fetch(:name, nil), src: args.fetch('src', ''))
+    ParseService.parse_transformation(trm.id)
+    TransformationAddEvent.create(transformation: trm, event: bem)
+  end
+
+  def self.transformation_destroy(bem, args)
+    public_id = args.fetch(:transformation_id, nil)
+    trm = Transformation.find_by(public_id: public_id)
+    trm.destroy if trm
+    TransformationDestroyEvent.create(public_id: public_id, event: bem)
   end
 
   def self.tradeshift_sync(bem, args)
