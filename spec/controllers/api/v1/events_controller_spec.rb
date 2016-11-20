@@ -52,7 +52,7 @@ describe Api::V1::EventsController, type: :controller do
   it 'can close transactions' do
     rand_array_of_uuids.each do |public_id|
       tr = create(:transaction, public_id: public_id)
-      post(:create, event_type: 'transaction_close', transaction_close_event: { transaction_public_id: public_id })
+      post(:create, event_type: 'transaction_close', payload: { transaction_id: public_id })
 
       evt = TransactionCloseEvent.last
 

@@ -137,7 +137,7 @@
 	  trigger_close:    function (o) {
 	    $.post(Routes.api_v1_events_path(), {
 	      event_type: 'transaction_close',
-	      transaction_close_event: { transaction_public_id: o.id }
+	      payload: { transaction_id: o.id }
 	    }, function (resp) {
 	      $.getJSON(resp.url, function (evt) {
 		page_vm.transactions.remove(function (it) {

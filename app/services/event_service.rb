@@ -3,12 +3,6 @@ class EventService
     self.send(et, Event.create(event_type: et), args)
   end
   
-  def self.transaction_close(e)
-    attach_transaction(e) do |tr|
-      tr.close
-    end
-  end
-
   def self.invoice_push(e)
     attach_transaction(e) do |trm|
       dm = Document.find_by(public_id: e.document_public_id)
@@ -99,7 +93,21 @@ class EventService
     trm = Transaction.create(user: um, status: Transaction::STATUS_OPEN, public_id: UUID.generate)
     TransactionOpenEvent.create(transact: trm, user: um, event: bem)
   end
+
+  def self.with_transaction(args, k=:transaction_id)
+    txm = Transaction.find_by(public_id: args.fetch(k, nil))
+    rv = nil
+    rv = yield(txm) if txm
+    rv
+  end
   
+  def self.transaction_close(bem, args)
+    with_transaction(args) do |txm|
+      txm.close
+      TransactionCloseEvent.create(transact: txm, event: bem)
+    end
+  end
+
   def self.tradeshift_sync(bem, args)
     em = nil
     um = User.find_by(public_id: args.fetch(:user_id, nil))

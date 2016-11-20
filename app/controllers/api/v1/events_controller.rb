@@ -19,10 +19,6 @@ module Api
 
       def make
         @old_events ||= {
-          'transaction_close' => {
-            klass: TransactionCloseEvent,
-            args: [:transaction_public_id],
-          },
           'invoice_push' => {
             klass: InvoicePushEvent,
             args: [:transaction_public_id, :document_public_id],
@@ -60,6 +56,9 @@ module Api
         @events ||= {
           'transaction_open' => {
             args: [:user_id],
+          },
+          'transaction_close' => {
+            args: [:transaction_id],
           },
           'settings_update' => {
             args: [:user_id, tradeshift: [:key, :secret, :tenant_id]],
