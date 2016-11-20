@@ -3,12 +3,6 @@ class EventService
     self.send(et, Event.create(event_type: et), args)
   end
   
-  def self.transaction_open(e)
-    um = User.where(public_id: e.user_public_id).first
-    trm = Transaction.create(user: um, status: Transaction::STATUS_OPEN, public_id: UUID.generate)
-    e.update_attributes(transact: trm, user: um)
-  end
-  
   def self.transaction_close(e)
     attach_transaction(e) do |tr|
       tr.close
@@ -99,6 +93,13 @@ class EventService
     em
   end
 
+  def self.transaction_open(bem, args)
+    user_public_id = args.fetch(:user_id, nil)
+    um = User.find_by(public_id: user_public_id)
+    trm = Transaction.create(user: um, status: Transaction::STATUS_OPEN, public_id: UUID.generate)
+    TransactionOpenEvent.create(transact: trm, user: um, event: bem)
+  end
+  
   def self.tradeshift_sync(bem, args)
     em = nil
     um = User.find_by(public_id: args.fetch(:user_id, nil))

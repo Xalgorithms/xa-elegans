@@ -19,7 +19,7 @@ describe Api::V1::EventsController, type: :controller do
   it 'can open transactions' do
     rand_times.map { create(:user) }.each do |um|
       len = Transaction.all.count
-      post(:create, event_type: 'transaction_open', transaction_open_event: { user_public_id: um.public_id })
+      post(:create, event_type: 'transaction_open', payload: { user_id: um.public_id })
 
       evt = TransactionOpenEvent.last
       expect(evt).to_not be_nil
@@ -40,7 +40,7 @@ describe Api::V1::EventsController, type: :controller do
 
   it 'can show transaction open events' do
     rand_times.map { create(:user) }.each do |um|
-      rand_times.map { create(:transaction_open_event, transact: create(:transaction, user: um), user_public_id: um.public_id, event: create(:event, event_type: 'transaction_open')) }.each do |toem|
+      rand_times.map { create(:transaction_open_event, transact: create(:transaction, user: um), user: um, event: create(:event, event_type: 'transaction_open')) }.each do |toem|
         get(:show, id: toem.event.public_id)
 
         expect(response).to be_success
