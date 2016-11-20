@@ -3,13 +3,6 @@ class EventService
     self.send(et, Event.create(event_type: et), args)
   end
   
-  def self.invoice_push(e)
-    attach_transaction(e) do |trm|
-      dm = Document.find_by(public_id: e.document_public_id)
-      InvoiceService.create_from_document(trm.id, dm.id) if dm
-    end
-  end
-
   def self.transformation_add(e)
     txm = Transformation.create(name: e.name, src: e.src, public_id: UUID.generate)
     e.update_attributes(transformation: txm)
@@ -105,6 +98,14 @@ class EventService
     with_transaction(args) do |txm|
       txm.close
       TransactionCloseEvent.create(transact: txm, event: bem)
+    end
+  end
+
+  def self.invoice_push(bem, args)
+    with_transaction(args) do |txm|
+      dm = Document.find_by(public_id: args.fetch(:document_id, nil))
+      InvoiceService.create_from_document(txm.id, dm.id) if dm && txm
+      InvoicePushEvent.create(transact: txm, document: dm, event: bem)
     end
   end
 

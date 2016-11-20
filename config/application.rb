@@ -24,7 +24,6 @@ module Geghard
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
     config.active_record.observers = [
-      :invoice_push_event_observer,
       :transformation_add_event_observer,
       :transformation_destroy_event_observer,
       :transaction_associate_rule_event_observer,

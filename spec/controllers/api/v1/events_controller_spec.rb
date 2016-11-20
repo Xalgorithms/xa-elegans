@@ -89,15 +89,14 @@ describe Api::V1::EventsController, type: :controller do
           notification_invoice_id = invoice_id
         end
         
-        post(:create, event_type: 'invoice_push', invoice_push_event: { transaction_public_id: trm.public_id, document_public_id: dm.public_id })
+        post(:create, event_type: 'invoice_push', payload: { transaction_id: trm.public_id, document_id: dm.public_id })
 
         evt = InvoicePushEvent.last
 
         expect(evt).to_not be_nil
         expect(evt.event).to eql(Event.last)
         expect(evt.transact).to eql(trm)
-        expect(evt.transaction_public_id).to eql(trm.public_id)
-        expect(evt.document_public_id).to eql(dm.public_id)
+        expect(evt.document).to eql(dm)
 
         expect(response).to be_success
         expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
