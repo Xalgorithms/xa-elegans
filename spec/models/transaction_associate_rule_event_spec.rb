@@ -30,9 +30,4 @@ describe TransactionAssociateRuleEvent, type: :model do
       expect(em.transformation).to eql(txm)
     end
   end
-
-  it 'should trigger the EventService' do
-    expect(EventService).to receive(:transaction_associate_rule)
-    TransactionAssociateRuleEvent.create
-  end
 end

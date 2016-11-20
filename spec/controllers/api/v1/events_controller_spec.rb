@@ -166,8 +166,8 @@ describe Api::V1::EventsController, type: :controller do
     rand_array_of_models(:transaction).each do |trm|
       rand_array_of_models(:rule).each do |rm|
         txm = create(:transformation)
-        post(:create, event_type: 'transaction_associate_rule', transaction_associate_rule_event: {
-               transaction_public_id: trm.public_id, rule_public_id: rm.public_id, transformation_public_id: txm.public_id
+        post(:create, event_type: 'transaction_associate_rule', payload: {
+               transaction_id: trm.public_id, rule_id: rm.public_id, transformation_id: txm.public_id
              })
 
         evt = TransactionAssociateRuleEvent.last

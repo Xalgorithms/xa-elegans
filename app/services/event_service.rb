@@ -3,15 +3,6 @@ class EventService
     self.send(et, Event.create(event_type: et), args)
   end
   
-  def self.transaction_associate_rule(e)
-    trm = Transaction.find_by(public_id: e.transaction_public_id)
-    txm = Transformation.find_by(public_id: e.transformation_public_id)
-    rm = Rule.find_by(public_id: e.rule_public_id)
-    e.update_attributes(transact: trm, rule: rm, transformation: txm)
-
-    Association.create(transact: trm, rule: rm, transformation: txm)
-  end
-  
   private
 
   def self.attach_transaction(e, &bl)
@@ -109,6 +100,15 @@ class EventService
     trm = Transformation.find_by(public_id: public_id)
     trm.destroy if trm
     TransformationDestroyEvent.create(public_id: public_id, event: bem)
+  end
+  
+  def self.transaction_associate_rule(bem, args)
+    with_transaction(args) do |txm|
+      trm = Transformation.find_by(public_id: args.fetch(:transformation_id, nil))
+      rm = Rule.find_by(public_id: args.fetch(:rule_id, nil))
+      Association.create(transact: txm, rule: rm, transformation: trm)
+      TransactionAssociateRuleEvent.create(transact: txm, transformation: trm, rule: rm, event: bem)
+    end
   end
 
   def self.tradeshift_sync(bem, args)
