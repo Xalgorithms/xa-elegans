@@ -16,4 +16,18 @@ describe Association, type: :model do
       expect(am.transact).to eql(trm)
     end
   end
+  
+  it 'should initialize public_id if not supplied' do
+    rand_array_of_uuids.each do |id|
+      am = Association.create(public_id: id)
+      expect(am.public_id).to eql(id)
+      expect(Association.find(am.id).public_id).to eql(id)
+    end
+
+    rand_times.each do
+      am = Association.create
+      expect(am.public_id).to_not be_nil
+      expect(Association.find(am.id).public_id).to eql(am.public_id)
+    end
+  end
 end
