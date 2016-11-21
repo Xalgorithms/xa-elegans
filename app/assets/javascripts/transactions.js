@@ -33,6 +33,22 @@
       }
     };
 
+    function send_event(t, args, fn) {
+      var evt = {
+	event_type: t,
+	payload: args
+      };
+      $.post(Routes.api_v1_events_path(), evt, function (o) {
+	if (fn) {
+	  fn(o);
+	} else {
+	  $.getJSON(o.url, function (e) {
+	    console.log(e);
+	  });
+	}
+      });
+    }
+    
     function make_invoice_vm(invoice) {
       var vm = {
 	id: invoice.id,
@@ -52,11 +68,7 @@
       };
 
       vm.destroy = function () {
-	var evt = {
-	  event_type: 'invoice_destroy',
-	  payload: { invoice_id: invoice.id }
-	};
-	$.post(Routes.api_v1_events_path(), evt, function () {
+	send_event('invoice_destroy', { invoice_id: invoice.id }, function () {
 	  page_vm.invoices.remove(function (o) {
 	    return o.id === invoice.id;
 	  });
@@ -105,10 +117,9 @@
 
       // triggers
       vm.trigger_associate = function (o) {
-	debugger;
       };
       vm.trigger_execute = function (o) {
-	debugger;
+	send_event('transaction_execute', { transaction_id: tr.id });
       };
       vm.trigger_close = function (o) {
 	debugger;
@@ -120,7 +131,7 @@
 	debugger;
       };
       vm.trigger_tradeshift_sync = function (o) {
-	debugger;
+	send_event('tradeshift_sync', { user_id: user_id });
       };
 
       return vm;
