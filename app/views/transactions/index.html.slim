@@ -45,13 +45,17 @@
               table.table.table-sm
                 thead.thead-default
                   tr
+                    th
                     th.text-capitalize= t('.heading.rule')
                     th.text-capitalize= t('.heading.transformation')
                     th
                 tbody data-bind="foreach: associations"
                   tr
-                    td data-bind="text: rule.reference"
-                    td data-bind="text: transformation.name"
+                    td
+                      a rel="nofollow" data-bind="click: destroy"
+                        = fa_icon('remove')
+                    td data-bind="text: reference"
+                    td data-bind="text: name"
               <!-- /ko -->
             .panel-footer
               button.btn#button-associate type="button" data-bind="click: trigger_associate"= t('.labels.associate')

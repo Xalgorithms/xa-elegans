@@ -214,8 +214,8 @@ ActiveRecord::Schema.define(version: 20161121142747) do
   add_index "transformation_add_events", ["transformation_id"], name: "index_transformation_add_events_on_transformation_id", using: :btree
 
   create_table "transformation_destroy_events", force: :cascade do |t|
-    t.integer "event_id"
     t.string  "public_id"
+    t.integer "event_id"
   end
 
   add_index "transformation_destroy_events", ["event_id"], name: "index_transformation_destroy_events_on_event_id", using: :btree

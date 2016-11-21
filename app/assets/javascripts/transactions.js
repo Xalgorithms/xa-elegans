@@ -110,7 +110,12 @@
     }
 
     function make_association_vm(o) {
-      return o;
+      return {
+	name: o.transformation.name,
+	reference: o.rule.reference,
+	destroy: function () {
+	}
+      };
     }
     
     function make_item_vm(tr) {
