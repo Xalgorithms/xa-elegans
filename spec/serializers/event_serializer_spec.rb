@@ -57,7 +57,10 @@ describe EventSerializer do
       tarem.transact = create(:transaction)
       tarem.rule = create(:rule)
       ex = {
-        transaction: { id: tarem.transact.public_id },
+        transaction: {
+          id: tarem.transact.public_id,
+          url: Rails.application.routes.url_helpers.api_v1_transaction_path(tarem.transact.public_id),
+        },
         rule: { reference: tarem.rule.reference },
         id: tarem.event.public_id,
         event_type: 'transaction_associate_rule',

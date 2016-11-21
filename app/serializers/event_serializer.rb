@@ -52,7 +52,10 @@ class EventSerializer < Serializer
 
   def self.serialize_transaction_associate_rule(event)
     {}.tap do |o|
-      o[:transaction] = { id: event.transaction_associate_rule_event.transact.public_id } if event.transaction_associate_rule_event.transact
+      o[:transaction] = {
+        id: event.transaction_associate_rule_event.transact.public_id,
+        url: Rails.application.routes.url_helpers.api_v1_transaction_path(event.transaction_associate_rule_event.transact.public_id),
+      } if event.transaction_associate_rule_event.transact
       o[:rule] = { reference: event.transaction_associate_rule_event.rule.reference } if event.transaction_associate_rule_event.rule
       o[:transformation] = { name: event.transaction_associate_rule_event.transformation.name } if event.transaction_associate_rule_event.transformation
     end.merge(serialize_any(event))

@@ -27,8 +27,10 @@
       invoices: ko.observableArray(invoices),
       modals: {
 	associate: {
-	  rules: ko.observableArray(),
-	  transformations: ko.observableArray()
+	  rules: ko.observableArray(rules),
+	  transformations: ko.observableArray(transformations),
+	  rule_id: ko.observable(),
+	  transformation_id: ko.observable()
 	}
       }
     };
@@ -48,7 +50,19 @@
 	});
       });
     }
-    
+
+    function recycle_transaction(id, url) {
+      var otr = _.find(page_vm.transactions(), function (o) {
+	return o.id === id;
+      });
+
+      if (otr) {
+	$.getJSON(url, function (ntr) {
+	  page_vm.transactions.replace(otr, ntr);
+	});
+      }
+    }
+
     function make_invoice_vm(invoice) {
       var vm = {
 	id: invoice.id,
@@ -117,7 +131,8 @@
 
       // triggers
       vm.trigger_associate = function (o) {
-	debugger;
+	$('#modal-associate').modal('toggle');
+	page_vm.modals.associate.transaction_id = tr.id;
       };
       
       vm.trigger_execute = function (o) {
@@ -126,12 +141,7 @@
       
       vm.trigger_close = function (o) {
 	send_event('transaction_close', { transaction_id: tr.id }, function (e) {
-	  page_vm.transactions.remove(function (o) {
-	    return o.id === tr.id;
-	  });
-	  $.getJSON(e.transaction.url, function (ntr) {
-	    page_vm.transactions.push(ntr);
-	  });
+	  recycle_transaction(e.transaction.id, e.transaction.url);
 	});
       };
       
@@ -150,6 +160,18 @@
       return vm;
     }
 
+    page_vm.send_association = function () {
+      $('#modal-associate').modal('toggle');
+      var m = page_vm.modals.associate;
+      send_event('transaction_associate_rule', {
+	transaction_id: m.transaction_id,
+	rule_id: m.rule_id(),
+	transformation_id: m.transformation_id()
+      }, function (e) {
+	recycle_transaction(e.transaction.id, e.transaction.url);
+      });
+    };
+    
     page_vm.transaction_parts = ko.computed(function () {
       return _.chunk(_.map(page_vm.transactions(), make_item_vm), 2);
     });
@@ -174,14 +196,6 @@
 	  doc_content(content);
 	});
       });
-    });
-
-    $.getJSON(Routes.api_v1_rules_path(), function (o) {
-      page_vm.modals.associate.rules(o);
-    });
-
-    $.getJSON(Routes.api_v1_transformations_path(), function (o) {
-      page_vm.modals.associate.transformations(o);
     });
 
     ko.applyBindings(page_vm, document.getElementById('page'));    

@@ -5,6 +5,7 @@ class TransactionsController < ApplicationController
     @documents = all_related(:documents, DocumentSerializer)
     @invoices = all_related(:invoices, InvoiceSerializer)
     @rules = RuleSerializer.many(Rule.all)
+    @transformations = TransformationSerializer.many(Transformation.all)
   end
 
   def show
