@@ -1,20 +1,21 @@
-/ .modal.fade#modal-add-invoice tabIndex="-1" role="dialog"
-/   .modal-dialog role="document"
-/     = form_for(TransactionAddInvoiceEvent.new, url: api_v1_events_path, remote: true) do |f|
-/       = hidden_field_tag(:event_type, 'transaction_add_invoice')
-/       .modal-content
-/         .modal-header
-/           button.close type="button" data-dismiss="modal"= fa_icon('close')
-/           h4.modal-title= t('.labels.modal_add')
-/         .modal-body
-/           .form-group
-/             = f.label(:url, t('.labels.select_rule'))
-/             = f.text_field(:url, value: 'https://raw.githubusercontent.com/Xalgorithms/xa-elegans/master/ubl/documents/icelandic-guitar/t0.xml', class: 'form-control')
-/           = f.hidden_field(:transaction_public_id, 'data-bind' => 'value: transaction_id')
-/         .modal-footer
-/           button.btn.btn-default type="button" data-dismiss="modal"
-/             = fa_icon('close')
-/             span= t('labels.close', scope: 'shared')
-/           button.btn.btn-primary type="submit"
-/             = fa_icon('check')
-/             span= t('labels.add', scope: 'shared')
+.modal.fade#modal-add-invoice tabIndex="-1" role="dialog"
+  .modal-dialog role="document"
+    .modal-content
+      .modal-header
+        button.close type="button" data-dismiss="modal"= fa_icon('close')
+        h4.modal-title= t('.labels.modal_add')
+      .modal-body
+        <!-- ko with: modals.add_invoice -->
+        .form-horizontal
+          .form-group
+            label.col-sm-2.control-label(for='url') URL
+            div.col-sm-10
+              input.form-control#url(type='text' data-bind='value: url')
+        <!-- /ko -->
+      .modal-footer
+        button.btn.btn-default type="button" data-dismiss="modal"
+          = fa_icon('close')
+          span= t('labels.close', scope: 'shared')
+        button.btn.btn-primary type="submit" data-bind='click: send_add_invoice'
+          = fa_icon('check')
+          span= t('labels.add', scope: 'shared')

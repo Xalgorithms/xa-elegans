@@ -17,9 +17,13 @@
 	return id === doc.id;
       });
 
+      var content = ko.observable();
       if (o) {
-	fn(o.content);
+	content = o.content;
+      } else {
+	documents_cache.push({ id: id, content: content });
       }
+      fn(content);
     }
 
     var page_vm = {
@@ -31,6 +35,9 @@
 	  transformations: ko.observableArray(transformations),
 	  rule_id: ko.observable(),
 	  transformation_id: ko.observable()
+	},
+	add_invoice: {
+	  url: ko.observable('https://raw.githubusercontent.com/Xalgorithms/xa-elegans/master/ubl/documents/icelandic-guitar/t0.xml')
 	}
       }
     };
@@ -51,7 +58,7 @@
       });
     }
 
-    function recycle_transaction(id, url) {
+    function recycle_transaction(id, url, fn) {
       var otr = _.find(page_vm.transactions(), function (o) {
 	return o.id === id;
       });
@@ -59,6 +66,7 @@
       if (otr) {
 	$.getJSON(url, function (ntr) {
 	  page_vm.transactions.replace(otr, ntr);
+	  fn();
 	});
       }
     }
@@ -146,7 +154,8 @@
       };
       
       vm.trigger_add_invoice = function (o) {
-	debugger;
+	$('#modal-add-invoice').modal('toggle');
+	page_vm.modals.add_invoice.transaction_id = tr.id;
       };
       
       vm.trigger_bind_source = function (o) {
@@ -169,6 +178,26 @@
 	transformation_id: m.transformation_id()
       }, function (e) {
 	recycle_transaction(e.transaction.id, e.transaction.url);
+      });
+    };
+
+    page_vm.send_add_invoice = function () {
+      $('#modal-add-invoice').modal('toggle');
+      var m = page_vm.modals.add_invoice;
+      send_event('transaction_add_invoice', {
+	transaction_id: m.transaction_id,
+	url: m.url()
+      }, function (e) {
+	recycle_transaction(e.transaction.id, e.transaction.url, function () {
+	  $.getJSON(e.invoice.url, function (invoice) {
+	    page_vm.invoices.push(invoice);
+	  });
+	  $.getJSON(e.document.url, function (content) {
+	    with_document_content(e.document.id, function (doc_content) {
+	      doc_content(content);
+	    });
+	  });
+	});
       });
     };
     

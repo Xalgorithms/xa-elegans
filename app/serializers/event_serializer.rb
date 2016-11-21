@@ -63,7 +63,10 @@ class EventSerializer < Serializer
 
   def self.serialize_transaction_add_invoice(event)
     {}.tap do |o|
-      o[:transaction] = { id: event.transaction_add_invoice_event.transact.public_id } if event.transaction_add_invoice_event.transact
+      o[:transaction] = {
+        id: event.transaction_add_invoice_event.transact.public_id,
+        url: Rails.application.routes.url_helpers.api_v1_transaction_path(event.transaction_add_invoice_event.transact.public_id),
+      } if event.transaction_add_invoice_event.transact
       o[:invoice] = {
         id: event.transaction_add_invoice_event.invoice.public_id,
         url: Rails.application.routes.url_helpers.api_v1_invoice_path(event.transaction_add_invoice_event.invoice.public_id),
