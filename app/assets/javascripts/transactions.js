@@ -39,13 +39,13 @@
 	payload: args
       };
       $.post(Routes.api_v1_events_path(), evt, function (o) {
-	if (fn) {
-	  fn(o);
-	} else {
-	  $.getJSON(o.url, function (e) {
+	$.getJSON(o.url, function (e) {
+	  if (fn) {
+	    fn(e);
+	  } else {
 	    console.log(e);
-	  });
-	}
+	  }
+	});
       });
     }
     
@@ -117,26 +117,39 @@
 
       // triggers
       vm.trigger_associate = function (o) {
+	debugger;
       };
+      
       vm.trigger_execute = function (o) {
 	send_event('transaction_execute', { transaction_id: tr.id });
       };
+      
       vm.trigger_close = function (o) {
-	debugger;
+	send_event('transaction_close', { transaction_id: tr.id }, function (e) {
+	  page_vm.transactions.remove(function (o) {
+	    return o.id === tr.id;
+	  });
+	  $.getJSON(e.transaction.url, function (ntr) {
+	    page_vm.transactions.push(ntr);
+	  });
+	});
       };
+      
       vm.trigger_add_invoice = function (o) {
 	debugger;
       };
+      
       vm.trigger_bind_source = function (o) {
 	debugger;
       };
+      
       vm.trigger_tradeshift_sync = function (o) {
 	send_event('tradeshift_sync', { user_id: user_id });
       };
 
       return vm;
     }
-    
+
     page_vm.transaction_parts = ko.computed(function () {
       return _.chunk(_.map(page_vm.transactions(), make_item_vm), 2);
     });
