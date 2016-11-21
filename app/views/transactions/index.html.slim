@@ -1,143 +1,83 @@
-.row#transactions
-  .col-md-12
-    button.btn data-bind="click: add" type="button"= t('labels.add', scope: 'shared')
-    .row data-bind="foreach: transaction_view_models"
-      <!-- ko foreach: $data -->
-      .col-md-6
-        div class="panel" data-bind="css: panel_style"
-          .panel-heading
-            .container-fluid
-              <!-- ko if: source -->
-              span Source:&nbsp;
-              span data-bind="text: source"
-              <!-- /ko -->
-              span.pull-right.text-uppercase data-bind="text: status_label"
-          .panel-body
-            div
-            <!-- ko if: have_invoices -->
-            table.table.table-sm
-              thead.thead-default
-                tr
-                  th
-                  th.text-capitalize= t('.heading.number')
-                  th.text-capitalize= t('.heading.currency')
-                  th.text-capitalize= t('.heading.date')
-                  th
-              tbody data-bind="foreach: invoices"
-                tr
-                  td
-                    a rel="nofollow" data-bind="click: destroy, attr: { href: format_url }"
-                      = fa_icon('remove')
-                  <!-- ko if: content -->
-                    <!-- ko with: content -->
+#page
+  .row#transactions
+    .col-md-12
+      button.btn data-bind="click: add" type="button"= t('labels.add', scope: 'shared')
+      .row data-bind="foreach: transaction_parts"
+        <!-- ko foreach: $data -->
+        .col-md-6
+          div class="panel" data-bind="css: panel_style"
+            .panel-heading
+              .container-fluid
+                <!-- ko if: source -->
+                span Source:&nbsp;
+                span data-bind="text: source"
+                <!-- /ko -->
+                span.pull-right.text-uppercase data-bind="text: status_label"
+            .panel-body
+              div
+              <!-- ko if: have_invoices -->
+              table.table.table-sm
+                thead.thead-default
+                  tr
+                    th
+                    th.text-capitalize= t('.heading.number')
+                    th.text-capitalize= t('.heading.currency')
+                    th.text-capitalize= t('.heading.date')
+                    th
+                tbody data-bind="foreach: invoices"
+                  tr
                     td
-                      a data-bind="text: id, attr: { href: Routes.invoice_path($parent.id) }" data-toggle="modal" data-target="#modal-invoice-show"
-                    td data-bind="text: currency"
-                    td data-bind="text: issued"
+                      a rel="nofollow" data-bind="click: destroy, attr: { href: format_url }"
+                        = fa_icon('remove')
+                    <!-- ko if: content -->
+                      <!-- ko with: content -->
+                      td
+                        a data-bind="text: id, attr: { href: Routes.invoice_path($parent.id) }" data-toggle="modal" data-target="#modal-invoice-show"
+                      td data-bind="text: currency"
+                      td data-bind="text: issued"
+                      <!-- /ko -->
                     <!-- /ko -->
-                  <!-- /ko -->
-                  <!-- ko ifnot: content -->
-                    <td>No document available for latest revision</td>
-                  <!-- /ko -->
-            <!-- /ko -->
-            <!-- ko if: have_associations -->
-            table.table.table-sm
-              thead.thead-default
-                tr
-                  th.text-capitalize= t('.heading.rule')
-                  th.text-capitalize= t('.heading.transformation')
-                  th
-              tbody data-bind="foreach: associations"
-                tr
-                  td data-bind="text: rule.reference"
-                  td data-bind="text: transformation.name"
-            <!-- /ko -->
-          .panel-footer
-            button.btn#button-associate type="button" data-bind="click: trigger_associate"= t('.labels.associate')
-            button.btn#button-execute type="button" data-bind="click: trigger_execute"= t('.labels.execute')
-            <!-- ko ifnot: closed -->
-            button.btn#button-close type="button" data-bind="click: trigger_close"= t('.labels.close')
-            <!-- /ko -->
-            button.btn#button-add-invoice type="button" data-bind="click: trigger_add_invoice"= t('.labels.add_invoice')
-            button.btn#button-bind-source type="button" data-bind="click: trigger_bind_source"= t('.labels.bind_source')
-            button.btn type="button" data-bind="click: trigger_tradeshift_sync"= t('.labels.tradeshift_sync')
-      <!-- /ko -->
-            
-.modal.fade.modal-wide#modal-invoice-show title="#{t('.modals.invoice')}" tabindex="-1" role="dialog"
-  .modal-dialog role="document"
-    .modal-content#modal-content-invoice
+                    <!-- ko ifnot: content -->
+                      <td>No document available for latest revision</td>
+                    <!-- /ko -->
+              <!-- /ko -->
+              <!-- ko if: have_associations -->
+              table.table.table-sm
+                thead.thead-default
+                  tr
+                    th.text-capitalize= t('.heading.rule')
+                    th.text-capitalize= t('.heading.transformation')
+                    th
+                tbody data-bind="foreach: associations"
+                  tr
+                    td data-bind="text: rule.reference"
+                    td data-bind="text: transformation.name"
+              <!-- /ko -->
+            .panel-footer
+              button.btn#button-associate type="button" data-bind="click: trigger_associate"= t('.labels.associate')
+              button.btn#button-execute type="button" data-bind="click: trigger_execute"= t('.labels.execute')
+              <!-- ko ifnot: closed -->
+              button.btn#button-close type="button" data-bind="click: trigger_close"= t('.labels.close')
+              <!-- /ko -->
+              button.btn#button-add-invoice type="button" data-bind="click: trigger_add_invoice"= t('.labels.add_invoice')
+              button.btn#button-bind-source type="button" data-bind="click: trigger_bind_source"= t('.labels.bind_source')
+              button.btn type="button" data-bind="click: trigger_tradeshift_sync"= t('.labels.tradeshift_sync')
+        <!-- /ko -->
 
-.modal.fade#modal-associate tabIndex="-1" role="dialog"
-  .modal-dialog role="document"
-    = form_for(TransactionAssociateRuleEvent.new, url: api_v1_events_path, remote: true) do |f|
-      = hidden_field_tag(:event_type, 'transaction_associate_rule')
-      .modal-content
-        .modal-header
-          button.close type="button" data-dismiss="modal"= fa_icon('close')
-          h4.modal-title= t('.labels.modal_add')
-        .modal-body
-          .form-group
-            = f.label(:rule_public_id, t('.labels.select_rule'))
-            = f.select(:rule_public_id, [], {}, { class: 'form-control', 'data-bind' => 'foreach: rules' })
-              option data-bind="value: $data.id, text: $data.reference"
-            = f.label(:transformation_public_id, t('.labels.select_transformation'))
-            = f.select(:transformation_public_id, [], {}, { class: 'form-control', 'data-bind' => 'foreach: transformations' })
-              option data-bind="value: $data.id, text: $data.name"
-          = f.hidden_field(:transaction_public_id, 'data-bind' => 'value: transaction_id')
-        .modal-footer
-          button.btn.btn-default type="button" data-dismiss="modal"
-            = fa_icon('close')
-            span= t('labels.close', scope: 'shared')
-          button.btn.btn-primary type="submit"
-            = fa_icon('check')
-            span= t('labels.add', scope: 'shared')
-
-.modal.fade#modal-add-invoice tabIndex="-1" role="dialog"
-  .modal-dialog role="document"
-    = form_for(TransactionAddInvoiceEvent.new, url: api_v1_events_path, remote: true) do |f|
-      = hidden_field_tag(:event_type, 'transaction_add_invoice')
-      .modal-content
-        .modal-header
-          button.close type="button" data-dismiss="modal"= fa_icon('close')
-          h4.modal-title= t('.labels.modal_add')
-        .modal-body
-          .form-group
-            = f.label(:url, t('.labels.select_rule'))
-            = f.text_field(:url, value: 'https://raw.githubusercontent.com/Xalgorithms/xa-elegans/master/ubl/documents/icelandic-guitar/t0.xml', class: 'form-control')
-          = f.hidden_field(:transaction_public_id, 'data-bind' => 'value: transaction_id')
-        .modal-footer
-          button.btn.btn-default type="button" data-dismiss="modal"
-            = fa_icon('close')
-            span= t('labels.close', scope: 'shared')
-          button.btn.btn-primary type="submit"
-            = fa_icon('check')
-            span= t('labels.add', scope: 'shared')
-
-.modal.fade#modal-bind-source tabIndex="-1" role="dialog"
-  .modal-dialog role="document"
-    = form_for(TransactionBindSourceEvent.new, url: api_v1_events_path, remote: true) do |f|
-      = hidden_field_tag(:event_type, 'transaction_bind_source')
-      = f.hidden_field(:transaction_public_id, 'data-bind' => 'value: transaction_id')
-      .modal-content
-        .modal-header
-          button.close type="button" data-dismiss="modal"= fa_icon('close')
-          h4.modal-title= t('.labels.modal_bind_source')
-        .modal-body
-          .form-group
-            = f.label(:source, t('.labels.select_source'))
-            = f.select(:source, Transaction::SOURCES, {}, { class: 'form-control' })
-        .modal-footer
-          button.btn.btn-default type="button" data-dismiss="modal"
-            = fa_icon('close')
-            span= t('labels.close', scope: 'shared')
-          button.btn.btn-primary type="submit"
-            = fa_icon('check')
-            span= t('labels.add', scope: 'shared')
+  = render('modal_invoice_show')
+  = render('modal_associate')
+  = render('modal_add_invoice')
+  = render('modal_bind_source')
 
 / TODO: figure out why translations are not working
 = content_for(:javascript) do
   javascript:
     var transactions = #{raw MultiJson.encode(@transactions)};
+    var invoices = #{raw MultiJson.encode(@invoices)};
+    var rules = #{raw MultiJson.encode(@rules)};
+    var associations = #{raw MultiJson.encode(@associations)};
+    var documents = #{raw MultiJson.encode(@documents)};
+
     var user_id = '#{current_user.public_id}';
     
     var labels = {

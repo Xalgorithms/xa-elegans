@@ -1,199 +1,133 @@
 (function () {
-  var associate_vm = {
-    transaction_id:  ko.observable(),
-    rules:           ko.observableArray(),
-    transformations: ko.observableArray()
-  };
-
-  var add_invoice_vm = {
-    transaction_id: ko.observable()
-  };
-
-  var bind_source_vm = {
-    transaction_id: ko.observable()
-  };
-
-  var page_vm = {
-  };
-
-  function associate(tr) {
-    $('#modal-associate').modal('toggle');
-    associate_vm.transaction_id(tr.id);
-  }
-
-  function add_invoice(tr) {
-    $('#modal-add-invoice').modal('toggle');
-    add_invoice_vm.transaction_id(tr.id);
-  }
-
-  function bind_source(tr) {
-    $('#modal-bind-source').modal('toggle');
-    bind_source_vm.transaction_id(tr.id);
-  }
-
   function init() {
     var styles = {
       'open' : 'panel-success',
       'closed' : 'panel-info'
     };
 
-    var documents = {
+    var documents_cache = _.map(documents, function (o) {
+      return {
+	id: o.id,
+	content: ko.observable()
+      };
+    });
+
+    function with_document_content(id, fn) {
+      var o = _.find(documents_cache, function (doc) {
+	return id === doc.id;
+      });
+
+      if (o) {
+	fn(o.content);
+      }
+    }
+
+    var page_vm = {
+      transactions: ko.observableArray(transactions),
+      invoices: ko.observableArray(invoices),
+      modals: {
+	associate: {
+	  rules: ko.observableArray(),
+	  transformations: ko.observableArray()
+	}
+      }
     };
 
-    var rules = ko.observableArray();
-    
-    $('.new_transaction_associate_rule_event').on('ajax:success', function (e, o) {
-      $('#modal-associate').modal('toggle');
-      $.getJSON(o.url, function (o) {
-	var tr = _.find(page_vm.transactions(), function (tr) {
-	  return tr.id == o.transaction.id;
-	});
-	if (tr) {
-	  tr.associations.push(o);
-	}
-      });    
-    });
-    
-    $('.new_transaction_add_invoice_event').on('ajax:success', function (e, o) {
-      $('#modal-add-invoice').modal('toggle');
-      $.getJSON(o.url, function (event) {
-	$.getJSON(event.invoice.url, function (invoice) {
-	  var tr = _.find(page_vm.transactions(), function (tr) {
-	    return tr.id == event.transaction.id;
-	  });
-	  if (tr) {
-	    tr.invoices.push(invoice);
-	  }	  
-	});
-      });    
-    });
-
-    $('.new_transaction_bind_source_event').on('ajax:success', function (e, o) {
-      $('#modal-bind-source').modal('toggle');
-      $.getJSON(o.url, function (event) {
-	var tr = _.find(page_vm.transactions(), function (tr) {
-	  return tr.id == event.transaction.id;
-	});
-	if (tr) {
-	  console.log('TODO: update not finished');
-	}
-      });
-    });
-
-    _.each(transactions, function (tr) {
-      _.each(tr.invoices, function (inv) {
-        var latest = _.last(inv.revisions);
-	_.set(documents, inv.id, ko.observable());
-
-        if (latest) {
-	  $.getJSON(latest.document.url, function (content) {
-	    _.get(documents, inv.id)(content);
-	  });
-        }
-      });
-    });
-
-    $.getJSON(Routes.api_v1_rules_path(), function (o) {
-      associate_vm.rules(o);
-    });
-
-    $.getJSON(Routes.api_v1_transformations_path(), function (o) {
-      associate_vm.transformations(o);
-    });
-
-    page_vm.transactions = ko.observableArray(transactions);
-
-    // TODO: clean this up it's not working in the update searches above
-    page_vm.transaction_view_models = ko.computed(function () {
-      var vms = _.map(page_vm.transactions(), function (tr) {
-        var invoices_vms = ko.observableArray(_.map(tr.invoices, function (invoice) {
-	  return _.extend({}, invoice, {
-	    content: _.get(documents, invoice.id),
-            destroy: function (o, e) {
-              var evt = {
-                event_type: 'invoice_destroy',
-                payload: { invoice_id: invoice.id }
-              };
-
-              $.post(Routes.api_v1_events_path(), evt, function (o) {
-		invoices_vms.remove(function (o) {
-		  return o.id == invoice.id;
-		});
-              });
-            },
-            format_url: ko.computed(function () {
-              return Routes.api_v1_invoice_path(invoice.id);
-            })
-	  });
-	}));
-	
-	var tr_vm = _.extend({}, tr, {
-	  panel_style :     _.get(styles, tr.status, 'panel-info'),
-	  status_label      : _.get(labels, tr.status),
-	  trigger_associate : associate,
-          trigger_add_invoice: add_invoice,
-	  invoices:         invoices_vms,
-          trigger_bind_source: bind_source,
-	  trigger_close:    function (o) {
-	    $.post(Routes.api_v1_events_path(), {
-	      event_type: 'transaction_close',
-	      payload: { transaction_id: o.id }
-	    }, function (resp) {
-	      $.getJSON(resp.url, function (evt) {
-		page_vm.transactions.remove(function (it) {
-		  return it.id == evt.transaction.id;
-		});
-		$.getJSON(evt.transaction.url, function (tr) {
-		  page_vm.transactions.push(tr);
-		});
-              });
-	    });
-	  },
-          trigger_execute: function (o) {
-            $.post(Routes.api_v1_events_path(), {
-              event_type: 'transaction_execute',
-              payload: { transaction_id: o.id }
-            }, function (resp) {
-              $.getJSON(resp.url, function (evt) {
-		console.log(evt);
+    function make_invoice_vm(invoice) {
+      var vm = {
+	id: invoice.id,
+	content: ko.computed(function () {
+	  var rv = null;
+	  if (invoice) {
+	    var last = _.last(invoice.revisions);
+	    if (last) {
+	      with_document_content(last.document.id, function (content) {
+		rv = content();
 	      });
-            });
-          },
-          trigger_tradeshift_sync: function (o) {
-            var evt = {
-              event_type: 'tradeshift_sync',
-              payload: { user_id: user_id }
-            };
+	    }
+	  }
 
-            $.post(Routes.api_v1_events_path(), evt, function (o) {
-              console.log(o);
-            });
-          },
-	  associations:     ko.observableArray(tr.associations),
-	  source:           ko.observable(tr.source)
-	});
+	  return rv;
+	})
+      };
 
-	// computeds
-	tr_vm.format_url = ko.computed(function () {
-	  return Routes.api_v1_transformation_path(tr.id);
+      vm.destroy = function () {
+	var evt = {
+	  event_type: 'invoice_destroy',
+	  payload: { invoice_id: invoice.id }
+	};
+	$.post(Routes.api_v1_events_path(), evt, function () {
+	  page_vm.invoices.remove(function (o) {
+	    return o.id === invoice.id;
+	  });
 	});
-	
-	tr_vm.closed = ko.computed(function () {
-	  return 'closed' === tr.status;
-	});
-	
-	tr_vm.have_invoices = ko.computed(function () {
-	  return tr_vm.invoices().length > 0;
-	});
+      };
 
-	tr_vm.have_associations = ko.computed(function () {
-	  return tr_vm.associations().length > 0;
-	});
-	
-	return tr_vm;
+      vm.format_url = ko.computed(function () {
+	return invoice ? Routes.api_v1_invoice_path(invoice.id) : '';
+      });
+      
+      return vm;
+    }
+
+    function make_association_vm(o) {
+      return o;
+    }
+    
+    function make_item_vm(tr) {
+      var vm = {
+	panel_style: _.get(styles, tr.status, 'panel-info'),
+	status_label: _.get(labels, tr.status),
+	// overrides of base properties
+	invoices: ko.computed(function () {
+	  var all_invoices = page_vm.invoices();
+
+	  return _.reduce(tr.invoices, function (a, o) {
+	    var invoice_vm = _.find(all_invoices, function (invoice) {
+	      return o.id === invoice.id;
+	    });
+
+	    var rv = invoice_vm ? _.concat(a, make_invoice_vm(invoice_vm)) : a;
+	    return rv;
+	  }, []);
+	}),
+	associations: ko.observableArray(_.map(tr.associations, make_association_vm)),
+	source: ko.observable(tr.source)
+      };
+
+      vm.have_invoices = ko.computed(function () {
+	return vm.invoices().length > 0;
       });
 
-      return _.chunk(vms, 4);
+      vm.have_associations = ko.computed(function () {
+	return vm.associations().length > 0;
+      });
+
+      // triggers
+      vm.trigger_associate = function (o) {
+	debugger;
+      };
+      vm.trigger_execute = function (o) {
+	debugger;
+      };
+      vm.trigger_close = function (o) {
+	debugger;
+      };
+      vm.trigger_add_invoice = function (o) {
+	debugger;
+      };
+      vm.trigger_bind_source = function (o) {
+	debugger;
+      };
+      vm.trigger_tradeshift_sync = function (o) {
+	debugger;
+      };
+
+      return vm;
+    }
+    
+    page_vm.transaction_parts = ko.computed(function () {
+      return _.chunk(_.map(page_vm.transactions(), make_item_vm), 2);
     });
 
     page_vm.add = function () {
@@ -209,12 +143,24 @@
       });
     };
 
-    applyManyBindings({
-      'transactions': page_vm,
-      'modal-associate': associate_vm,
-      'modal-add-invoice' : add_invoice_vm,
-      'modal-bind-source' : bind_source_vm
+    // download associated objects
+    _.each(documents, function (document) {
+      $.getJSON(document.url, function (content) {
+	with_document_content(document.id, function (doc_content) {
+	  doc_content(content);
+	});
+      });
     });
+
+    $.getJSON(Routes.api_v1_rules_path(), function (o) {
+      page_vm.modals.associate.rules(o);
+    });
+
+    $.getJSON(Routes.api_v1_transformations_path(), function (o) {
+      page_vm.modals.associate.transformations(o);
+    });
+
+    ko.applyBindings(page_vm, document.getElementById('page'));    
   }
 
   init_on_page('transactions', init);
