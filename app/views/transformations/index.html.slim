@@ -11,9 +11,8 @@
                 span.pull-left data-bind="text: name"
             .panel-body
             .panel-footer
-              a rel="nofollow" data-bind="click: destroy, attr: { href: format_url }"
+              a rel="nofollow" data-bind="visible: not_in_use, click: destroy, attr: { href: format_url }"
                 = fa_icon('remove')
-
         <!-- /ko -->
 
   = render('modal_add_transformation')
@@ -21,3 +20,4 @@
 = content_for(:javascript) do
   javascript:
     var transformations = #{ raw MultiJson.encode(@transformations) };
+    var in_use = #{raw MultiJson.encode(@in_use)};

@@ -11,7 +11,8 @@
     };
 
     function make_item_vm(o) {
-      return _.extend(o, {
+      return {
+	name: o.name,
 	destroy: function () {
           $.post(Routes.api_v1_events_path(), {
 	    event_type: 'transformation_destroy',
@@ -26,8 +27,11 @@
 	},
 	format_url: ko.computed(function () {
           return Routes.api_v1_transformation_path(o.id);
-        })
-      });
+        }),
+	not_in_use: ko.computed(function () {
+	  return in_use[o.id] == 0;
+	})
+      };
     }
 
     page_vm.transformation_parts = ko.computed(function () {
