@@ -38,6 +38,9 @@
 	},
 	add_invoice: {
 	  url: ko.observable('https://raw.githubusercontent.com/Xalgorithms/xa-elegans/master/ubl/documents/icelandic-guitar/t0.xml')
+	},
+	bind_source: {
+	  source: ko.observable()
 	}
       }
     };
@@ -66,7 +69,9 @@
       if (otr) {
 	$.getJSON(url, function (ntr) {
 	  page_vm.transactions.replace(otr, ntr);
-	  fn();
+	  if (fn) {
+	    fn();
+	  }
 	});
       }
     }
@@ -159,7 +164,8 @@
       };
       
       vm.trigger_bind_source = function (o) {
-	debugger;
+	$('#modal-bind-source').modal('toggle');
+	page_vm.modals.bind_source.transaction_id = tr.id;	
       };
       
       vm.trigger_tradeshift_sync = function (o) {
@@ -201,6 +207,17 @@
       });
     };
     
+    page_vm.send_bind_source = function () {
+      $('#modal-bind-source').modal('toggle');
+      var m = page_vm.modals.bind_source;
+      send_event('transaction_bind_source', {
+	transaction_id: m.transaction_id,
+	source: m.source()
+      }, function (e) {
+	recycle_transaction(e.transaction.id, e.transaction.url);
+      });
+    };
+
     page_vm.transaction_parts = ko.computed(function () {
       return _.chunk(_.map(page_vm.transactions(), make_item_vm), 2);
     });

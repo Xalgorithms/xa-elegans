@@ -1,20 +1,21 @@
-/ .modal.fade#modal-bind-source tabIndex="-1" role="dialog"
-/   .modal-dialog role="document"
-/     = form_for(TransactionBindSourceEvent.new, url: api_v1_events_path, remote: true) do |f|
-/       = hidden_field_tag(:event_type, 'transaction_bind_source')
-/       = f.hidden_field(:transaction_public_id, 'data-bind' => 'value: transaction_id')
-/       .modal-content
-/         .modal-header
-/           button.close type="button" data-dismiss="modal"= fa_icon('close')
-/           h4.modal-title= t('.labels.modal_bind_source')
-/         .modal-body
-/           .form-group
-/             = f.label(:source, t('.labels.select_source'))
-/             = f.select(:source, Transaction::SOURCES, {}, { class: 'form-control' })
-/         .modal-footer
-/           button.btn.btn-default type="button" data-dismiss="modal"
-/             = fa_icon('close')
-/             span= t('labels.close', scope: 'shared')
-/           button.btn.btn-primary type="submit"
-/             = fa_icon('check')
-/             span= t('labels.add', scope: 'shared')
+.modal.fade#modal-bind-source tabIndex="-1" role="dialog"
+  .modal-dialog role="document"
+    .modal-content
+      .modal-header
+        button.close type="button" data-dismiss="modal"= fa_icon('close')
+        h4.modal-title= t('.labels.modal_bind_source')
+      .modal-body
+        <!-- ko with: modals.bind_source -->
+        .form-horizontal
+          .form-group
+            label.col-sm-2.control-label(for='source') URL
+            div.col-sm-10
+              select.form-control#source data-bind="options: sources, value: source"
+        <!-- /ko -->
+      .modal-footer
+        button.btn.btn-default type="button" data-dismiss="modal"
+          = fa_icon('close')
+          span= t('labels.close', scope: 'shared')
+        button.btn.btn-primary type="submit" data-bind="click: send_bind_source"
+          = fa_icon('check')
+          span= t('labels.add', scope: 'shared')

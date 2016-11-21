@@ -99,7 +99,10 @@ describe EventSerializer do
   it 'should serialize TransactionBindSourceEvent' do
     rand_array_of_models(:transaction_bind_source_event, source: rand_one(Transaction::SOURCES)).each do |em|
       ex = {
-        transaction: { id: em.transact.public_id },
+        transaction: {
+          id: em.transact.public_id,
+          url: Rails.application.routes.url_helpers.api_v1_transaction_path(em.transact.public_id),
+        },
         id: em.event.public_id,
         event_type: 'transaction_bind_source',
         source: em.source
