@@ -1,12 +1,4 @@
 class Transaction < ActiveRecord::Base
-  STATUS_OPEN   = 0 
-  STATUS_CLOSED = 1
-  
-  STATUSES = {
-    STATUS_OPEN   => :open,
-    STATUS_CLOSED => :closed,
-  }
-
   SOURCES = [
     :tradeshift,
   ]
@@ -19,9 +11,5 @@ class Transaction < ActiveRecord::Base
 
   def as_json(opts={})
     
-  end
-
-  def close
-    update_attributes(status: STATUS_CLOSED)
   end
 end

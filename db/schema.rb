@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161121142747) do
+ActiveRecord::Schema.define(version: 20161204082643) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -170,13 +170,6 @@ ActiveRecord::Schema.define(version: 20161121142747) do
   add_index "transaction_bind_source_events", ["event_id"], name: "index_transaction_bind_source_events_on_event_id", using: :btree
   add_index "transaction_bind_source_events", ["transaction_id"], name: "index_transaction_bind_source_events_on_transaction_id", using: :btree
 
-  create_table "transaction_close_events", force: :cascade do |t|
-    t.integer "transaction_id"
-    t.integer "event_id"
-  end
-
-  add_index "transaction_close_events", ["event_id"], name: "index_transaction_close_events_on_event_id", using: :btree
-
   create_table "transaction_execute_events", force: :cascade do |t|
     t.integer "transaction_id"
     t.integer "event_id"
@@ -198,7 +191,6 @@ ActiveRecord::Schema.define(version: 20161121142747) do
     t.integer  "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer  "status"
     t.string   "public_id"
     t.string   "source"
   end
@@ -214,8 +206,8 @@ ActiveRecord::Schema.define(version: 20161121142747) do
   add_index "transformation_add_events", ["transformation_id"], name: "index_transformation_add_events_on_transformation_id", using: :btree
 
   create_table "transformation_destroy_events", force: :cascade do |t|
-    t.string  "public_id"
     t.integer "event_id"
+    t.string  "public_id"
   end
 
   add_index "transformation_destroy_events", ["event_id"], name: "index_transformation_destroy_events_on_event_id", using: :btree
@@ -261,7 +253,6 @@ ActiveRecord::Schema.define(version: 20161121142747) do
   add_foreign_key "transaction_associate_rule_events", "rules"
   add_foreign_key "transaction_associate_rule_events", "transactions"
   add_foreign_key "transaction_associate_rule_events", "transformations"
-  add_foreign_key "transaction_close_events", "events"
   add_foreign_key "transaction_open_events", "events"
   add_foreign_key "transactions", "users"
   add_foreign_key "transformation_add_events", "events"

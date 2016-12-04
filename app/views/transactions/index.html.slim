@@ -12,8 +12,6 @@
             span Source:
             span data-bind="text: source"
           <!-- /ko -->
-          p.card-header-title.is-pulled-right
-            span data-bind="text: status_label"
           a.card-header-icon
             = fa_icon('trash')
         .card-content
@@ -59,9 +57,6 @@
         footer.card-footer
           a.card-footer-item data-bind="click: trigger_associate"= t('.labels.associate')
           a.card-footer-item data-bind="click: trigger_execute"= t('.labels.execute')
-          <!-- ko ifnot: closed -->
-            a.card-footer-item data-bind="click: trigger_close"= t('.labels.close')
-          <!-- /ko -->
           a.card-footer-item data-bind="click: trigger_add_invoice"= t('.labels.add_invoice')
           a.card-footer-item data-bind="click: trigger_bind_source"= t('.labels.bind_source')
           a.card-footer-item data-bind="click: trigger_tradeshift_sync"= t('.labels.tradeshift_sync')
@@ -87,6 +82,5 @@
     var user_id = '#{current_user.public_id}';
     
     var labels = {
-      'open' : 'open',
-      'closed' : 'closed'
+      'open' : 'open'
     };

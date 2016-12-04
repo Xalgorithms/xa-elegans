@@ -16,19 +16,6 @@ describe EventSerializer do
     end
   end
 
-  it 'should serialize TransactionCloseEvent' do
-    rand_array_of_models(:transaction).each do |tm|
-      rand_array_of_models(:transaction_close_event, transact: tm).each do |tce|
-        ex = {
-          id:          tce.event.public_id,
-          event_type:  'transaction_close',
-          transaction: { id: tm.public_id, url: Rails.application.routes.url_helpers.api_v1_transaction_path(tm.public_id) },
-        }
-        expect(EventSerializer.serialize(tce.event)).to eql(ex)
-      end
-    end
-  end
-
   it 'should serialize InvoicePushEvent' do
     rand_array_of_models(:transaction).each do |tm|
       rand_array_of_models(:invoice_push_event, transact: tm).each do |ipe|

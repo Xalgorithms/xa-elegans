@@ -6,7 +6,7 @@ describe Api::V1::TransactionsController, type: :controller do
 
   it 'should list all transactions for a User' do
     rand_times.map { create(:user) }.each do |um|
-      transactions = rand_times.map { create(:transaction, user: um, status: rand_one(Transaction::STATUSES.keys)) }
+      transactions = rand_times.map { create(:transaction, user: um) }
       
       get(:index, user_id: um.public_id)
 

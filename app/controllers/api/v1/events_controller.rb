@@ -22,9 +22,6 @@ module Api
           'transaction_open' => {
             args: [:user_id],
           },
-          'transaction_close' => {
-            args: [:transaction_id],
-          },
           'invoice_push' => {
             args: [:transaction_id, :document_id],
           },

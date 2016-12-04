@@ -2,7 +2,6 @@ class EventSerializer < Serializer
   def self.serialize(event, container=nil)
     @serializers = {
       transaction_open:           method(:serialize_transaction_open),
-      transaction_close:          method(:serialize_transaction_close),
       invoice_push:               method(:serialize_invoice_push),
       transformation_add:         method(:serialize_transformation_add),
       transformation_destroy:     method(:serialize_transformation_destroy),
@@ -21,15 +20,6 @@ class EventSerializer < Serializer
         email: event.transaction_open_event.user.email,
       },
       transaction: { url: Rails.application.routes.url_helpers.api_v1_transaction_path(event.transaction_open_event.transact.public_id) },
-    }.merge(serialize_any(event))
-  end
-
-  def self.serialize_transaction_close(event)
-    {
-      transaction: {
-        id:  event.transaction_close_event.transact.public_id,
-        url: Rails.application.routes.url_helpers.api_v1_transaction_path(event.transaction_close_event.transact.public_id)
-      },
     }.merge(serialize_any(event))
   end
 

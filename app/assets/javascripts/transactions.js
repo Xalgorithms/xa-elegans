@@ -1,10 +1,5 @@
 (function () {
   function init() {
-    var styles = {
-      'open' : 'panel-success',
-      'closed' : 'panel-info'
-    };
-
     var documents_cache = _.map(documents, function (o) {
       return {
 	id: o.id,
@@ -182,7 +177,6 @@
     function make_item_vm(tr) {
       var vm = {
 	active_section: ko.observable('invoices'),
-	panel_style: _.get(styles, tr.status, 'panel-info'),
 	status_label: _.get(labels, tr.status),
 	// overrides of base properties
 	invoices: ko.computed(function () {
@@ -233,12 +227,6 @@
       
       vm.trigger_execute = function (o) {
 	send_event('transaction_execute', { transaction_id: tr.id });
-      };
-      
-      vm.trigger_close = function (o) {
-	send_event('transaction_close', { transaction_id: tr.id }, function (e) {
-	  recycle_transaction(e.transaction.id, e.transaction.url);
-	});
       };
       
       vm.trigger_add_invoice = function (o) {

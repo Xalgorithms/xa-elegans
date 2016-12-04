@@ -14,7 +14,6 @@ describe TransactionSerializer do
         am = Association.create(transact: tm, transformation: create(:transformation), rule: create(:rule))
         ex = {
           id: tm.public_id,
-          status: Transaction::STATUSES[tm.status],
           user: { email: um.email },
           invoices: InvoiceSerializer.many(invoices, :transaction),
           associations: AssociationSerializer.many([am], :transaction),
