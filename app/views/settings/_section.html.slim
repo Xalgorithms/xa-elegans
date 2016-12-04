@@ -1,8 +1,2 @@
-.container-fluid data-bind="visible: vms['#{name}'].visible"
-  .row
-    .col-md-8
-      .panel.panel-default
-        .panel-heading
-          span= t(".sections.#{name}")
-        .panel-body id="#{name}"
-          = render("#{name}_settings")
+div data-bind="visible: vms['#{name}'].visible"
+  = render("#{name}_settings")

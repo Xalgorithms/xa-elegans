@@ -1,15 +1,11 @@
-.form-horizontal
-  .form-group
-    label.col-sm-2.control-label(for='key') Key
-    div.col-sm-10
-      input.form-control#key(type='text' data-bind='value: vms.tradeshift.key')
-  .form-group
-    label.col-sm-2.control-label(for='secret') Secret
-    div.col-sm-10
-      input.form-control#secret(type='text' data-bind='value: vms.tradeshift.secret')
-  .form-group
-    label.col-sm-2.control-label(for='tenant_id') Tenant Id
-    div.col-sm-10
-      input.form-control#tenant_id(type='text' data-bind='value: vms.tradeshift.tenant_id')
-  button.btn.btn-primary type='button' data-bind='click: vms.tradeshift.save' Save
+label.label for="key" Key
+p.control
+  input.input#key type="text" data-bind="value: vms.tradeshift.key"
+label.label for="secret" Secret
+p.control
+  input.input#secret type="text" data-bind="value: vms.tradeshift.secret"
+label.label for="tenant-id" Tenant
+p.control
+  input.input#tenant-id type="text" data-bind="value: vms.tradeshift.tenant_id"
+button.button.is-primary type='button' data-bind='click: vms.tradeshift.save' Save
 

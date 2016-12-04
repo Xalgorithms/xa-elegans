@@ -1,25 +1,26 @@
-.modal.fade#modal-associate tabIndex='-1' role='dialog'
-  .modal-dialog role='document'
-    .modal-content
-      .modal-header
-        button.close type='button' data-dismiss='modal'= fa_icon('close')
-        h4.modal-title= t('.labels.modal_add')
-      .modal-body
-        <!-- ko with: modals.associate -->
-        .form-horizontal
-          .form-group
-            label.col-sm-2.control-label(for='rule') Rule
-            div.col-sm-10
-              select.form-control#rule data-bind="options: rules, optionsText: 'reference', optionsValue: 'id', value: rule_id"
-          .form-group
-            label.col-sm-2.control-label(for='transformation') Transformation
-            div.col-sm-10
-              select.form-control#transformations data-bind="options: transformations, optionsText: 'name', optionsValue: 'id', value: transformation_id"
-        <!-- /ko -->
-      .modal-footer
-        button.btn.btn-default type='button' data-dismiss='modal'
-          = fa_icon('close')
-          span= t('labels.close', scope: 'shared')
-        button.btn.btn-primary type='submit' data-bind='click: send_association'
-          = fa_icon('check')
-          span= t('labels.add', scope: 'shared')
+<!-- ko with: modals.associate -->
+.modal data-bind="css: { 'is-active': active }"
+  .modal-background
+  .modal-card
+    header.modal-card-head
+      p.modal-card-title= t('.labels.modal_add')
+      a data-bind="click: deactivate"
+        = fa_icon('close')
+    section.modal-card-body
+      label.label for="rule" Rule
+      p.control
+        span.select
+          select#rule data-bind="options: rules, optionsText: 'reference', optionsValue: 'id', value: rule_id"
+      label.label for="transformation"
+      p.control
+        span.select
+          select#transformation data-bind="options: transformations, optionsText: 'name', optionsValue: 'id', value: transformation_id"
+
+    footer.modal-card-foot
+      a.button.is-default data-bind="click: deactivate"
+        = fa_icon('close')
+        span= t('labels.close', scope: 'shared')
+      a.button.is-primary data-bind="click: send"
+        = fa_icon('check')
+        span= t('labels.add', scope: 'shared')
+<!-- /ko -->

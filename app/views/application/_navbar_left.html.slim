@@ -1,5 +1,5 @@
-= render('navbar_user', user: current_user)
-ul.nav.navbar-nav
+.nav-left
+  .nav-item= format_user_name(current_user)
   - global_sections.each do |name|
-    li class="nav-item #{controller.controller_name.eql?(name.to_s) ? 'active' : ''}"
-      = link_to(t(".#{name}"), name, class: 'nav-link')
+    div class="nav-item #{controller.controller_name.eql?(name.to_s) ? 'is-active' : ''}"
+      = link_to(t(".#{name}"), name)

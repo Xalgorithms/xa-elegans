@@ -1,20 +1,16 @@
 #page
-  .row
-    .col-md-12
-      button.btn type="button" data-toggle="modal" data-target="#modal-add-transformation"= t('labels.add', scope: 'shared')
-      .row data-bind="foreach: transformation_parts"
-        <!-- ko foreach: $data -->
-        .col-md-3
-          .panel.panel-info
-            .panel-heading
-              .container-fluid
-                span.pull-left data-bind="text: name"
-            .panel-body
-            .panel-footer
-              a rel="nofollow" data-bind="visible: not_in_use, click: destroy, attr: { href: format_url }"
-                = fa_icon('remove')
-        <!-- /ko -->
-
+  .control.is-grouped
+    .control
+      a.button data-bind="click: activate_add_modal"= t('labels.add', scope: 'shared')
+  .columns.is-multiline data-bind="foreach: transformation_parts"
+    .column
+      .card
+        header.card-header
+          p.card-header-title
+            span data-bind="text: name"
+          a.card-header-icon data-bind="visible: not_in_use, click: destroy, attr: { href: format_url }"
+            = fa_icon('trash')
+        
   = render('modal_add_transformation')
 
 = content_for(:javascript) do

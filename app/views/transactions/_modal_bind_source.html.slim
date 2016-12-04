@@ -1,21 +1,22 @@
-.modal.fade#modal-bind-source tabIndex="-1" role="dialog"
-  .modal-dialog role="document"
-    .modal-content
-      .modal-header
-        button.close type="button" data-dismiss="modal"= fa_icon('close')
-        h4.modal-title= t('.labels.modal_bind_source')
-      .modal-body
-        <!-- ko with: modals.bind_source -->
-        .form-horizontal
-          .form-group
-            label.col-sm-2.control-label(for='source') URL
-            div.col-sm-10
-              select.form-control#source data-bind="options: sources, value: source"
-        <!-- /ko -->
-      .modal-footer
-        button.btn.btn-default type="button" data-dismiss="modal"
-          = fa_icon('close')
-          span= t('labels.close', scope: 'shared')
-        button.btn.btn-primary type="submit" data-bind="click: send_bind_source"
-          = fa_icon('check')
-          span= t('labels.add', scope: 'shared')
+<!-- ko with: modals.bind_source -->
+.modal data-bind="css: { 'is-active': active }"
+  .modal-background
+  .modal-card
+    header.modal-card-head
+      p.modal-card-title= t('.labels.modal_add')
+      a data-bind="click: deactivate"
+        = fa_icon('close')
+    section.modal-card-body
+      label.label for="source" Name
+      p.control
+        span.select
+          select#source data-bind="options: sources, value: source"
+
+    footer.modal-card-foot
+      a.button.is-default data-bind="click: deactivate"
+        = fa_icon('close')
+        span= t('labels.close', scope: 'shared')
+      a.button.is-primary data-bind="click: send"
+        = fa_icon('check')
+        span= t('labels.add', scope: 'shared')
+<!-- /ko -->

@@ -20,8 +20,7 @@ gem 'coffee-rails'
 gem 'therubyracer', platforms: :ruby
 
 # style related gems
-#gem 'bootstrap', '~> 4.0.0.alpha3'
-gem 'bootstrap-sass', '~> 3.3.6'
+gem "bulma-rails", "~> 0.2.3"
 gem 'sass-rails', '>= 3.2'
 gem 'font-awesome-rails'
 

@@ -12,14 +12,16 @@ html
 
   body data-page=controller.controller_name
     - if user_signed_in?
-      div.container
-        nav.navbar.navbar-default.navbar-fixed-top
-          div.container-fluid
-            = render('navbar_left')
-            = render('navbar_right')
-      div.container
-        = yield
+      nav.nav.has-shadow
+        div.container
+          = render('navbar_left')
+          = render('navbar_right')
+      section.section
+        .container.is-fluid
+          = yield
     - else
-      = yield
+      section.section
+        .container.is-fluid
+          = yield
 
     = yield(:javascript)

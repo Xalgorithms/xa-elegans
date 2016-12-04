@@ -1,77 +1,77 @@
 #page
-  .row#transactions
-    .col-md-12
-      button.btn data-bind="click: add" type="button"= t('labels.add', scope: 'shared')
-      .row data-bind="foreach: transaction_parts"
-        <!-- ko foreach: $data -->
-        .col-md-6
-          div class="panel" data-bind="css: panel_style"
-            .panel-heading
-              .container-fluid
-                <!-- ko if: source -->
-                span Source:&nbsp;
-                span data-bind="text: source"
-                <!-- /ko -->
-                span.pull-right.text-uppercase data-bind="text: status_label"
-            .panel-body
-              div
-              <!-- ko if: have_invoices -->
-              table.table.table-sm
-                thead.thead-default
-                  tr
-                    th
-                    th.text-capitalize= t('.heading.number')
-                    th.text-capitalize= t('.heading.currency')
-                    th.text-capitalize= t('.heading.date')
-                    th
-                tbody data-bind="foreach: invoices"
-                  tr
-                    td
-                      a rel="nofollow" data-bind="click: destroy, attr: { href: format_url }"
-                        = fa_icon('remove')
-                    <!-- ko if: content -->
+  .control.is-grouped
+    .control
+      a.button data-bind="click: add"= t('labels.add', scope: 'shared')
+  .columns.is-multiline data-bind="foreach: transaction_parts"
+    .column
+      .card.is-fullwidth
+        header.card-header
+          <!-- ko if: source -->
+          / TODO: translate
+          p.card-header-title
+            span Source:
+            span data-bind="text: source"
+          <!-- /ko -->
+          p.card-header-title.is-pulled-right
+            span data-bind="text: status_label"
+          a.card-header-icon
+            = fa_icon('trash')
+        .card-content
+            .columns
+              .column.tabs.is-toggle
+                ul
+                  <!-- ko if: have_invoices -->
+                  li data-bind="css: { 'is-active': is_invoices_active() }"
+                    a data-bind="click: activate_invoices" Invoices
+                  <!-- /ko -->
+                  <!-- ko if: have_associations -->
+                  li data-bind="css: { 'is-active': is_associations_active() }"
+                    a data-bind="click: activate_associations" Associations
+                  <!-- /ko -->
+            .columns.is-multiline
+              #invoices.column data-bind="if: have_invoices, visible: is_invoices_active"
+                .columns data-bind="foreach: invoices"
+                  .column
+                    .card.is-fullwidth
                       <!-- ko with: content -->
-                      td
-                        a data-bind="text: id, attr: { href: Routes.invoice_path($parent.id) }" data-toggle="modal" data-target="#modal-invoice-show"
-                      td data-bind="text: currency"
-                      td data-bind="text: issued"
+                      header.card-header
+                        p.card-header-title data-bind="text: id"
+                        a.card-header-icon data-bind="click: $parent.destroy"
+                          = fa_icon('trash')
+                      .card-content
+                        .content
+                          div data-bind="text: currency"
+                          div data-bind="text: issued"
+                        
                       <!-- /ko -->
-                    <!-- /ko -->
-                    <!-- ko ifnot: content -->
-                      <td>No document available for latest revision</td>
-                    <!-- /ko -->
-              <!-- /ko -->
-              <!-- ko if: have_associations -->
-              table.table.table-sm
-                thead.thead-default
-                  tr
-                    th
-                    th.text-capitalize= t('.heading.rule')
-                    th.text-capitalize= t('.heading.transformation')
-                    th
-                tbody data-bind="foreach: associations"
-                  tr
-                    td
-                      a rel="nofollow" data-bind="click: destroy"
-                        = fa_icon('remove')
-                    td data-bind="text: reference"
-                    td data-bind="text: name"
-              <!-- /ko -->
-            .panel-footer
-              button.btn#button-associate type="button" data-bind="click: trigger_associate"= t('.labels.associate')
-              button.btn#button-execute type="button" data-bind="click: trigger_execute"= t('.labels.execute')
-              <!-- ko ifnot: closed -->
-              button.btn#button-close type="button" data-bind="click: trigger_close"= t('.labels.close')
-              <!-- /ko -->
-              button.btn#button-add-invoice type="button" data-bind="click: trigger_add_invoice"= t('.labels.add_invoice')
-              button.btn#button-bind-source type="button" data-bind="click: trigger_bind_source"= t('.labels.bind_source')
-              button.btn type="button" data-bind="click: trigger_tradeshift_sync"= t('.labels.tradeshift_sync')
-        <!-- /ko -->
+              #associations.column data-bind="if: have_associations, visible: is_associations_active"
+                .columns.is-multiline data-bind="foreach: associations"
+                  .column
+                    .card.is-fullwidth
+                      header.card-header
+                        p.card-header-title
+                        a.card-header-icon data-bind="click: destroy"
+                          = fa_icon('trash')
+                      .card-content
+                        .content
+                          div data-bind="text: reference"
+                          div data-bind="text: name"
+        footer.card-footer
+          a.card-footer-item data-bind="click: trigger_associate"= t('.labels.associate')
+          a.card-footer-item data-bind="click: trigger_execute"= t('.labels.execute')
+          <!-- ko ifnot: closed -->
+            a.card-footer-item data-bind="click: trigger_close"= t('.labels.close')
+          <!-- /ko -->
+          a.card-footer-item data-bind="click: trigger_add_invoice"= t('.labels.add_invoice')
+          a.card-footer-item data-bind="click: trigger_bind_source"= t('.labels.bind_source')
+          a.card-footer-item data-bind="click: trigger_tradeshift_sync"= t('.labels.tradeshift_sync')
 
-  = render('modal_invoice_show')
   = render('modal_associate')
   = render('modal_add_invoice')
   = render('modal_bind_source')
+/ a data-bind="text: id, attr: { href: Routes.invoice_path($parent.id) }" data-toggle="modal" data-target="#modal-invoice-show"
+
+/  = render('modal_invoice_show')
 
 / TODO: figure out why translations are not working
 = content_for(:javascript) do

@@ -4,10 +4,35 @@
       transformations: ko.observableArray(transformations),
       modals: {
 	add_transformation: {
+	  active: ko.observable(false),
 	  name: ko.observable(),
 	  src: ko.observable()
 	}
       }
+    };
+
+    page_vm.modals.add_transformation.deactivate = function() {
+      page_vm.modals.add_transformation.active(false);
+    };
+
+    page_vm.modals.add_transformation.send = function() {
+      page_vm.modals.add_transformation.active(false);
+      
+      var evt = {
+	event_type: 'transformation_add',
+	payload: {
+	  name: page_vm.modals.add_transformation.name(),
+	  src: page_vm.modals.add_transformation.src()
+	}
+      };
+
+      $.post(Routes.api_v1_events_path(), evt, function (o) {
+	$.getJSON(o.url, function (o) {
+          $.getJSON(o.transformation.url, function (tx) {
+	    page_vm.transformations.push(tx);
+          });
+	});
+      });
     };
 
     function make_item_vm(o) {
@@ -35,30 +60,15 @@
     }
 
     page_vm.transformation_parts = ko.computed(function () {
-      return _.chunk(_.map(page_vm.transformations(), make_item_vm), 4);
+      return _.map(page_vm.transformations(), make_item_vm);
     });
 
     page_vm.format_url = function (o) {
       return "foo";
     };
 
-    page_vm.send_transformation = function () {
-      $('#modal-add-transformation').modal('toggle');
-      var evt = {
-	event_type: 'transformation_add',
-	payload: {
-	  name: page_vm.modals.add_transformation.name(),
-	  src: page_vm.modals.add_transformation.src()
-	}
-      };
-
-      $.post(Routes.api_v1_events_path(), evt, function (o) {
-	$.getJSON(o.url, function (o) {
-          $.getJSON(o.transformation.url, function (tx) {
-	    page_vm.transformations.push(tx);
-          });
-	});
-      });
+    page_vm.activate_add_modal = function () {
+      page_vm.modals.add_transformation.active(true);
     };
 
     ko.applyBindings(page_vm, document.getElementById('page'));

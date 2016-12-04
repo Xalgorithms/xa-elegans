@@ -71,7 +71,7 @@
           return page_vm.section() === name;
         }),
         active: ko.computed(function () {
-          return page_vm.section() === name ? 'active' : '';
+          return page_vm.section() === name;
         })
       }));
     }, {});
