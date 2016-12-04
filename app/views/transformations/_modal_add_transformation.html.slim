@@ -15,7 +15,7 @@
         textarea.textarea data-bind="value: src"
 
     footer.modal-card-foot
-      a.button.is-default
+      a.button.is-default data-bind="click: deactivate"
         = fa_icon('close')
         span= t('labels.close', scope: 'shared')
       a.button.is-primary data-bind="click: send"
