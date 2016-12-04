@@ -6,14 +6,19 @@
     .column
       .card.is-fullwidth
         header.card-header
-          <!-- ko if: source -->
           / TODO: translate
-          p.card-header-title
+          p.card-header-title data-bind="if: source"
             span Source:
             span data-bind="text: source"
-          <!-- /ko -->
-          a.card-header-icon
-            = fa_icon('trash')
+          .control.is-grouped
+            <!-- ko if: source -->
+            a.card-header-icon data-bind="click: trigger_tradeshift_sync"
+              = fa_icon('refresh')
+            <!-- /ko -->
+            a.card-header-icon data-bind="click: trigger_execute"
+              = fa_icon('play')
+            a.card-header-icon
+              = fa_icon('trash')
         .card-content
             .columns
               .column.tabs.is-toggle
@@ -56,10 +61,8 @@
                           div data-bind="text: name"
         footer.card-footer
           a.card-footer-item data-bind="click: trigger_associate"= t('.labels.associate')
-          a.card-footer-item data-bind="click: trigger_execute"= t('.labels.execute')
           a.card-footer-item data-bind="click: trigger_add_invoice"= t('.labels.add_invoice')
           a.card-footer-item data-bind="click: trigger_bind_source"= t('.labels.bind_source')
-          a.card-footer-item data-bind="click: trigger_tradeshift_sync"= t('.labels.tradeshift_sync')
 
   = render('modal_associate')
   = render('modal_add_invoice')
