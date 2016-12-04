@@ -195,6 +195,14 @@
 	source: ko.observable(tr.source)
       };
 
+      vm.invoice_parts = ko.computed(function () {
+	return _.chunk(vm.invoices(), 3);
+      });
+      
+      vm.association_parts = ko.computed(function () {
+	return _.chunk(vm.associations(), 1);
+      });
+
       vm.is_invoices_active = ko.computed(function() {
 	return vm.active_section() === 'invoices';
       });
@@ -247,7 +255,7 @@
     }
 
     page_vm.transaction_parts = ko.computed(function () {
-      return _.map(page_vm.transactions(), make_item_vm);
+      return _.chunk(_.map(page_vm.transactions(), make_item_vm), 2);
     });
 
     page_vm.add = function () {

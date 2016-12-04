@@ -17,11 +17,11 @@ html
           = render('navbar_left')
           = render('navbar_right')
       section.section
-        .container.is-fluid
+        .container
           = yield
     - else
       section.section
-        .container.is-fluid
+        .container
           = yield
 
     = yield(:javascript)

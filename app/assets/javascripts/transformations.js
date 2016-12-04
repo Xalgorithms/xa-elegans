@@ -60,7 +60,7 @@
     }
 
     page_vm.transformation_parts = ko.computed(function () {
-      return _.map(page_vm.transformations(), make_item_vm);
+      return _.chunk(_.map(page_vm.transformations(), make_item_vm), 4);
     });
 
     page_vm.format_url = function (o) {

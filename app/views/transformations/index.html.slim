@@ -2,15 +2,18 @@
   .control.is-grouped
     .control
       a.button data-bind="click: activate_add_modal"= t('labels.add', scope: 'shared')
-  .columns.is-multiline data-bind="foreach: transformation_parts"
-    .column
+  <!-- ko foreach: transformation_parts -->
+  .columns
+    <!-- ko foreach: $data -->
+    .column.is-3
       .card
         header.card-header
           p.card-header-title
             span data-bind="text: name"
           a.card-header-icon data-bind="visible: not_in_use, click: destroy, attr: { href: format_url }"
             = fa_icon('trash')
-        
+    <!-- /ko -->
+  <!-- /ko -->
   = render('modal_add_transformation')
 
 = content_for(:javascript) do

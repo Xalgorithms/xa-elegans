@@ -2,8 +2,10 @@
   .control.is-grouped
     .control
       a.button data-bind="click: add"= t('labels.add', scope: 'shared')
-  .columns.is-multiline data-bind="foreach: transaction_parts"
-    .column
+  <!-- ko foreach: transaction_parts -->
+  .columns
+    <!-- ko foreach: $data -->
+    .column.is-6
       .card.is-fullwidth
         header.card-header
           / TODO: translate
@@ -11,11 +13,9 @@
             span Source:
             span data-bind="text: source"
           .control.is-grouped
-            <!-- ko if: source -->
-            a.card-header-icon data-bind="click: trigger_tradeshift_sync"
+            a.card-header-icon data-bind="if: source, click: trigger_tradeshift_sync"
               = fa_icon('refresh')
-            <!-- /ko -->
-            a.card-header-icon data-bind="click: trigger_execute"
+            a.card-header-icon data-bind="if: have_associations, click: trigger_execute"
               = fa_icon('play')
             a.card-header-icon
               = fa_icon('trash')
@@ -31,10 +31,12 @@
                   li data-bind="css: { 'is-active': is_associations_active() }"
                     a data-bind="click: activate_associations" Associations
                   <!-- /ko -->
-            .columns.is-multiline
+            .columns
               #invoices.column data-bind="if: have_invoices, visible: is_invoices_active"
-                .columns data-bind="foreach: invoices"
-                  .column
+                <!-- ko foreach: invoice_parts -->
+                .columns
+                  <!-- ko foreach: $data -->
+                  .column.is-4
                     .card.is-fullwidth
                       <!-- ko with: content -->
                       header.card-header
@@ -47,9 +49,13 @@
                           div data-bind="text: issued"
                         
                       <!-- /ko -->
+                  <!-- /ko -->
+                <!-- /ko -->
               #associations.column data-bind="if: have_associations, visible: is_associations_active"
-                .columns.is-multiline data-bind="foreach: associations"
-                  .column
+                <!-- ko foreach: association_parts -->
+                .columns
+                  <!-- ko foreach: $data -->
+                  .column.is-12
                     .card.is-fullwidth
                       header.card-header
                         p.card-header-title
@@ -59,10 +65,14 @@
                         .content
                           div data-bind="text: reference"
                           div data-bind="text: name"
+                  <!-- /ko -->
+                <!-- /ko -->
         footer.card-footer
           a.card-footer-item data-bind="click: trigger_associate"= t('.labels.associate')
           a.card-footer-item data-bind="click: trigger_add_invoice"= t('.labels.add_invoice')
           a.card-footer-item data-bind="click: trigger_bind_source"= t('.labels.bind_source')
+    <!-- /ko -->
+  <!-- /ko -->
 
   = render('modal_associate')
   = render('modal_add_invoice')
