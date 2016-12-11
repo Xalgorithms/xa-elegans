@@ -7,7 +7,7 @@ require 'rails/all'
 Bundler.require(*Rails.groups)
 Dotenv::Railtie.load
 
-module Geghard
+module Lichen
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
