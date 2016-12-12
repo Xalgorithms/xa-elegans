@@ -74,5 +74,5 @@
     ko.applyBindings(page_vm, document.getElementById('page'));
   }
 
-  init_on_page('transformations', init);
+  define_on_page('transformations', 'index', init);
 })();

@@ -1,22 +1,15 @@
-function only_on_page(name, fn) {
-  if ($('body').data('page') === name) {
-    fn();
+var pages = { };
+
+function define_on_page(name, action, init_fn) {
+  pages = _.set(pages, `${name}_${action}`, init_fn);
+}
+
+function init_on_page(name, action) {
+  var init_fn = _.get(pages, `${name}_${action}`, null);
+  if (init_fn) {
+    console.log(`init: ${name}/${action}`);
+    init_fn();
+  } else {
+    console.log(`missing: ${name}/${action}`);
   }
-}
-
-function init_on_page(name, fn) {
-  $(document).on('turbolinks:load', function () {
-    only_on_page(name, function() {
-      console.log(name + ': init');
-      fn();
-    });
-  });
-}
-
-function applyManyBindings(o) {
-  _.each(o, function (vm, id) {
-    var el = document.getElementById(id);
-    ko.cleanNode(el);
-    ko.applyBindings(vm, el);
-  });
 }

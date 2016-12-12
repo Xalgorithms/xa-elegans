@@ -283,5 +283,5 @@
     ko.applyBindings(page_vm, document.getElementById('page'));    
   }
 
-  init_on_page('transactions', init);
+  define_on_page('transactions', 'index', init);
 })();

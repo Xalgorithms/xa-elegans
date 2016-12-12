@@ -10,7 +10,7 @@ html
 
     = csrf_meta_tags
 
-  body data-page=controller.controller_name
+  body data-page=controller_name data-action=action_name
     - if user_signed_in?
       nav.nav.has-shadow
         div.container

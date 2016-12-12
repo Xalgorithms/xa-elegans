@@ -79,5 +79,5 @@
     ko.applyBindings(page_vm, document.getElementById('page'));
   }
 
-  init_on_page('settings', init);
+  define_on_page('settings', 'index', init);
 })();

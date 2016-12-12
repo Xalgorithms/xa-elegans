@@ -16,4 +16,9 @@
 //= require knockout
 //= require js-routes
 //= require turbolinks
-//= require_tree .
+//= require globals
+//= require transactions_index
+//= require transformations_index
+//= require settings_index
+// MOST BE LAST
+//= require loader
