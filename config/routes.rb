@@ -7,7 +7,9 @@ Rails.application.routes.draw do
     resources :invoices, only: [:show] do
       resources :changes, only: [:index]
     end
-    resources :transactions, only: [:index, :show]
+    resources :transactions, only: [:index, :show] do
+      resources :invoices, only: [:show]
+    end
     resources :transformations, only: [:index]
     resources :settings, only: [:index]
   end

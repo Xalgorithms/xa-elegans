@@ -2,7 +2,11 @@ class InvoicesController < ApplicationController
   before_filter :maybe_find_invoice, only: [:show]
   
   def show
-    render(layout: false)
+    if @invoice
+      doc = @invoice.documents.last
+      @content = doc.content if doc
+      ap @content
+    end
   end
 
   private

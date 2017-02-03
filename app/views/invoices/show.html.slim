@@ -1,8 +1,27 @@
-div.modal-header
-  button.close type='button' data-dismiss='modal' aria-label='Close'
-    span aria-hidden='true' &times;
-  h4.modal-title#modal-invocation-show= t('.modals.invoice')
-div.modal-body
-  = render('invoice', invoice: @invoice)
-div.modal-footer
-  button.btn.btn-default(type="button" data-dismiss="modal")= t('.close')
+#page
+  .columns.is-gapless
+    .column.is-one-third
+      p= @content['parties']['customer']['name']
+    .column.is-one-third
+      p= @content['parties']['supplier']['name']
+    .column.has-text-right
+      p= @content['id']
+  .columns.is-gapless.is-centered
+    .column
+      table.table
+        thead
+          tr
+            th Item
+            th Description
+            th Rate
+            th Quantity
+            th Total
+        tbody
+          - @content['lines'].each do |it|
+            tr
+              td= it['item']['name']
+              td= it['item']['description']['text']
+              td= format_rate(it['pricing'])
+              td= format_quantity(it['quantity']['value'], it['quantity']['code'])
+              td= format_price(it['price']['value'], it['price']['currency'])
+

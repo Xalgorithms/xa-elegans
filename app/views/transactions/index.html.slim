@@ -40,7 +40,8 @@
                     .card.is-fullwidth
                       <!-- ko with: content -->
                       header.card-header
-                        p.card-header-title data-bind="text: id"
+                        p.card-header-title
+                          a data-bind="attr: { href: $parent.url() }, text: id"
                         a.card-header-icon data-bind="click: $parent.destroy"
                           = fa_icon('trash')
                       .card-content
@@ -78,8 +79,6 @@
   = render('modal_add_invoice')
   = render('modal_bind_source')
 / a data-bind="text: id, attr: { href: Routes.invoice_path($parent.id) }" data-toggle="modal" data-target="#modal-invoice-show"
-
-/  = render('modal_invoice_show')
 
 / TODO: figure out why translations are not working
 = content_for(:javascript) do

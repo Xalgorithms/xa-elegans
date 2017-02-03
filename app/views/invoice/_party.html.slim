@@ -1,6 +1,0 @@
-h4.text-capitalize= title
-- if party
-  h5= party[:name]
-  - format_address(party.fetch('address', nil)) do |lines|
-    - lines.each do |ln|
-      div= ln

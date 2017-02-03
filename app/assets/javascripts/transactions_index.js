@@ -132,7 +132,7 @@
       }
     }
 
-    function make_invoice_vm(invoice) {
+    function make_invoice_vm(tr_id, invoice) {
       var vm = {
 	id: invoice.id,
 	content: ko.computed(function () {
@@ -158,9 +158,11 @@
 	});
       };
 
-      vm.format_url = ko.computed(function () {
-	return invoice ? Routes.api_v1_invoice_path(invoice.id) : '';
-      });
+      vm.url = function () {
+	return Routes.transaction_invoice_path(tr_id, invoice.id);
+      };
+
+      console.log(vm.url());
       
       return vm;
     }
@@ -187,7 +189,7 @@
 	      return o.id === invoice.id;
 	    });
 
-	    var rv = invoice_vm ? _.concat(a, make_invoice_vm(invoice_vm)) : a;
+	    var rv = invoice_vm ? _.concat(a, make_invoice_vm(tr.id, invoice_vm)) : a;
 	    return rv;
 	  }, []);
 	}),
