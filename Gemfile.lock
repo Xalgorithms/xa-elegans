@@ -17,9 +17,9 @@ GIT
 
 GIT
   remote: https://github.com/Xalgorithms/xa-ubl.git
-  revision: dfc3ba05faa506fc13b775d14276c536a86134cf
+  revision: 2040b5d15187727203117213c24b7346aea83773
   specs:
-    xa-ubl (0.0.1)
+    xa-ubl (0.0.2)
       nokogiri
 
 GIT
