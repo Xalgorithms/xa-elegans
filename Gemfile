@@ -56,6 +56,7 @@ gem 'dotenv-heroku'
 
 # ours
 gem 'xa-rules', git: 'https://github.com/Xalgorithms/xa-rules.git'
+gem 'xa-ubl', git: 'https://github.com/Xalgorithms/xa-ubl.git'
 
 group :development, :test do
   gem 'byebug'
