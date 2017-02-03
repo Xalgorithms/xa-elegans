@@ -1,4 +1,12 @@
 module InvoicesHelper
+  def visible_totals
+    {
+      total: 'Subtotal',
+      tax_exclusive: 'Tax',
+      payable: 'Total',
+    }
+  end
+  
   def format_quantity(quantity, code)
     "#{quantity} (#{code})"
   end

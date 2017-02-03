@@ -20,8 +20,13 @@
           - @content['lines'].each do |it|
             tr
               td= it['item']['name']
-              td= it['item']['description']['text']
+              td= it['item'].key?('description') ? it['item']['description']['text'] : ''
               td= format_rate(it['pricing'])
               td= format_quantity(it['quantity']['value'], it['quantity']['code'])
               td= format_price(it['price']['value'], it['price']['currency'])
-
+  - visible_totals.each do |k, label|
+    .columns.is-gapless
+      .column.is-10
+        p.has-text-right= label
+      .column.is-2
+        p.has-text-right= format_price(@content['totals'][k.to_s]['value'], @content['totals'][k.to_s]['currency'])
