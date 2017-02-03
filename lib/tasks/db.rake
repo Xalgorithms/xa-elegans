@@ -1,4 +1,4 @@
-require 'ubl/invoice'
+require 'xa/ubl/invoice'
 require 'xa/transforms/parse'
 
 namespace :db do
@@ -68,7 +68,7 @@ namespace :db do
     um = User.find(user_id)
 
     puts "> creating transaction structure (user=#{user_id})"
-    txm = Transaction.create(public_id: UUID.generate, user: um, status: Transaction::STATUS_OPEN)
+    txm = Transaction.create(public_id: UUID.generate, user: um)
     puts "> created (transaction=#{txm.public_id})"
 
     name = File.basename(transform_path, '.transform')
@@ -94,7 +94,7 @@ namespace :db do
   desc 'add testing document'
   task :add_document, [:user_id, :path, :transform_path, :rule_ref] => :environment do |t, args|
     class InvoiceParser
-      include UBL::Invoice
+      include XA::UBL::Invoice
     end
 
     add_testing_transaction(args.user_id, args.transform_path, args.rule_ref) do |txm|

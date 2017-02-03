@@ -1,7 +1,7 @@
-require 'ubl/invoice'
+require 'xa/ubl/invoice'
 
 class InvoiceParseService
-  include UBL::Invoice    
+  include XA::UBL::Invoice    
   
   def self.parse(document_id)
     doc = Document.find(document_id)
