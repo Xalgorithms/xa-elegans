@@ -67,7 +67,15 @@
       rules: ko.observableArray(rules),
       last_sync: ko.observable(last_sync),
       sync: function () {
-        console.log('TBD');
+        var evt = {
+          event_type: 'rule_cache_clear'
+        };
+        $.post(Routes.api_v1_events_path(), evt, function (o) {
+          // get the rules
+          $.getJSON(Routes.api_v1_rules_path(), function (rules) {
+            base_vms.rules.rules(rules);
+          });
+        });
       }
     };
 
