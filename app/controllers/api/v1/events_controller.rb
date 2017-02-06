@@ -55,11 +55,15 @@ module Api
           'invoice_destroy' => {
             args: [:invoice_id],
           },
+          'rule_cache_clear' => {
+            args: [],
+          },
         }
       
         k = params[:event_type]
         if k && @events.include?(k)
-          args = params.require("payload").permit(*@events[k][:args])
+          accepted = @events[k][:args]
+          args = accepted.any? ? params.require("payload").permit(*accepted) : nil
           EventService.process(params[:event_type], args)
         else
           nil

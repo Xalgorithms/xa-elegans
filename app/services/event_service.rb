@@ -126,4 +126,12 @@ class EventService
     end
     em
   end
+
+  def self.rule_cache_clear(bem, args)
+    # drop all associations and rules
+    Association.destroy_all
+    Rule.destroy_all
+    SyncAttempt.destroy_all
+    RuleCacheClearEvent.create(event: bem)
+  end
 end

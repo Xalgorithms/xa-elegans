@@ -428,4 +428,21 @@ describe Api::V1::EventsController, type: :controller do
       end
     end
   end
+  
+  it 'can clear the rules cache' do
+    rules = rand_array_of_models(:rule)
+    sync_attempts = rand_array_of_models(:sync_attempt)
+
+    post(:create, event_type: 'rule_cache_clear')
+
+    evt = RuleCacheClearEvent.last
+    expect(evt).to_not be_nil
+    expect(evt.event).to eql(Event.last)
+
+    expect(response).to be_success
+    expect(response_json).to eql(encode_decode(url: api_v1_event_path(id: evt.event.public_id)))
+
+    expect(Rule.count).to eql(0)
+    expect(SyncAttempt.count).to eql(0)
+  end
 end
