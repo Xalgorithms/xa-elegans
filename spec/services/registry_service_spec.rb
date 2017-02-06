@@ -23,6 +23,22 @@ describe RegistryService do
     expect(Rule.all.map(&:public_id).compact).to_not be_empty
   end
 
+  it 'should not add existing rules matched by reference' do
+    cl = double(XA::Registry::Client)
+    rules = rand_array { "#{Faker::Hacker.noun}:#{Faker::Hacker.noun}:#{Faker::Number.number(4)}" }
+    since = '1234'
+
+    # add on of the rules
+    rm = create(:rule, reference: rules.first)
+    
+    expect(XA::Registry::Client).to receive(:new).with(Settings::Defaults.registry.url).and_return(cl)
+    expect(cl).to receive(:rules).and_return({ 'rules' => rules, 'since' => since})
+
+    RegistryService.sync_rules
+
+    expect(Rule.all.map(&:reference)).to match_array(rules)
+  end
+  
   it 'should send the last sync token' do
     cl = double(XA::Registry::Client)
 
