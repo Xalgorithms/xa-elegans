@@ -27,7 +27,7 @@
       modals: {
 	associate: {
 	  active: ko.observable(false),
-	  rules: ko.observableArray(rules),
+	  rules: ko.observableArray(),
 	  transformations: ko.observableArray(transformations),
 	  rule_id: ko.observable(),
 	  transformation_id: ko.observable()
@@ -280,6 +280,11 @@
 	  doc_content(content);
 	});
       });
+    });
+
+    // get the rules
+    $.getJSON(Routes.api_v1_rules_path(), function (rules) {
+      page_vm.modals.associate.rules(rules);
     });
 
     ko.applyBindings(page_vm, document.getElementById('page'));    
