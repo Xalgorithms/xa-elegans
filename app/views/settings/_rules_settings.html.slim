@@ -1,0 +1,24 @@
+.columns
+  .column
+    a.button.is-primary data-bind="click: vms.rules.sync"
+      = fa_icon('refresh')
+      span &nbsp;Refresh
+.columns
+  .column
+    table.is-narrow
+      thead
+        tr
+          th Reference
+          th Id
+      tbody
+        <!-- ko foreach: vms.rules.rules -->
+        tr
+          td data-bind="text: $data.reference"
+          td data-bind="text: $data.id"
+        <!-- /ko -->
+.columns     
+  .column
+    p
+      span Last sync:&nbsp;
+      span data-bind="text: vms.rules.last_sync"
+

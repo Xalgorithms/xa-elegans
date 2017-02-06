@@ -8,6 +8,7 @@ settings:
   sections:
     - general
     - tradeshift
+    - rules
   
 registry:
   url: http://xa-registry.herokuapp.com

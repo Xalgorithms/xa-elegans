@@ -62,7 +62,15 @@
       secret: ko.observable(),
       tenant_id: ko.observable()
     };
-    
+
+    base_vms.rules = {
+      rules: ko.observableArray(rules),
+      last_sync: ko.observable(last_sync),
+      sync: function () {
+        console.log('TBD');
+      }
+    };
+
     page_vm['vms'] = _.reduce(sections, function (o, name) {
       var base_vm = _.get(base_vms, name, {});
       return _.set(o, name, _.extend(base_vm, {

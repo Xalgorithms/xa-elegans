@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161204082643) do
+ActiveRecord::Schema.define(version: 20170206043230) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -109,7 +109,9 @@ ActiveRecord::Schema.define(version: 20161204082643) do
   add_index "settings_update_events", ["user_id"], name: "index_settings_update_events_on_user_id", using: :btree
 
   create_table "sync_attempts", force: :cascade do |t|
-    t.string "token"
+    t.string   "token"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "tradeshift_keys", force: :cascade do |t|
