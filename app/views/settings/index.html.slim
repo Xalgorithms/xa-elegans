@@ -31,4 +31,4 @@
     var default_section = "#{@default_section}";
     var user_id = "#{@user_id}";
     var rules = #{raw MultiJson.encode(@rules)};
-    var last_sync = "#{raw SyncAttempt.last.created_at}";
+    var last_sync = "#{raw @last_sync}";
