@@ -254,7 +254,6 @@ ActiveRecord::Schema.define(version: 20170206051344) do
   add_foreign_key "invoice_push_events", "transactions"
   add_foreign_key "invoices", "transactions", column: "transact_id"
   add_foreign_key "revisions", "invoices"
-  add_foreign_key "rule_cache_clear_events", "events"
   add_foreign_key "tradeshift_keys", "users"
   add_foreign_key "tradeshift_sync_events", "events"
   add_foreign_key "tradeshift_sync_events", "users"
