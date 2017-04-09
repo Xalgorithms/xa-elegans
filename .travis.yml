@@ -1,18 +1,17 @@
 sudo: required
 language: ruby
 rvm:
-  - 2.3.1
-
+- 2.3.1
 services:
 - docker
-
 before_install:
-  - "./start_containers.sh"
-
+- "./start_containers.sh"
 script:
-  - POSTGRES_PORT=8888 RAILS_ENV=test bundle exec rake db:create db:migrate
-  - POSTGRES_PORT=8888 RAILS_ENV=test bundle exec rake spec
-
+- POSTGRES_PORT=8888 RAILS_ENV=test bundle exec rake db:create db:migrate
+- POSTGRES_PORT=8888 RAILS_ENV=test bundle exec rake spec
 after_success:
-  - "./build_images.sh"
-  - "./publish_images.sh"
+- "./build_images.sh"
+- "./publish_images.sh"
+notifications:
+  slack:
+    secure: Yo6KvJcZkAYzpyXOBWEO+qobSHZDvBtEoAAIB6Rrd8Ik+PP/xUisbLc6rZhhHfiU+aiWsC+5dvBtA+mkjsNZqmO5bMtMtYOVB3EyexW7cl6eFdKc48sqXIIoEEjkMC4vy1j+XxFviBez2h/WWBNwC2NOGBgrfgrDQgLIWaqw0w+qEEAIFJm4I194Qy7xiO5KPFNaTLsQCsysVpIQgqsRo7NN02PVsCh/2UQBY9jutJi5Od42HiK0or64j/aY6YPwT02IULGRiJG8w0wou/2qnIqex8peRHNAEEfc7MJ2m8ReGq1QI/FRhotWWiq7dX0jZ77hB8+IoQ4IRmV7w8UemGN/rXilqmBQFrGgQOXlNc75p3x/GFWxPn7YDFrAt8x2MKNHJLJtXNCiUVKPqh2iDuvmwD0RuphB5aELyDFrqlY0dawlMkvKwNTYKay1uukQVsqovJv82tJOBCTLKqpcU5oEZSEtvvpIAjqeOvmMk/ohUEziesstkBF+R0bBeC1SnS7YN2FqvSqlr2Gktsmb8ciRxW7yizbW/7Hyf/Pp+JjYMlBZVBIUd2BJbeU21aOLp92+s3d/YNAYgOFLqlKaj8ynxE5St6NeL2CKaYfFVT25L2SVgA+cT069OQhru3oSk+U2lSm+B1/QvSgqDvlPcgCc30e2ClKgSwxMgrnfiSc=
