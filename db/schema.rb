@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170206051344) do
+ActiveRecord::Schema.define(version: 20170410040107) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -177,6 +177,13 @@ ActiveRecord::Schema.define(version: 20170206051344) do
 
   add_index "transaction_bind_source_events", ["event_id"], name: "index_transaction_bind_source_events_on_event_id", using: :btree
   add_index "transaction_bind_source_events", ["transaction_id"], name: "index_transaction_bind_source_events_on_transaction_id", using: :btree
+
+  create_table "transaction_destroy_events", force: :cascade do |t|
+    t.string  "transaction_id"
+    t.integer "event_id"
+  end
+
+  add_index "transaction_destroy_events", ["event_id"], name: "index_transaction_destroy_events_on_event_id", using: :btree
 
   create_table "transaction_execute_events", force: :cascade do |t|
     t.integer "transaction_id"

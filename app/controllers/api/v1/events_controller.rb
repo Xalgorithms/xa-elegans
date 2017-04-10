@@ -43,6 +43,9 @@ module Api
           'transaction_execute' => {
             args: [:transaction_id],
           },
+          'transaction_destroy' => {
+            args: [:transaction_id],
+          },
           'transaction_add_invoice' => {
             args: [:transaction_id, :url],
           },

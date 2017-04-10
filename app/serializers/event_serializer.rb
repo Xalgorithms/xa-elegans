@@ -8,6 +8,7 @@ class EventSerializer < Serializer
       transaction_associate_rule: method(:serialize_transaction_associate_rule),
       transaction_add_invoice:    method(:serialize_transaction_add_invoice),
       transaction_bind_source:    method(:serialize_transaction_bind_source),
+      transaction_destroy:        method(:serialize_transaction_destroy),
     }
 
     @serializers.fetch(event.event_type.to_sym, lambda { |o| {} }).call(event)
@@ -20,6 +21,12 @@ class EventSerializer < Serializer
         email: event.transaction_open_event.user.email,
       },
       transaction: { url: Rails.application.routes.url_helpers.api_v1_transaction_path(event.transaction_open_event.transact.public_id) },
+    }.merge(serialize_any(event))
+  end
+
+  def self.serialize_transaction_destroy(event)
+    {
+      transaction: { id: event.transaction_destroy_event.transaction_id },
     }.merge(serialize_any(event))
   end
 

@@ -81,6 +81,16 @@ class EventService
     end
   end
 
+  def self.transaction_destroy(bem, args)
+    with_transaction(args) do |txm|
+      public_id = txm.public_id
+      txm.invoices.destroy_all
+      txm.associations.destroy_all
+      txm.destroy
+      TransactionDestroyEvent.create(transaction_id: public_id, event: bem)
+    end
+  end
+
   def self.transaction_add_invoice(bem, args)
     with_transaction(args) do |txm|
       url = args.fetch(:url, nil)

@@ -238,6 +238,14 @@
       vm.trigger_execute = function (o) {
 	send_event('transaction_execute', { transaction_id: tr.id });
       };
+
+      vm.trigger_destroy = function (o) {
+        send_event('transaction_destroy', { transaction_id: tr.id }, function (o) {
+          page_vm.transactions.remove(function (tr) {
+            return tr.id === o.transaction.id;
+          });
+        });
+      };
       
       vm.trigger_add_invoice = function (o) {
 	page_vm.modals.add_invoice.transaction_id = tr.id;
